@@ -7,6 +7,8 @@ const {
     deleteProductValidator
 } = require('../utils/validations/product-validator');
 
+const { checkToken } = require('../controllers/auth-controller');
+
 const {
     addProduct,
     getProducts,
@@ -15,12 +17,12 @@ const {
     deleteProduct
 } = require('../controllers/product-controller');
 
-const router = express.Router()
+const router = express.Router();
 
-router.post('/addProduct' , addProductValidator , addProduct)
-router.get('/getProducts' , getProducts)
-router.get('/getProduct/:id' , getProductValidator , getProduct)
-router.put('/updateProduct/:id' , updateProductValidator , updateProduct)
-router.delete('/deleteProduct/:id' , deleteProductValidator , deleteProduct)
+router.post('/addProduct' , checkToken , addProductValidator , addProduct)
+router.get('/getProducts' , checkToken , getProducts)
+router.get('/getProduct/:id' , checkToken , getProductValidator , getProduct)
+router.put('/updateProduct/:id' , checkToken , updateProductValidator , updateProduct)
+router.delete('/deleteProduct/:id' , checkToken , deleteProductValidator , deleteProduct)
 
-module.exports = router
+module.exports = router;
