@@ -1,0 +1,90 @@
+const reader = require('xlsx');
+const excelJS = require("exceljs");
+const pdfToExcel = require('pdf-to-excel');
+
+        console.log(data[0].__EMPTY_5); // رقم الفاتورة
+        console.log(Object.values(data[6])[1]); // كود المنتج
+        console.log(data[6].__EMPTY_9); // كمية المنتج
+        console.log(data[6].__EMPTY_10); // سعر المنتج
+        console.log(data[6].__EMPTY_16); // الخصم
+        console.log(data[6].__EMPTY_18); // الخصم الاضافي
+        console.log(data[6].__EMPTY_19); // نسبة الضريبه
+        console.log(Object.values(data[7])[0]); // قيمة الضريبة
+        console.log(Object.values(data[8])[0]); // اجمالي شامل ض.م
+
+// app.get('/' , (req, res) => {
+//     const fileReader = reader.readFile('./ex1.xlsx');
+//     let data = []
+//     const sheets = fileReader.SheetNames
+//     for(let i = 0; i < sheets.length; i++) {
+//         const temp = reader.utils.sheet_to_json(fileReader.Sheets[fileReader.SheetNames[i]])
+//         temp.forEach((res) => {
+//             data.push(res)
+//         })
+//     }
+//     res.send(data);
+// })
+
+// app.get('/' , async (req, res) => {
+//     const User = [
+//         { fname: "Amir", lname: "Mustafa", email: "amir@gmail.com", gender: "Male" },
+//         { fname: "Ashwani", lname: "Kumar", email: "ashwani@gmail.com", gender: "Male" },
+//         { fname: "Nupur", lname: "Shah", email: "nupur@gmail.com", gender: "Female" },
+//         { fname: "Himanshu", lname: "Mewari", email: "himanshu@gmail.com", gender: "Male" }
+//     ];
+//     const workbook = new excelJS.Workbook();  // Create a new workbook
+//     const worksheet = workbook.addWorksheet("My Users"); // New Worksheet
+//     const path = "./files";  // Path to download excel
+//     // Column for data in excel. key must match data key
+//     worksheet.columns = [
+//         { header: "S no.", key: "s_no", width: 10 }, 
+//         { header: "First Name", key: "fname", width: 10 },
+//         { header: "Last Name", key: "lname", width: 10 },
+//         { header: "Email Id", key: "email", width: 10 },
+//         { header: "Gender", key: "gender", width: 10 },
+//     ];
+//     // Looping through User data
+//     let counter = 1;
+//     User.forEach((user) => {
+//     user.s_no = counter;
+//     worksheet.addRow(user); // Add data in worksheet
+//     counter++;
+//     });
+//     // Making first line in excel bold
+//     worksheet.getRow(1).eachCell((cell) => {
+//     cell.font = { bold: true };
+//     });
+//     try {
+//     const data = await workbook.xlsx.writeFile(`${path}/users.xlsx`)
+//     .then(() => {
+//         res.send({
+//         status: "success",
+//         message: "file successfully downloaded",
+//         path: `${path}/users.xlsx`,
+//         });
+//     });
+//     } catch (err) {
+//         res.send({
+//         status: "error",
+//         message: "Something went wrong",
+//     });
+//     }
+// })
+
+// app.get('/' , async (req,res) => {
+//     try {
+//         await pdfToExcel.genXlsx('./ex2.pdf' , 'excelex4.xlsx');
+//         const fileReader = reader.readFile('excelex4.xlsx');
+//         let data = []
+//         const sheets = fileReader.SheetNames
+//         for(let i = 0; i < sheets.length; i++) {
+//             const temp = reader.utils.sheet_to_json(fileReader.Sheets[fileReader.SheetNames[i]])
+//             temp.forEach((res) => {
+//                 data.push(res)
+//             })
+//         }
+//         res.send(data);
+//     } catch (error) {
+//         console.log(error);
+//     }
+// })
