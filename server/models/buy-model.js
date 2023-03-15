@@ -11,13 +11,12 @@ const buyInvoiceSchema = new mongoose.Schema({
         proCode: {
             type: String,
             required: [true , 'The product code is required'],
-            unique: true
         },
         proName: {
             type: String,
             required: [true , 'The product name is required'],
         },
-        proQuantity: { type: String },
+        proQuantity: { type: Number },
         proCost: { type: String },
         proSale: { type: String },
         proExtraSale: { type: String },
