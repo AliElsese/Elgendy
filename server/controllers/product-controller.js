@@ -18,11 +18,11 @@ module.exports = {
         const limit = req.query.limit * 1 || 20
         const skip = (page - 1) * limit
 
-        const products = await ProductModel.find({}).skip(skip).limit(limit)
+        const products = await ProductModel.find({})
         res.status(200).json({
             results : products.length,
             page : page,
-            data : products
+            data : products.slice(skip,limit*page)
         })
     }),
 

@@ -1,13 +1,13 @@
 const express = require('express')
 
+const { checkToken } = require('../controllers/auth-controller');
+
 const {
     addProductValidator,
     getProductValidator,
     updateProductValidator,
     deleteProductValidator
 } = require('../utils/validations/product-validator');
-
-const { checkToken } = require('../controllers/auth-controller');
 
 const {
     addProduct,
