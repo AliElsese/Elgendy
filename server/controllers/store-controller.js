@@ -28,6 +28,22 @@ module.exports = {
         res.status(201).json({ data: product });
     }),
 
+    updateStoreProduct : asyncHandler(async (req , res , next) => {
+        const proQuantity = req.body.proQuantity;
+        const proCost = req.body.proCost;
+        const proSale = req.body.proSale;
+        const proExtraSale = req.body.proExtraSale;
+        const proTaxRate = req.body.proTaxRate;
+
+        const product = await StoreModel.findByIdAndUpdate({ _id: req.params.id } , { proQuantity , proCost , proSale , proExtraSale , proTaxRate } , { new: true });
+        if(!product) {
+            next(new ApiError(`No Product For This Id ${id}` , 404));
+        }
+        else {
+            res.status(200).json({ data: product });
+        }
+    }),
+
     getStoreProducts : asyncHandler(async (req , res , next) => {
         const page = req.query.page * 1 || 1
         const limit = req.query.limit * 1 || 20
