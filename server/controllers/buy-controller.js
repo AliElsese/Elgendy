@@ -70,22 +70,20 @@ module.exports = {
         const invoiceNumber = data[0].__EMPTY_5;
 
         for(var i = 0; i < data.length; i++) {
-            if(data[i].__EMPTY == "0" || data[i].__EMPTY == undefined) continue;
+            if(data[i].__EMPTY == "0" || data[i].__EMPTY == undefined || isNaN(Object.values(data[i])[Object.keys(data[i]).length - 1])) continue;
+            if(isNaN(Object.values(data[i])[1]) || Object.values(data[i])[Object.keys(data[i]).length - 1].startsWith('01')) continue;
+            // console.log(Object.values(data[i])[1]) // كود الصنف
+            // console.log(Object.values(data[i])[Object.keys(data[i]).length - 1]) // نسبة الضريبة
+            // console.log(Object.values(data[i])[Object.keys(data[i]).length - 2]) // الخصم الاضافي
+            // (Object.values(data[i])[Object.keys(data[i]).length - 3] == "-" ? console.log(Math.abs((Object.values(data[i])[Object.keys(data[i]).length - 4]).split(',').join(''))) : console.log(Math.abs((Object.values(data[i])[Object.keys(data[i]).length - 3]).split(',').join(''))))
             console.log(i);
         }
-        res.send(data[12]);
-        // console.log(data[6])
-        // console.log(data[0])
-        // console.log(data[6])
-        // console.log(data[9])
+        res.send(data[6])
+        console.log(data[9])
         // console.log(data[12])
-        // console.log(data[15])
-        // console.log(data[18])
-        // console.log(data[30])
-        // console.log(data[32])
     }),
 
-    addInvoice : asyncHandler(async (req , res , next) => {
+    addInvoice : asyncHandler(async (req , res ) => {
         const invoiceNumber = req.body.invoiceNumber;
         const products = req.body.products;
 
