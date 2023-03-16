@@ -12,6 +12,7 @@ const headersMiddleware = require('./server/middlewares/headers-middleware');
 const authRoute = require('./server/routes/auth-route');
 const buyRoute = require('./server/routes/buy-route');
 const productRoute = require('./server/routes/product-route');
+const storeRoute = require('./server/routes/store-route');
 
 dbConnection();
 
@@ -26,6 +27,7 @@ app.use('/server/uploads', express.static("server/uploads"))
 app.use('/auth' , authRoute);
 app.use('/buyInvoice' , buyRoute);
 app.use('/products' , productRoute);
+app.use('/store' , storeRoute);
 app.all('*' , (req , res , next) => {
     next(new ApiError(`Can't Find This Route: ${req.originalUrl}` , 400));
 });
