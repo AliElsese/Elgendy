@@ -45,6 +45,10 @@ exports.updateStoreProductValidator = [
 
     check('proTaxRate').notEmpty().withMessage('Product TaxRate Required'),
 
+    check('proTaxValue').notEmpty().withMessage('Product TaxRate Required'),
+
+    check('proTotalVat').notEmpty().withMessage('Product TaxRate Required'),
+
     validatorMiddleware
 ]
 

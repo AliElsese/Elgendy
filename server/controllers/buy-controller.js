@@ -25,9 +25,9 @@ const getProductInfo = async (products) => {
     var productsInfo = [];
     for(var i = 0; i < products.length; i++) {
         var product = await ProductModel.findOne({ proCode: products[i].proCode });
-        if(!product || product.length == 0) {
-            next(new ApiError(`Product Not Found With This Code:${products[i].proCode} Insert It First..` , 404));
-        }
+        // if(!product || product.length == 0) {
+        //     return (new ApiError(`Product Not Found With This Code:${products[i].proCode} Insert It First..` , 404));
+        // }
         var productInfo = {
             proCode: product.proCode,
             proName: product.proName,
@@ -72,15 +72,51 @@ module.exports = {
         for(var i = 0; i < data.length; i++) {
             if(data[i].__EMPTY == "0" || data[i].__EMPTY == undefined || isNaN(Object.values(data[i])[Object.keys(data[i]).length - 1])) continue;
             if(isNaN(Object.values(data[i])[1]) || Object.values(data[i])[Object.keys(data[i]).length - 1].startsWith('01')) continue;
-            // console.log(Object.values(data[i])[1]) // كود الصنف
-            // console.log(Object.values(data[i])[Object.keys(data[i]).length - 1]) // نسبة الضريبة
-            // console.log(Object.values(data[i])[Object.keys(data[i]).length - 2]) // الخصم الاضافي
-            // (Object.values(data[i])[Object.keys(data[i]).length - 3] == "-" ? console.log(Math.abs((Object.values(data[i])[Object.keys(data[i]).length - 4]).split(',').join(''))) : console.log(Math.abs((Object.values(data[i])[Object.keys(data[i]).length - 3]).split(',').join(''))))
-            console.log(i);
+            console.log(Object.values(data[i])[1]) // كود الصنف
+            console.log(Object.values(data[i])[Object.keys(data[i]).length - 1]) // نسبة الضريبة
+            console.log(Object.values(data[i])[Object.keys(data[i]).length - 2]) // الخصم الاضافي
+            if(Object.values(data[i])[Object.keys(data[i]).length - 3] == "-") {
+                console.log(Math.abs((Object.values(data[i])[Object.keys(data[i]).length - 4]).split(',').join(''))) // الخصم
+                if(/^[0-9]|[0-9]$/.test(Object.values(data[i])[Object.keys(data[i]).length - 5])) {
+                    if(/^[0-9]/.test(Object.values(data[i])[Object.keys(data[i]).length - 9])) {
+                        console.log(Object.values(data[i])[Object.keys(data[i]).length - 9]) // السعر
+                        console.log(Object.values(data[i])[Object.keys(data[i]).length - 10]) // الكمية
+                        console.log(i);
+                    }
+                    else {
+                        console.log(Object.values(data[i])[Object.keys(data[i]).length - 10]) // السعر
+                        console.log(Object.values(data[i])[Object.keys(data[i]).length - 11]) // الكمية
+                        console.log(i);
+                    }
+                }
+                else {
+                    console.log(Object.values(data[i])[Object.keys(data[i]).length - 7]) // السعر
+                    console.log(Object.values(data[i])[Object.keys(data[i]).length - 8]) // الكمية
+                    console.log(i);
+                }
+            }
+            else {
+                console.log(Math.abs((Object.values(data[i])[Object.keys(data[i]).length - 3]).split(',').join('')))
+                if(/^[0-9]|[0-9]$/.test(Object.values(data[i])[Object.keys(data[i]).length - 4])) {
+                    if(/^[0-9]/.test(Object.values(data[i])[Object.keys(data[i]).length - 8])) {
+                        console.log(Object.values(data[i])[Object.keys(data[i]).length - 8]) // السعر
+                        console.log(Object.values(data[i])[Object.keys(data[i]).length - 9]) // الكمية
+                    }
+                    else {
+                        console.log(Object.values(data[i])[Object.keys(data[i]).length - 9]) // السعر
+                        console.log(Object.values(data[i])[Object.keys(data[i]).length - 10]) // الكمية
+                    }
+                    console.log(i);
+                }
+                else {
+                    console.log(Object.values(data[i])[Object.keys(data[i]).length - 6]) // السعر
+                    console.log(Object.values(data[i])[Object.keys(data[i]).length - 7]) // الكمية
+                    console.log(i);
+                }
+            }
         }
-        res.send(data[6])
-        console.log(data[9])
-        // console.log(data[12])
+        res.send(data[56])
+        console.log(/^[0-9]/.test('12*12'))
     }),
 
     addInvoice : asyncHandler(async (req , res ) => {

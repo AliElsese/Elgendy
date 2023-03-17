@@ -17,12 +17,12 @@ const buyInvoiceSchema = new mongoose.Schema({
             required: [true , 'The product name is required'],
         },
         proQuantity: { type: Number },
-        proCost: { type: String },
-        proSale: { type: String },
-        proExtraSale: { type: String },
-        proTaxRate: { type: String },
-        proTaxValue: { type: String },
-        proTotalVat: { type: String }
+        proCost: { type: Number },
+        proSale: { type: Number },
+        proExtraSale: { type: Number },
+        proTaxRate: { type: Number },
+        proTaxValue: { type: Number },
+        proTotalVat: { type: Number }
     }]
 }, { timestamps: true });
 

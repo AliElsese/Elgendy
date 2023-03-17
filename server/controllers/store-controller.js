@@ -34,8 +34,10 @@ module.exports = {
         const proSale = req.body.proSale;
         const proExtraSale = req.body.proExtraSale;
         const proTaxRate = req.body.proTaxRate;
+        const proTaxValue = req.body.proTaxValue;
+        const proTotalVat = req.body.proTotalVat
 
-        const product = await StoreModel.findByIdAndUpdate({ _id: req.params.id } , { proQuantity , proCost , proSale , proExtraSale , proTaxRate } , { new: true });
+        const product = await StoreModel.findByIdAndUpdate({ _id: req.params.id } , { proQuantity , proCost , proSale , proExtraSale , proTaxRate , proTaxValue , proTotalVat } , { new: true });
         if(!product) {
             next(new ApiError(`No Product For This Id ${id}` , 404));
         }
