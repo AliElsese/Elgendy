@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const ApiError = require('../utils/apiError');
-const BuyInvoiceModel = require('../models/buy-model');
+const SaleInvoiceModel = require('../models/sale-model');
 const ProductModel = require('../models/product-model');
 const StoreModel = require('../models/store-model');
 
@@ -75,7 +75,7 @@ const getStoreProducts = async (products) => {
 }
 
 module.exports = {
-    createBuyInvoice : asyncHandler(async (req , res , next) => {
+    createSaleInvoice : asyncHandler(async (req , res , next) => {
         const data = await readCSVFile(req.file.originalname)
         // const data = await createExcelFile(req.file.originalname);
         // const invoiceUrl = `server/uploads/${req.file.filename}`;
@@ -137,11 +137,11 @@ module.exports = {
 
         const productsInfo = await getProductInfo(products);
 
-        const storeProducts = await getStoreProducts(productsInfo);
+        // const storeProducts = await getStoreProducts(productsInfo);
 
-        if(storeProducts.length != 0) { await StoreModel.create(storeProducts); }
+        // if(storeProducts.length != 0) { await StoreModel.create(storeProducts); }
 
-        const invoiceProducts = await BuyInvoiceModel.create({ invoiceNumber , products: productsInfo });
+        const invoiceProducts = await SaleInvoiceModel.create({ invoiceNumber , products: productsInfo });
         res.status(201).json({ data: invoiceProducts });
     }),
 
@@ -150,7 +150,7 @@ module.exports = {
         const limit = req.query.limit * 1 || 20
         const skip = (page - 1) * limit
 
-        const invoices = await BuyInvoiceModel.find({})
+        const invoices = await SaleInvoiceModel.find({})
         res.status(200).json({
             results : invoices.length,
             page : page,
@@ -161,7 +161,7 @@ module.exports = {
     getInvoice : asyncHandler( async (req,res,next) => {
         const { id } = req.params
 
-        const invoice = await BuyInvoiceModel.findById(id)
+        const invoice = await SaleInvoiceModel.findById(id)
         if(!invoice) {
             next(new ApiError(`No Invoice For This Id ${id}` , 404))
         }
@@ -175,7 +175,7 @@ module.exports = {
         const invoiceNumber = req.body.invoiceNumber;
         const products = req.body.products;
 
-        const invoice = await BuyInvoiceModel.findByIdAndUpdate(
+        const invoice = await SaleInvoiceModel.findByIdAndUpdate(
             { _id : id } , { invoiceNumber , products } , { new : true }
         )
         if(!invoice) {
@@ -189,7 +189,7 @@ module.exports = {
     deleteInvoice : asyncHandler( async (req,res,next) => {
         const { id } = req.params;
 
-        const invoice = await BuyInvoiceModel.findByIdAndDelete({ _id : id });
+        const invoice = await SaleInvoiceModel.findByIdAndDelete({ _id : id });
         if(!invoice) {
             next(new ApiError(`No Invoice For This Id ${id}` , 404));
         }
