@@ -117,9 +117,7 @@ module.exports = {
 
         if(storeProducts.length != 0) { await StoreModel.create(storeProducts); }
 
-        console.log(productsInfo.invoiceTotal)
         const invoiceProducts = await BuyInvoiceModel.create({ invoiceNumber , products: productsInfo.productsInfo , invoiceTotal: productsInfo.invoiceTotal });
-        console.log(invoiceProducts.invoiceTotal)
         res.status(201).json({ data: invoiceProducts });
     }),
 

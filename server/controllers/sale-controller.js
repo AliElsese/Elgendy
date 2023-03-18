@@ -33,7 +33,10 @@ const createExcelFile = async (pdfFile) => {
 }
 
 const getProductInfo = async (products) => {
-    var productsInfo = [];
+    var invoice = {
+        productsInfo : [],
+        invoiceTotal : 0
+    }
     for(var i = 0; i < products.length; i++) {
         var product = await ProductModel.findOne({ proCode: products[i].proCode });
         // if(!product || product.length == 0) {
@@ -50,9 +53,10 @@ const getProductInfo = async (products) => {
             proTaxValue: (products[i].proTaxRate == '5' ? Math.abs(( ( ( (products[i].proCost * products[i].proQuantity) - products[i].proSale ) * products[i].proTaxRate ) / 105 )).toFixed(2) : Math.abs((( ( (products[i].proCost * products[i].proQuantity) - products[i].proSale ) * products[i].proTaxRate ) / 114 )).toFixed(2)),
             proTotalVat: Math.abs((products[i].proCost * products[i].proQuantity) - products[i].proSale),
         }
-        productsInfo.push(productInfo);
+        invoice.invoiceTotal = invoice.invoiceTotal + productInfo.proTotalVat;
+        invoice.productsInfo.push(productInfo);
     }
-    return productsInfo;
+    return invoice;
 }
 
 const getStoreProducts = async (products) => {
@@ -141,7 +145,7 @@ module.exports = {
 
         // if(storeProducts.length != 0) { await StoreModel.create(storeProducts); }
 
-        const invoiceProducts = await SaleInvoiceModel.create({ invoiceNumber , products: productsInfo });
+        const invoiceProducts = await SaleInvoiceModel.create({ invoiceNumber , products: productsInfo.productsInfo , invoiceTotal: productsInfo.invoiceTotal });
         res.status(201).json({ data: invoiceProducts });
     }),
 

@@ -5,7 +5,7 @@ import tabula
 
 pdf_path = './ex2.pdf'
 
-dfs = tabula.read_pdf(pdf_path, pages='1')
+dfs = tabula.read_pdf(pdf_path, pages='all')
 
 print(len(dfs))
 dfs[0].to_csv("./server/controllers/first_table.csv")

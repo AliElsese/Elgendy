@@ -7,6 +7,7 @@ const saleInvoiceSchema = new mongoose.Schema({
         required: [true , 'The invoice number is required'],
         unique: true
     },
+    invoiceTotal: { type: Number },
     products: [{
         proCode: {
             type: String,

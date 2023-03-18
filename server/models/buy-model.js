@@ -7,6 +7,7 @@ const buyInvoiceSchema = new mongoose.Schema({
         required: [true , 'The invoice number is required'],
         unique: true
     },
+    invoiceTotal: { type: Number },
     products: [{
         proCode: {
             type: String,
@@ -22,8 +23,7 @@ const buyInvoiceSchema = new mongoose.Schema({
         proExtraSale: { type: Number },
         proTaxRate: { type: Number },
         proTaxValue: { type: Number },
-        proTotalVat: { type: Number },
-        invoiceTotal: { type: Number }
+        proTotalVat: { type: Number }
     }]
 }, { timestamps: true });
 
