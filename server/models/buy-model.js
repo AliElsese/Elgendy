@@ -22,7 +22,8 @@ const buyInvoiceSchema = new mongoose.Schema({
         proExtraSale: { type: Number },
         proTaxRate: { type: Number },
         proTaxValue: { type: Number },
-        proTotalVat: { type: Number }
+        proTotalVat: { type: Number },
+        invoiceTotal: { type: Number }
     }]
 }, { timestamps: true });
 

@@ -5,6 +5,19 @@ const validatorMiddleware = require('../../middlewares/validator-middleware');
 const BuyInvoiceModel = require('../../models/buy-model');
 const ProductModel = require('../../models/product-model');
 
+exports.saveBuyInvoice = [
+    check('invoiceNumber').notEmpty().withMessage('Invoice Code Required')
+    .custom(async (val) => {
+        await BuyInvoiceModel.findOne({ invoiceNumber: val }).then((invoice) => {
+            if(invoice) {                
+                return Promise.reject('Invoice Code Already Exists');
+            }
+        })
+    }),
+
+    validatorMiddleware
+]
+
 exports.addInvoiceValidator = [
     check('invoiceNumber').notEmpty().withMessage('Invoice Code Required')
     .custom(async (val) => {
