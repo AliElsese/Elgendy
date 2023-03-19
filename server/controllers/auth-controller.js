@@ -156,7 +156,7 @@ module.exports = {
             }
             else {
                 const userData = await UserModel.findByIdAndUpdate(
-                    { _id: req.body.userId } , { macAddress: mac } , { new: true }
+                    { _id: user._id } , { macAddress: mac } , { new: true }
                 )
                 const token = generateToken(user._id);
                 res.status(200).json({ data: userData , token });
