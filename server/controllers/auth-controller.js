@@ -150,15 +150,16 @@ module.exports = {
 
     checkActivationCode : asyncHandler(async (req , res , next) => {
         macaddress.one(async (err,mac) => {
-            const user = await UserModel.findByIdAndUpdate(
-                { _id: req.body.userId } , { macAddress: mac } , { new: true }
-            )
+            const user = await UserModel.findById({ _id: req.body.userId })
             if(!user || user.activationCode != req.body.activationCode) {
                 next(new ApiError('Activation Code Is Incorrect' , 401));
             }
             else {
+                const userData = await UserModel.findByIdAndUpdate(
+                    { _id: req.body.userId } , { macAddress: mac } , { new: true }
+                )
                 const token = generateToken(user._id);
-                res.status(200).json({ data: user , token });
+                res.status(200).json({ data: userData , token });
             }
         })
     })
