@@ -104,7 +104,6 @@ module.exports = {
         childPython.on('close' , (code) => {
             console.log(code)
         })
-        
     }),
 
     addInvoice : asyncHandler(async (req , res ) => {

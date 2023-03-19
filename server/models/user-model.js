@@ -8,7 +8,9 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true , 'Password Required']
-    }
+    },
+    macAddress: { type: String },
+    activationCode: { type: String }
 }, { timestamps: true });
 
 const UserModel = mongoose.model('User', userSchema);
