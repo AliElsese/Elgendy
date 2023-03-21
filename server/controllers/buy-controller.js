@@ -85,18 +85,73 @@ const getStoreProducts = async (products) => {
 
 module.exports = {
     createBuyInvoice : asyncHandler(async (req , res , next) => {
+        var invoiceUrl = req.file.path,
+            invoiceNumber = req.body.invoiceNumber;
         var results = []
+        var products = []
+        var unfoundProducts = []
+        var invoiceTotal = 0
         const childPython = spawn('python' , ['pdfreader.py' , req.file.path])
         childPython.stdout.on('data' , (data) => {
-            console.log(`data: ${data}`)
-            fs.createReadStream(__dirname +'/first_table.csv').pipe(csv()).on('data' , (response) => {
-                results.push(response)
-            }).on('end' , async () => {
-                var invoiceUrl = req.file.path,
-                    invoiceNumber = req.body.invoiceNumber;
-                var products = checkPdfProduct(results)
-                res.send(products)
-            })
+            for(var y = 0; y < data; y++) {
+                fs.createReadStream(__dirname +`/table_${y}.csv`).pipe(csv()).on('data' , (response) => {
+                    results.push(response)
+                }).on('end' , async () => {
+                    for(var i = 0; i < results.length; i++) {
+                        if(Object.values(results[i])[Object.keys(results[i]).length - 1] == '') continue;
+                        var productCode = (Object.values(results[i])[Object.keys(results[i]).length - 1]).replace('.0' , '')
+                        await ProductModel.findOne({ proCode: productCode }).then(product => {
+                            if(product) {
+                                var invoiceProduct = {
+                                    proCode: productCode,
+                                    proName: product.proName,
+                                    proQuantity: Number((Object.values(results[y])[8]).replace(',','')),
+                                    productCost: Number((Object.values(results[y])[7]).replace(',','')),
+                                    productSale: Math.abs(Number((Object.values(results[y])[4]).replace(',',''))),
+                                    productExtraSale: Number((Object.values(results[y])[3]).replace(',','')),
+                                    productTaxRate: Number((Object.values(results[y])[2]).replace(',','')),
+                                    proTaxValue: (Number((Object.values(results[y])[2]).replace(',','')) == 5 ? Math.abs(( ( ( (Number((Object.values(results[y])[7]).replace(',','')) * Number((Object.values(results[y])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[y])[4]).replace(',',''))) ) * Number((Object.values(results[y])[2]).replace(',','')) ) / 105 )).toFixed(2) : Math.abs((( ( (Number((Object.values(results[y])[7]).replace(',','')) * Number((Object.values(results[y])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[y])[4]).replace(',',''))) ) * Number((Object.values(results[y])[2]).replace(',','')) ) / 114 )).toFixed(2)),
+                                    proTotalVat: Math.abs((Number((Object.values(results[y])[7]).replace(',','')) * Number((Object.values(results[y])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[y])[4]).replace(',',''))))
+                                }
+                                invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                                products.push(invoiceProduct);
+                            }
+                            else {
+                                unfoundProducts.push(productCode)
+                            }
+                        }).catch(err => {
+                            return Promise.reject(err);
+                        })
+                    }
+                    if(unfoundProducts.length == 0) {
+                        var storeProducts = await getStoreProducts(products);
+                        if(storeProducts.length != 0) { await StoreModel.create(storeProducts); }
+                        var invoice = await BuyInvoiceModel.findOne({ invoiceNumber: invoiceNumber })
+                        if(!invoice) {
+                            await BuyInvoiceModel.create(
+                                { invoiceUrl , invoiceNumber , products , invoiceTotal }
+                            ).then(buyInvoice => {
+                                res.status(201).json({ data: buyInvoice })
+                            }).catch(err => {
+                                res.send(err)
+                            })
+                        }
+                        else {
+                            var newProductsInvoice = invoice.products.push(products);
+                            await BuyInvoiceModel.findOneAndUpdate(
+                                { invoiceNumber } , { products: newProductsInvoice , $inc:{ invoiceTotal: invoiceTotal } } , { new: true}
+                            ).then(newinvoice => {
+                                res.status(200).json({ data: newinvoice })
+                            }).catch(err => {
+                                res.send(err)
+                            })
+                        }
+                    }
+                    else {
+                        next(new ApiError(`Product Not Found With This Code:${unfoundProducts} Insert It First..` , 400))
+                    }
+                })
+            }
         })
         childPython.stderr.on('data' , (data) => {
             console.error(`stderr: ${data}`)
