@@ -4,33 +4,10 @@ const SaleInvoiceModel = require('../models/sale-model');
 const ProductModel = require('../models/product-model');
 const StoreModel = require('../models/store-model');
 
-const reader = require('xlsx');
-const pdfToExcel = require('pdf-to-excel');
+const { spawn } = require('child_process');
 
 const fs = require('fs');
 const csv = require('csv-parser');
-const results = []
-const readCSVFile = (csvFile) => {
-    fs.createReadStream(csvFile).pipe(csv()).on('data' , (data) => {
-        results.push(data)
-    }).on('end' , () => {
-        console.log(results[2]) 
-    })
-}
-
-const createExcelFile = async (pdfFile) => {
-    // await pdfToExcel.genXlsx(pdfFile , 'invoice.xlsx');
-    const fileReader = reader.readFile(pdfFile);
-    let data = []
-    const sheets = fileReader.SheetNames
-    for(let i = 0; i < sheets.length; i++) {
-        const temp = reader.utils.sheet_to_json(fileReader.Sheets[fileReader.SheetNames[i]])
-        temp.forEach((res) => {
-            data.push(res)
-        })
-    }
-    return data;
-}
 
 const getProductInfo = async (products) => {
     var invoice = {
@@ -63,13 +40,7 @@ const getStoreProducts = async (products) => {
     let storeProducts = []
     for(var i = 0; i < products.length; i++) {
         var product = await StoreModel.findOneAndUpdate({ proCode: products[i].proCode } , {
-            $inc:{ proQuantity: products[i].proQuantity },
-            proCost: products[i].proCost,
-            proSale: products[i].proSale,
-            proExtraSale: products[i].proExtraSale,
-            proTaxRate: products[i].proTaxRate,
-            proTaxValue: products[i].proTaxValue,
-            proTotalVat: products[i].proTotalVat
+            $inc:{ proQuantity: -(products[i].proQuantity) },
         } , { new: true });
         if(!product || product == undefined) {
             storeProducts.push(products[i]);
@@ -80,59 +51,102 @@ const getStoreProducts = async (products) => {
 
 module.exports = {
     createSaleInvoice : asyncHandler(async (req , res , next) => {
-        const data = await readCSVFile(req.file.originalname)
-        // const data = await createExcelFile(req.file.originalname);
-        // const invoiceUrl = `server/uploads/${req.file.filename}`;
-        // const invoiceNumber = data[0].__EMPTY_5;
-
-        // for(var i = 0; i < data.length; i++) {
-        //     if(data[i].__EMPTY == "0" || data[i].__EMPTY == undefined || isNaN(Object.values(data[i])[Object.keys(data[i]).length - 1])) continue;
-        //     if(isNaN(Object.values(data[i])[1]) || Object.values(data[i])[Object.keys(data[i]).length - 1].startsWith('01')) continue;
-        //     console.log(Object.values(data[i])[1]) // كود الصنف
-        //     console.log(Object.values(data[i])[Object.keys(data[i]).length - 1]) // نسبة الضريبة
-        //     console.log(Object.values(data[i])[Object.keys(data[i]).length - 2]) // الخصم الاضافي
-        //     if(Object.values(data[i])[Object.keys(data[i]).length - 3] == "-") {
-        //         console.log(Math.abs((Object.values(data[i])[Object.keys(data[i]).length - 4]).split(',').join(''))) // الخصم
-        //         if(/^[0-9]|[0-9]$/.test(Object.values(data[i])[Object.keys(data[i]).length - 5])) {
-        //             if(/^[0-9]/.test(Object.values(data[i])[Object.keys(data[i]).length - 9])) {
-        //                 console.log(Object.values(data[i])[Object.keys(data[i]).length - 9]) // السعر
-        //                 console.log(Object.values(data[i])[Object.keys(data[i]).length - 10]) // الكمية
-        //                 console.log(i);
-        //             }
-        //             else {
-        //                 console.log(Object.values(data[i])[Object.keys(data[i]).length - 10]) // السعر
-        //                 console.log(Object.values(data[i])[Object.keys(data[i]).length - 11]) // الكمية
-        //                 console.log(i);
-        //             }
-        //         }
-        //         else {
-        //             console.log(Object.values(data[i])[Object.keys(data[i]).length - 7]) // السعر
-        //             console.log(Object.values(data[i])[Object.keys(data[i]).length - 8]) // الكمية
-        //             console.log(i);
-        //         }
-        //     }
-        //     else {
-        //         console.log(Math.abs((Object.values(data[i])[Object.keys(data[i]).length - 3]).split(',').join('')))
-        //         if(/^[0-9]|[0-9]$/.test(Object.values(data[i])[Object.keys(data[i]).length - 4])) {
-        //             if(/^[0-9]/.test(Object.values(data[i])[Object.keys(data[i]).length - 8])) {
-        //                 console.log(Object.values(data[i])[Object.keys(data[i]).length - 8]) // السعر
-        //                 console.log(Object.values(data[i])[Object.keys(data[i]).length - 9]) // الكمية
-        //             }
-        //             else {
-        //                 console.log(Object.values(data[i])[Object.keys(data[i]).length - 9]) // السعر
-        //                 console.log(Object.values(data[i])[Object.keys(data[i]).length - 10]) // الكمية
-        //             }
-        //             console.log(i);
-        //         }
-        //         else {
-        //             console.log(Object.values(data[i])[Object.keys(data[i]).length - 6]) // السعر
-        //             console.log(Object.values(data[i])[Object.keys(data[i]).length - 7]) // الكمية
-        //             console.log(i);
-        //         }
-        //     }
-        // }
-        res.send(data)
-        // console.log(/^[0-9]/.test('12*12'))
+        var oldInvoice = await SaleInvoiceModel.findOne({ invoiceNumber: req.body.invoiceNumber })
+        if(oldInvoice) {
+            next(new ApiError(`رقم الفاتورة مسجل من قبل` , 400))
+        }
+        else {
+            var invoiceUrl = req.file.path;
+            var invoiceNumber = req.body.invoiceNumber;
+            var results = []
+            var products = []
+            var unfoundProducts = []
+            var invoiceTotal = 0
+            const childPython = spawn('python' , ['pdfreader.py' , req.file.path])
+            childPython.stdout.on('data' , (data) => {
+                for(var y = 0; y < data; y++) {
+                    fs.createReadStream(__dirname + `/table_${y}.csv`).pipe(csv()).on('data' , (response) => {
+                        results.push(response)
+                    }).on('end' , async () => {
+                        for(var i = 0; i < results.length; i++) {
+                            if(Object.values(results[i])[Object.keys(results[i]).length - 1] == '') continue;
+                            var productCode = (Object.values(results[i])[Object.keys(results[i]).length - 1]).replace('.0' , '')
+                            await ProductModel.findOne({ proCode: productCode }).then(product => {
+                                if(product) {
+                                    if((Object.values(results[i])[6]) == '') {
+                                        var invoiceProduct = {
+                                            proCode: productCode,
+                                            proName: product.proName,
+                                            proQuantity: Number((Object.values(results[i])[8]).replace(',','')),
+                                            proCost: Number((Object.values(results[i])[7]).replace(',','')),
+                                            proSale: Math.abs(Number((Object.values(results[i])[4]).replace(',',''))),
+                                            proExtraSale: Number((Object.values(results[i])[3]).replace(',','')),
+                                            proTaxRate: Number((Object.values(results[i])[2]).replace(',','')),
+                                            proTaxValue: (Number((Object.values(results[i])[2]).replace(',','')) == 5 ? Math.abs(( ( ( (Number((Object.values(results[i])[7]).replace(',','')) * Number((Object.values(results[i])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 105 )).toFixed(2) : Math.abs((( ( (Number((Object.values(results[i])[7]).replace(',','')) * Number((Object.values(results[i])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 114 )).toFixed(2)),
+                                            proTotalVat: Math.abs((Number((Object.values(results[i])[7]).replace(',','')) * Number((Object.values(results[i])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))))
+                                        }
+                                        invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                                        products.push(invoiceProduct);
+                                    }
+                                    else {
+                                        var invoiceProduct = {
+                                            proCode: productCode,
+                                            proName: product.proName,
+                                            proQuantity: Number((Object.values(results[i])[7]).replace(',','')),
+                                            proCost: Number((Object.values(results[i])[6]).replace(',','')),
+                                            proSale: Math.abs(Number((Object.values(results[i])[4]).replace(',',''))),
+                                            proExtraSale: Number((Object.values(results[i])[3]).replace(',','')),
+                                            proTaxRate: Number((Object.values(results[i])[2]).replace(',','')),
+                                            proTaxValue: (Number((Object.values(results[i])[2]).replace(',','')) == 5 ? Math.abs(( ( ( (Number((Object.values(results[i])[6]).replace(',','')) * Number((Object.values(results[i])[7]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 105 )).toFixed(2) : Math.abs((( ( (Number((Object.values(results[i])[6]).replace(',','')) * Number((Object.values(results[i])[7]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 114 )).toFixed(2)),
+                                            proTotalVat: Math.abs((Number((Object.values(results[i])[6]).replace(',','')) * Number((Object.values(results[i])[7]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))))
+                                        }
+                                        invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                                        products.push(invoiceProduct);
+                                    }
+                                }
+                                else {
+                                    unfoundProducts.push(productCode)
+                                }
+                            }).catch(err => {
+                                return Promise.reject(err);
+                            })
+                        }
+                        if(unfoundProducts.length == 0) {
+                            var storeProducts = await getStoreProducts(products);
+                            var invoice = await SaleInvoiceModel.findOne({ invoiceNumber: invoiceNumber })
+                            if(!invoice) {
+                                await SaleInvoiceModel.create(
+                                    { invoiceUrl , invoiceNumber , products , invoiceTotal }
+                                ).then(saleInvoice => {
+                                    res.status(201).json({ data: saleInvoice })
+                                }).catch(err => {
+                                    res.send(err)
+                                })
+                            }
+                            else {
+                                var newProductsInvoice = invoice.products.push(products);
+                                await SaleInvoiceModel.findOneAndUpdate(
+                                    { invoiceNumber } , { products: newProductsInvoice , $inc:{ invoiceTotal: invoiceTotal } } , { new: true}
+                                ).then(newinvoice => {
+                                    res.status(200).json({ data: newinvoice })
+                                }).catch(err => {
+                                    res.send(err)
+                                })
+                            }
+                        }
+                        else {
+                            next(new ApiError(`Product Not Found With This Code:${unfoundProducts} Insert It First..` , 400))
+                        }
+                    })
+                }
+            })
+            childPython.stderr.on('data' , (data) => {
+                console.error(`stderr: ${data}`)
+            })
+            childPython.on('close' , (code) => {
+                console.log(code)
+            })
+        }
     }),
 
     addInvoice : asyncHandler(async (req , res ) => {
@@ -141,8 +155,7 @@ module.exports = {
 
         const productsInfo = await getProductInfo(products);
 
-        // const storeProducts = await getStoreProducts(productsInfo);
-
+        const storeProducts = await getStoreProducts(productsInfo.productsInfo);
         // if(storeProducts.length != 0) { await StoreModel.create(storeProducts); }
 
         const invoiceProducts = await SaleInvoiceModel.create({ invoiceNumber , products: productsInfo.productsInfo , invoiceTotal: productsInfo.invoiceTotal });

@@ -9,34 +9,6 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const csv = require('csv-parser');
 
-const checkPdfProduct = async (pdfProducts) => {
-    var products = [];
-    for(var i = 0; i < pdfProducts.length; i++) {
-        if(Object.values(pdfProducts[i])[Object.keys(pdfProducts[i]).length - 1] == '') continue;
-        var productCode = (Object.values(pdfProducts[i])[Object.keys(pdfProducts[i]).length - 1]).replace('.0' , '')
-        var product = await ProductModel.findOne({ proCode: productCode })
-        if(!product) { 
-            break;
-            throw new Error('All Inputs Are Required');
-        }
-        else {
-            var productInfo = {
-                proCode: productCode,
-                proName: product.proName,
-                proQuantity: parseInt((Object.values(pdfProduct)[7])),
-                productCost: parseInt((Object.values(pdfProduct)[6])),
-                productSale: Math.abs(parseInt((Object.values(pdfProduct)[4]))),
-                productExtraSale: parseInt((Object.values(pdfProduct)[3])),
-                productTaxRate: parseInt((Object.values(pdfProduct)[2])),
-                proTaxValue: (parseInt((Object.values(pdfProduct)[2])) == 5 ? Math.abs(( ( ( (parseInt((Object.values(pdfProduct)[6])) * parseInt((Object.values(pdfProduct)[7]))) - Math.abs(parseInt((Object.values(pdfProduct)[4]))) ) * parseInt((Object.values(pdfProduct)[2])) ) / 105 )).toFixed(2) : Math.abs((( ( (parseInt((Object.values(pdfProduct)[6])) * parseInt((Object.values(pdfProduct)[7]))) - Math.abs(parseInt((Object.values(pdfProduct)[4]))) ) * parseInt((Object.values(pdfProduct)[2])) ) / 114 )).toFixed(2)),
-                proTotalVat: Math.abs((parseInt((Object.values(pdfProduct)[6])) * parseInt((Object.values(pdfProduct)[7]))) - Math.abs(parseInt((Object.values(pdfProduct)[4])))),
-            }
-            products.push(productInfo)
-        }
-    }
-    return products;
-}
-
 const getProductInfo = async (products) => {
     var invoice = {
         productsInfo : [],
@@ -85,80 +57,103 @@ const getStoreProducts = async (products) => {
 
 module.exports = {
     createBuyInvoice : asyncHandler(async (req , res , next) => {
-        var invoiceUrl = req.file.path,
-            invoiceNumber = req.body.invoiceNumber;
-        var results = []
-        var products = []
-        var unfoundProducts = []
-        var invoiceTotal = 0
-        const childPython = spawn('python' , ['pdfreader.py' , req.file.path])
-        childPython.stdout.on('data' , (data) => {
-            for(var y = 0; y < data; y++) {
-                fs.createReadStream(__dirname +`/table_${y}.csv`).pipe(csv()).on('data' , (response) => {
-                    results.push(response)
-                }).on('end' , async () => {
-                    for(var i = 0; i < results.length; i++) {
-                        if(Object.values(results[i])[Object.keys(results[i]).length - 1] == '') continue;
-                        var productCode = (Object.values(results[i])[Object.keys(results[i]).length - 1]).replace('.0' , '')
-                        await ProductModel.findOne({ proCode: productCode }).then(product => {
-                            if(product) {
-                                var invoiceProduct = {
-                                    proCode: productCode,
-                                    proName: product.proName,
-                                    proQuantity: Number((Object.values(results[y])[8]).replace(',','')),
-                                    productCost: Number((Object.values(results[y])[7]).replace(',','')),
-                                    productSale: Math.abs(Number((Object.values(results[y])[4]).replace(',',''))),
-                                    productExtraSale: Number((Object.values(results[y])[3]).replace(',','')),
-                                    productTaxRate: Number((Object.values(results[y])[2]).replace(',','')),
-                                    proTaxValue: (Number((Object.values(results[y])[2]).replace(',','')) == 5 ? Math.abs(( ( ( (Number((Object.values(results[y])[7]).replace(',','')) * Number((Object.values(results[y])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[y])[4]).replace(',',''))) ) * Number((Object.values(results[y])[2]).replace(',','')) ) / 105 )).toFixed(2) : Math.abs((( ( (Number((Object.values(results[y])[7]).replace(',','')) * Number((Object.values(results[y])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[y])[4]).replace(',',''))) ) * Number((Object.values(results[y])[2]).replace(',','')) ) / 114 )).toFixed(2)),
-                                    proTotalVat: Math.abs((Number((Object.values(results[y])[7]).replace(',','')) * Number((Object.values(results[y])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[y])[4]).replace(',',''))))
+        var oldInvoice = await BuyInvoiceModel.findOne({ invoiceNumber: req.body.invoiceNumber })
+        if(oldInvoice) {
+            next(new ApiError(`رقم الفاتورة مسجل من قبل` , 400))
+        }
+        else {
+            var invoiceUrl = req.file.path;
+            var invoiceNumber = req.body.invoiceNumber;
+            var results = []
+            var products = []
+            var unfoundProducts = []
+            var invoiceTotal = 0
+            const childPython = spawn('python' , ['pdfreader.py' , req.file.path])
+            childPython.stdout.on('data' , (data) => {
+                for(var y = 0; y < data; y++) {
+                    fs.createReadStream(__dirname + `/table_${y}.csv`).pipe(csv()).on('data' , (response) => {
+                        results.push(response)
+                    }).on('end' , async () => {
+                        for(var i = 0; i < results.length; i++) {
+                            if(Object.values(results[i])[Object.keys(results[i]).length - 1] == '') continue;
+                            var productCode = (Object.values(results[i])[Object.keys(results[i]).length - 1]).replace('.0' , '')
+                            await ProductModel.findOne({ proCode: productCode }).then(product => {
+                                if(product) {
+                                    if((Object.values(results[i])[6]) == '') {
+                                        var invoiceProduct = {
+                                            proCode: productCode,
+                                            proName: product.proName,
+                                            proQuantity: Number((Object.values(results[i])[8]).replace(',','')),
+                                            proCost: Number((Object.values(results[i])[7]).replace(',','')),
+                                            proSale: Math.abs(Number((Object.values(results[i])[4]).replace(',',''))),
+                                            proExtraSale: Number((Object.values(results[i])[3]).replace(',','')),
+                                            proTaxRate: Number((Object.values(results[i])[2]).replace(',','')),
+                                            proTaxValue: (Number((Object.values(results[i])[2]).replace(',','')) == 5 ? Math.abs(( ( ( (Number((Object.values(results[i])[7]).replace(',','')) * Number((Object.values(results[i])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 105 )).toFixed(2) : Math.abs((( ( (Number((Object.values(results[i])[7]).replace(',','')) * Number((Object.values(results[i])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 114 )).toFixed(2)),
+                                            proTotalVat: Math.abs((Number((Object.values(results[i])[7]).replace(',','')) * Number((Object.values(results[i])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))))
+                                        }
+                                        invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                                        products.push(invoiceProduct);
+                                    }
+                                    else {
+                                        var invoiceProduct = {
+                                            proCode: productCode,
+                                            proName: product.proName,
+                                            proQuantity: Number((Object.values(results[i])[7]).replace(',','')),
+                                            proCost: Number((Object.values(results[i])[6]).replace(',','')),
+                                            proSale: Math.abs(Number((Object.values(results[i])[4]).replace(',',''))),
+                                            proExtraSale: Number((Object.values(results[i])[3]).replace(',','')),
+                                            proTaxRate: Number((Object.values(results[i])[2]).replace(',','')),
+                                            proTaxValue: (Number((Object.values(results[i])[2]).replace(',','')) == 5 ? Math.abs(( ( ( (Number((Object.values(results[i])[6]).replace(',','')) * Number((Object.values(results[i])[7]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 105 )).toFixed(2) : Math.abs((( ( (Number((Object.values(results[i])[6]).replace(',','')) * Number((Object.values(results[i])[7]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 114 )).toFixed(2)),
+                                            proTotalVat: Math.abs((Number((Object.values(results[i])[6]).replace(',','')) * Number((Object.values(results[i])[7]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))))
+                                        }
+                                        invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                                        products.push(invoiceProduct);
+                                    }
                                 }
-                                invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
-                                products.push(invoiceProduct);
+                                else {
+                                    unfoundProducts.push(productCode)
+                                }
+                            }).catch(err => {
+                                return Promise.reject(err);
+                            })
+                        }
+                        if(unfoundProducts.length == 0) {
+                            var storeProducts = await getStoreProducts(products);
+                            if(storeProducts.length != 0) { await StoreModel.create(storeProducts); }
+                            var invoice = await BuyInvoiceModel.findOne({ invoiceNumber: invoiceNumber })
+                            if(!invoice) {
+                                await BuyInvoiceModel.create(
+                                    { invoiceUrl , invoiceNumber , products , invoiceTotal }
+                                ).then(buyInvoice => {
+                                    res.status(201).json({ data: buyInvoice })
+                                }).catch(err => {
+                                    res.send(err)
+                                })
                             }
                             else {
-                                unfoundProducts.push(productCode)
+                                var newProductsInvoice = invoice.products.push(products);
+                                await BuyInvoiceModel.findOneAndUpdate(
+                                    { invoiceNumber } , { products: newProductsInvoice , $inc:{ invoiceTotal: invoiceTotal } } , { new: true}
+                                ).then(newinvoice => {
+                                    res.status(200).json({ data: newinvoice })
+                                }).catch(err => {
+                                    res.send(err)
+                                })
                             }
-                        }).catch(err => {
-                            return Promise.reject(err);
-                        })
-                    }
-                    if(unfoundProducts.length == 0) {
-                        var storeProducts = await getStoreProducts(products);
-                        if(storeProducts.length != 0) { await StoreModel.create(storeProducts); }
-                        var invoice = await BuyInvoiceModel.findOne({ invoiceNumber: invoiceNumber })
-                        if(!invoice) {
-                            await BuyInvoiceModel.create(
-                                { invoiceUrl , invoiceNumber , products , invoiceTotal }
-                            ).then(buyInvoice => {
-                                res.status(201).json({ data: buyInvoice })
-                            }).catch(err => {
-                                res.send(err)
-                            })
                         }
                         else {
-                            var newProductsInvoice = invoice.products.push(products);
-                            await BuyInvoiceModel.findOneAndUpdate(
-                                { invoiceNumber } , { products: newProductsInvoice , $inc:{ invoiceTotal: invoiceTotal } } , { new: true}
-                            ).then(newinvoice => {
-                                res.status(200).json({ data: newinvoice })
-                            }).catch(err => {
-                                res.send(err)
-                            })
+                            next(new ApiError(`Product Not Found With This Code:${unfoundProducts} Insert It First..` , 400))
                         }
-                    }
-                    else {
-                        next(new ApiError(`Product Not Found With This Code:${unfoundProducts} Insert It First..` , 400))
-                    }
-                })
-            }
-        })
-        childPython.stderr.on('data' , (data) => {
-            console.error(`stderr: ${data}`)
-        })
-        childPython.on('close' , (code) => {
-            console.log(code)
-        })
+                    })
+                }
+            })
+            childPython.stderr.on('data' , (data) => {
+                console.error(`stderr: ${data}`)
+            })
+            childPython.on('close' , (code) => {
+                console.log(code)
+            })
+        }
     }),
 
     addInvoice : asyncHandler(async (req , res ) => {
@@ -167,9 +162,8 @@ module.exports = {
 
         const productsInfo = await getProductInfo(products);
 
-        const storeProducts = await getStoreProducts(productsInfo);
-
-        if(storeProducts.length != 0) { await StoreModel.create(storeProducts); }
+        const storeProducts = await getStoreProducts(productsInfo.productsInfo);
+        if(storeProducts.length != 0) await StoreModel.create(storeProducts);
 
         const invoiceProducts = await BuyInvoiceModel.create({ invoiceNumber , products: productsInfo.productsInfo , invoiceTotal: productsInfo.invoiceTotal });
         res.status(201).json({ data: invoiceProducts });

@@ -4,6 +4,7 @@ const validatorMiddleware = require('../../middlewares/validator-middleware');
 
 const SaleInvoiceModel = require('../../models/sale-model');
 const ProductModel = require('../../models/product-model');
+const StoreModel = require('../../models/store-model');
 
 exports.addInvoiceValidator = [
     check('invoiceNumber').notEmpty().withMessage('Invoice Code Required')
@@ -21,9 +22,14 @@ exports.addInvoiceValidator = [
             if(!products[i].proCode || !products[i].proQuantity || !products[i].proCost || !products[i].proSale || !products[i].proTaxRate) {
                 throw new Error('All Inputs Are Required');
             }
-            await ProductModel.findOne({ proCode: products[i].proCode }).then((product) => {
+            await StoreModel.findOne({ proCode: products[i].proCode }).then((product) => {
                 if(!product) {
-                    return Promise.reject(`Product Not Found With This Code:${products[i].proCode} Insert It First..`);
+                    return Promise.reject(`Product Not Found With This Code:${products[i].proCode} Add It To Store First..`);
+                }
+                else {
+                    if(product.proQuantity < products[i].proQuantity) {
+                        return Promise.reject(`الكمية المطلوبه اكبر من الموجوده بالمخزن`);
+                    }
                 }
             })
         }
