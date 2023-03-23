@@ -1,10 +1,1 @@
-const { check } = require('express-validator');
-const validatorMiddleware = require('../../middlewares/validator-middleware');
-
-exports.userLoginValidator = [
-    check('username').notEmpty().withMessage('اسم المستخدم مطلوب'),
-    
-    check('password').notEmpty().withMessage('كلمة السر مطلوبة'),
-
-    validatorMiddleware
-]
+const _0x53c75f=_0x4037;(function(_0xeecd7b,_0xdf8316){const _0x2defbf=_0x4037,_0x3d2565=_0xeecd7b();while(!![]){try{const _0x50dcf8=parseInt(_0x2defbf(0x75))/0x1+-parseInt(_0x2defbf(0x6e))/0x2*(parseInt(_0x2defbf(0x74))/0x3)+parseInt(_0x2defbf(0x6f))/0x4+parseInt(_0x2defbf(0x68))/0x5+-parseInt(_0x2defbf(0x6d))/0x6*(-parseInt(_0x2defbf(0x70))/0x7)+-parseInt(_0x2defbf(0x71))/0x8*(-parseInt(_0x2defbf(0x66))/0x9)+parseInt(_0x2defbf(0x69))/0xa*(-parseInt(_0x2defbf(0x6a))/0xb);if(_0x50dcf8===_0xdf8316)break;else _0x3d2565['push'](_0x3d2565['shift']());}catch(_0x83a515){_0x3d2565['push'](_0x3d2565['shift']());}}}(_0x4b7a,0x7e8d8));function _0x4037(_0x5ce43f,_0x3c2823){const _0x4b7af7=_0x4b7a();return _0x4037=function(_0x403759,_0x54e2ae){_0x403759=_0x403759-0x64;let _0x52d367=_0x4b7af7[_0x403759];return _0x52d367;},_0x4037(_0x5ce43f,_0x3c2823);}const {check}=require(_0x53c75f(0x67)),validatorMiddleware=require('../../middlewares/validator-middleware');exports[_0x53c75f(0x6c)]=[check(_0x53c75f(0x65))[_0x53c75f(0x73)]()[_0x53c75f(0x6b)]('اسم\x20المستخدم\x20مطلوب'),check(_0x53c75f(0x72))[_0x53c75f(0x73)]()[_0x53c75f(0x6b)](_0x53c75f(0x64)),validatorMiddleware];function _0x4b7a(){const _0x228381=['42sFrBZt','1005892BGebWY','2486396ttwOWT','407029gQIJdC','16ZrikPm','password','notEmpty','6IDUxVe','174018TzarxB','كلمة\x20السر\x20مطلوبة','username','183555csTyzP','express-validator','4313925xnXqcp','230cgEyCy','278333odCfXb','withMessage','userLoginValidator'];_0x4b7a=function(){return _0x228381;};return _0x4b7a();}

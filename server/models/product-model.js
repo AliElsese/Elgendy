@@ -1,18 +1,1 @@
-const mongoose = require('mongoose');
-
-const productSchema = new mongoose.Schema({
-    proCode: {
-        type: String,
-        required: [true , 'proCode Required']
-    },
-    proName: {
-        type: String,
-        required: [true , 'proName Required']
-    },
-    proPackaging: { type: String },
-    consumerPrice: { type: String }
-}, { timestamps: true });
-
-const ProductModel = mongoose.model('Product', productSchema);
-
-module.exports = ProductModel;
+function _0x3730(){const _0x5e3776=['132fBxFIv','1125666lhMMvL','mongoose','1948563CUeVOL','2148ruhqjh','proName\x20Required','model','1833062kEPrps','188656biYuLb','4280vhCDbY','10yGaiXJ','755xoJjTL','21roTceu','230816qtqirN','exports','Product'];_0x3730=function(){return _0x5e3776;};return _0x3730();}const _0x20737a=_0x2387;function _0x2387(_0x460941,_0x2fffcf){const _0x3730ea=_0x3730();return _0x2387=function(_0x2387b5,_0x7a38f2){_0x2387b5=_0x2387b5-0xc7;let _0x4ecd9e=_0x3730ea[_0x2387b5];return _0x4ecd9e;},_0x2387(_0x460941,_0x2fffcf);}(function(_0x4724bc,_0x543890){const _0x202096=_0x2387,_0x4f506=_0x4724bc();while(!![]){try{const _0x4fa30b=parseInt(_0x202096(0xcb))/0x1+parseInt(_0x202096(0xd2))/0x2*(-parseInt(_0x202096(0xce))/0x3)+-parseInt(_0x202096(0xc7))/0x4*(-parseInt(_0x202096(0xc9))/0x5)+-parseInt(_0x202096(0xcf))/0x6+parseInt(_0x202096(0xca))/0x7*(-parseInt(_0x202096(0xd6))/0x8)+parseInt(_0x202096(0xd1))/0x9+parseInt(_0x202096(0xc8))/0xa*(-parseInt(_0x202096(0xd5))/0xb);if(_0x4fa30b===_0x543890)break;else _0x4f506['push'](_0x4f506['shift']());}catch(_0x3fadc0){_0x4f506['push'](_0x4f506['shift']());}}}(_0x3730,0x215be));const mongoose=require(_0x20737a(0xd0)),productSchema=new mongoose['Schema']({'proCode':{'type':String,'required':[!![],'proCode\x20Required']},'proName':{'type':String,'required':[!![],_0x20737a(0xd3)]},'proPackaging':{'type':String},'consumerPrice':{'type':String}},{'timestamps':!![]}),ProductModel=mongoose[_0x20737a(0xd4)](_0x20737a(0xcd),productSchema);module[_0x20737a(0xcc)]=ProductModel;

@@ -1,17 +1,1 @@
-const express = require('express');
-
-const {
-    userLoginValidator
-} = require('../utils/validations/auth-validator')
-
-const {
-    userLogin,
-    checkActivationCode
-} = require('../controllers/auth-controller');
-
-const router = express.Router();
-
-router.post('/userlogin' , userLoginValidator , userLogin);
-router.post('/activationCode' , checkActivationCode)
-
-module.exports = router;
+const _0x1e593c=_0x5d5e;(function(_0x4f528f,_0xdd4edd){const _0x4fde0e=_0x5d5e,_0xf8f202=_0x4f528f();while(!![]){try{const _0x6295f0=-parseInt(_0x4fde0e(0x72))/0x1+parseInt(_0x4fde0e(0x6f))/0x2+-parseInt(_0x4fde0e(0x6b))/0x3*(parseInt(_0x4fde0e(0x73))/0x4)+-parseInt(_0x4fde0e(0x6e))/0x5+-parseInt(_0x4fde0e(0x75))/0x6*(parseInt(_0x4fde0e(0x69))/0x7)+parseInt(_0x4fde0e(0x67))/0x8*(parseInt(_0x4fde0e(0x68))/0x9)+parseInt(_0x4fde0e(0x70))/0xa;if(_0x6295f0===_0xdd4edd)break;else _0xf8f202['push'](_0xf8f202['shift']());}catch(_0x33e8fd){_0xf8f202['push'](_0xf8f202['shift']());}}}(_0x2c4c,0x87937));const express=require(_0x1e593c(0x76)),{userLoginValidator}=require(_0x1e593c(0x6d)),{userLogin,checkActivationCode}=require('../controllers/auth-controller'),router=express[_0x1e593c(0x71)]();function _0x5d5e(_0x1e97c0,_0x17f9fe){const _0x2c4cb5=_0x2c4c();return _0x5d5e=function(_0x5d5e88,_0x1ced57){_0x5d5e88=_0x5d5e88-0x67;let _0x4ff754=_0x2c4cb5[_0x5d5e88];return _0x4ff754;},_0x5d5e(_0x1e97c0,_0x17f9fe);}router[_0x1e593c(0x6c)](_0x1e593c(0x6a),userLoginValidator,userLogin),router[_0x1e593c(0x6c)](_0x1e593c(0x74),checkActivationCode),module['exports']=router;function _0x2c4c(){const _0x590f2d=['/activationCode','1152582EEDQFo','express','82904WcsgCs','657fDKaqO','14CyIjzr','/userlogin','2823pIqvTt','post','../utils/validations/auth-validator','4830535bNMidj','1593260FFGLhx','15905230uuGXfD','Router','250923cGeqzU','4196wRgzXY'];_0x2c4c=function(){return _0x590f2d;};return _0x2c4c();}

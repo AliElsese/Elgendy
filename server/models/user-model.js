@@ -1,18 +1,1 @@
-const mongoose = require('mongoose');
-
-const userSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: [true , 'Username Required']
-    },
-    password: {
-        type: String,
-        required: [true , 'Password Required']
-    },
-    macAddress: { type: String },
-    activationCode: { type: String }
-}, { timestamps: true });
-
-const UserModel = mongoose.model('User', userSchema);
-
-module.exports = UserModel;
+function _0x40a0(_0x95a0a1,_0x53d01c){const _0x5c52fb=_0x5c52();return _0x40a0=function(_0x40a0ce,_0x49ca08){_0x40a0ce=_0x40a0ce-0x1df;let _0xa028ee=_0x5c52fb[_0x40a0ce];return _0xa028ee;},_0x40a0(_0x95a0a1,_0x53d01c);}const _0x50e1f0=_0x40a0;(function(_0x4b060a,_0x177bcb){const _0x1c1703=_0x40a0,_0x26d206=_0x4b060a();while(!![]){try{const _0x1b5cdc=parseInt(_0x1c1703(0x1e1))/0x1*(-parseInt(_0x1c1703(0x1e3))/0x2)+parseInt(_0x1c1703(0x1e9))/0x3+-parseInt(_0x1c1703(0x1e8))/0x4+-parseInt(_0x1c1703(0x1e5))/0x5*(-parseInt(_0x1c1703(0x1ea))/0x6)+-parseInt(_0x1c1703(0x1e6))/0x7+-parseInt(_0x1c1703(0x1ec))/0x8+parseInt(_0x1c1703(0x1eb))/0x9;if(_0x1b5cdc===_0x177bcb)break;else _0x26d206['push'](_0x26d206['shift']());}catch(_0x3e2009){_0x26d206['push'](_0x26d206['shift']());}}}(_0x5c52,0x5af5e));function _0x5c52(){const _0x3c1468=['7625115TFimrO','147856hmawUf','exports','mongoose','model','41AMRNIt','Username\x20Required','25426BDGfci','Schema','50vuTOBN','4704287TXBaXJ','Password\x20Required','1204584VDXoDZ','912933MmmEUm','440358xnZecG'];_0x5c52=function(){return _0x3c1468;};return _0x5c52();}const mongoose=require(_0x50e1f0(0x1df)),userSchema=new mongoose[(_0x50e1f0(0x1e4))]({'username':{'type':String,'required':[!![],_0x50e1f0(0x1e2)]},'password':{'type':String,'required':[!![],_0x50e1f0(0x1e7)]},'macAddress':{'type':String},'activationCode':{'type':String}},{'timestamps':!![]}),UserModel=mongoose[_0x50e1f0(0x1e0)]('User',userSchema);module[_0x50e1f0(0x1ed)]=UserModel;
