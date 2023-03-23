@@ -135,7 +135,7 @@ module.exports = {
                             else {
                                 var newProductsInvoice = invoice.products.push(products);
                                 await SaleInvoiceModel.findOneAndUpdate(
-                                    { invoiceNumber } , { products: newProductsInvoice , $inc:{ invoiceTotal: invoiceTotal } } , { new: true}
+                                    { invoiceNumber } , { products: newProductsInvoice , $inc:{ invoiceTotal: invoiceTotal } } , { new: true }
                                 ).then(newinvoice => {
                                     res.status(200).json({ data: newinvoice })
                                 }).catch(err => {
@@ -144,7 +144,7 @@ module.exports = {
                             }
                         }
                         else {
-                            next(new ApiError(`لا يوجد صنف بهذا الكود: ${products[i].proCode} قم بادخاله اولا` , 400))
+                            next(new ApiError(`لا يوجد صنف بهذا الكود: ${unfoundProducts} قم بادخاله اولا` , 400))
                         }
                     })
                 }
