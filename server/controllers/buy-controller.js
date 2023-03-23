@@ -142,7 +142,7 @@ module.exports = {
                             }
                         }
                         else {
-                            next(new ApiError(`لا يوجد صنف بهذا الكود: ${products[i].proCode} قم بادخاله اولا` , 400))
+                            next(new ApiError(`لا يوجد صنف بهذا الكود: ${unfoundProducts} قم بادخاله اولا` , 400))
                         }
                     })
                 }
