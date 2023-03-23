@@ -142,7 +142,7 @@ module.exports = {
                             }
                         }
                         else {
-                            next(new ApiError(`Product Not Found With This Code:${unfoundProducts} Insert It First..` , 400))
+                            next(new ApiError(`لا يوجد صنف بهذا الكود: ${products[i].proCode} قم بادخاله اولا` , 400))
                         }
                     })
                 }
@@ -187,7 +187,7 @@ module.exports = {
 
         const invoice = await BuyInvoiceModel.findById(id)
         if(!invoice) {
-            next(new ApiError(`No Invoice For This Id ${id}` , 404))
+            next(new ApiError(`لا توجد فاتورة بهذا الرقم ${id}` , 404))
         }
         else {
             res.status(200).json({ data: invoice })
@@ -203,7 +203,7 @@ module.exports = {
             { _id : id } , { invoiceNumber , products } , { new : true }
         )
         if(!invoice) {
-            next(new ApiError(`No Invoice For This Id ${id}` , 404));
+            next(new ApiError(`لا توجد فاتورة بهذا الرقم ${id}` , 404));
         }
         else {
             res.status(200).json({ data: invoice });
@@ -215,7 +215,7 @@ module.exports = {
 
         const invoice = await BuyInvoiceModel.findByIdAndDelete({ _id : id });
         if(!invoice) {
-            next(new ApiError(`No Invoice For This Id ${id}` , 404));
+            next(new ApiError(`لا توجد فاتورة بهذا الرقم ${id}` , 404));
         }
         else {
             res.status(204).send();

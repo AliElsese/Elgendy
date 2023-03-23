@@ -31,7 +31,7 @@ module.exports = {
         macaddress.one(async (err, mac) => {
             const user = await UserModel.findOne({ username: req.body.username });
             if(!user || !(await bcrypt.compare(req.body.password, user.password))) {
-                next(new ApiError('Username Or Password Is Incorrect' , 401));
+                next(new ApiError('المستخدم او كلمة السر خطأ' , 401));
             }
             else {
                 if(!user.macAddress || user.macAddress == '') {
@@ -135,7 +135,7 @@ module.exports = {
             token = req.headers.authorization.split(" ")[1];
         }
         if (!token) {
-            return next(new ApiError('Please login to access this route'), 401);
+            return next(new ApiError('من فضلك قم بتسجيل الدخول اولا', 401));
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
@@ -152,7 +152,7 @@ module.exports = {
         macaddress.one(async (err,mac) => {
             const user = await UserModel.findById({ _id: req.body.userId })
             if(!user || user.activationCode != req.body.activationCode) {
-                next(new ApiError('Activation Code Is Incorrect' , 401));
+                next(new ApiError('كود التفعيل خطأ' , 401));
             }
             else {
                 const userData = await UserModel.findByIdAndUpdate(

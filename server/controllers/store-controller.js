@@ -39,7 +39,7 @@ module.exports = {
 
         const product = await StoreModel.findByIdAndUpdate({ _id: req.params.id } , { proQuantity , proCost , proSale , proExtraSale , proTaxRate , proTaxValue , proTotalVat } , { new: true });
         if(!product) {
-            next(new ApiError(`No Product For This Id ${id}` , 404));
+            next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404));
         }
         else {
             res.status(200).json({ data: product });
@@ -64,7 +64,7 @@ module.exports = {
 
         const product = await StoreModel.findById(id)
         if(!product) {
-            next(new ApiError(`No Product For This Id ${id}` , 404))
+            next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404))
         }
         else {
             res.status(200).json({ data: product })
@@ -76,7 +76,7 @@ module.exports = {
 
         const product = await StoreModel.findByIdAndDelete({ _id : id });
         if(!product) {
-            next(new ApiError(`No Product For This Id ${id}` , 404));
+            next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404));
         }
         else {
             res.status(204).send();

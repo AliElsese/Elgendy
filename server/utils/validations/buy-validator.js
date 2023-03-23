@@ -6,11 +6,11 @@ const BuyInvoiceModel = require('../../models/buy-model');
 const ProductModel = require('../../models/product-model');
 
 exports.saveBuyInvoice = [
-    check('invoiceNumber').notEmpty().withMessage('Invoice Code Required')
+    check('invoiceNumber').notEmpty().withMessage('رقم الفاتورة مطلوب')
     .custom(async (val) => {
         await BuyInvoiceModel.findOne({ invoiceNumber: val }).then((invoice) => {
             if(invoice) {                
-                return Promise.reject('Invoice Code Already Exists');
+                return Promise.reject('رقم الفاتورة موجود بالفعل');
             }
         })
     }),
@@ -19,24 +19,24 @@ exports.saveBuyInvoice = [
 ]
 
 exports.addInvoiceValidator = [
-    check('invoiceNumber').notEmpty().withMessage('Invoice Code Required')
+    check('invoiceNumber').notEmpty().withMessage('رقم الفاتورة مطلوب')
     .custom(async (val) => {
         await BuyInvoiceModel.findOne({ invoiceNumber: val }).then((invoice) => {
             if(invoice) {                
-                return Promise.reject('Invoice Code Already Exists');
+                return Promise.reject('رقم الفاتورة موجود بالفعل');
             }
         })
     }),
 
-    check('products').notEmpty().withMessage('Products Required')
+    check('products').notEmpty().withMessage('الاصناف مطلوبة')
     .custom(async (products) => {
         for(var i = 0; i < products.length; i++) {
             if(!products[i].proCode || !products[i].proQuantity || !products[i].proCost || !products[i].proSale || !products[i].proTaxRate) {
-                throw new Error('All Inputs Are Required');
+                throw new Error('جميع المدخلات مطلوبة');
             }
             await ProductModel.findOne({ proCode: products[i].proCode }).then((product) => {
                 if(!product) {
-                    return Promise.reject(`Product Not Found With This Code:${products[i].proCode} Insert It First..`);
+                    return Promise.reject(`لا يوجد صنف بهذا الكود: ${products[i].proCode} قم بادخاله اولا`);
                 }
             })
         }
@@ -53,17 +53,17 @@ exports.getInvoiceValidator = [
 exports.updateInvoiceValidator = [
     check('id').isMongoId().withMessage('Invalid Invoice Id Format'),
 
-    check('invoiceNumber').notEmpty().withMessage('Invoice Code Required'),
+    check('invoiceNumber').notEmpty().withMessage('رقم الفاتورة مطلوب'),
 
-    check('products').notEmpty().withMessage('Products Required')
+    check('products').notEmpty().withMessage('الاصناف مطلوبة')
     .custom(async (products) => {
         for(var i = 0; i < products.length; i++) {
             if(!products[i].proQuantity || !products[i].proCost || !products[i].proSale || !products[i].proTaxRate || !products[i].proTaxValue  || !products[i].proTotalVat) {
-                throw new Error('All Inputs Are Required');
+                throw new Error('جميع المخلات مطلوبة');
             }
             await ProductModel.findOne({ proCode: products[i].proCode }).then((product) => {
                 if(!product) {
-                    return Promise.reject(`Product Not Found With This Code:${products[i].proCode} Insert It First..`);
+                    return Promise.reject(`لا يوجد صنف بهذا الكود: ${products[i].proCode} قم بادخاله اولا`);
                 }
             })
         }

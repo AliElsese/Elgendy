@@ -31,7 +31,7 @@ module.exports = {
 
         const product = await ProductModel.findById(id)
         if(!product) {
-            next(new ApiError(`No Product For This Id ${id}` , 404))
+            next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404))
         }
         else {
             res.status(200).json({ data : product })
@@ -48,7 +48,7 @@ module.exports = {
             { _id : id } , { proName , proPackaging , consumerPrice } , { new : true }
         )
         if(!product) {
-            next(new ApiError(`No Product For This Id ${id}` , 404));
+            next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404));
         }
         else {
             res.status(200).json({ data : product });
@@ -60,7 +60,7 @@ module.exports = {
 
         const product = await ProductModel.findByIdAndDelete({ _id : id });
         if(!product) {
-            next(new ApiError(`No Product For This Id ${id}` , 404));
+            next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404));
         }
         else {
             res.status(204).send();
