@@ -72,7 +72,7 @@ module.exports = {
     getReport : asyncHandler( async (req , res , next) => {
         const workBook = new excelJS.Workbook();
         const workSheet = workBook.addWorksheet('بيان الاصناف');
-        const path = './uploads';
+        const path = '../../الاصناف';
 
         workSheet.columns = [
             { header: 'كود الصنف' , key: 'proCode' , width: 12 },
@@ -95,7 +95,7 @@ module.exports = {
             .then(() => {
                 res.send({
                 status: "success",
-                message: "file successfully downloaded",
+                message: "تم تجهيز البيان بنجاح",
                 path: `${path}/products.xlsx`,
                 });
             });
@@ -103,7 +103,7 @@ module.exports = {
         catch (err) {
             res.send({
                 status: "error",
-                message: err,
+                message: "Something went wrong",
             });
         }
     })
