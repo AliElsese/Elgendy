@@ -1,1 +1,110 @@
-const _0x566c92=_0x4e16;function _0x4e16(_0x4f5585,_0x29b2c1){const _0x870115=_0x8701();return _0x4e16=function(_0x4e160f,_0x41f696){_0x4e160f=_0x4e160f-0x1a9;let _0x498b96=_0x870115[_0x4e160f];return _0x498b96;},_0x4e16(_0x4f5585,_0x29b2c1);}(function(_0x21e637,_0x4162fa){const _0x2f6a34=_0x4e16,_0x11fe56=_0x21e637();while(!![]){try{const _0x42802d=parseInt(_0x2f6a34(0x1c2))/0x1+parseInt(_0x2f6a34(0x1ab))/0x2+-parseInt(_0x2f6a34(0x1bf))/0x3*(parseInt(_0x2f6a34(0x1b2))/0x4)+-parseInt(_0x2f6a34(0x1c6))/0x5+-parseInt(_0x2f6a34(0x1bc))/0x6*(-parseInt(_0x2f6a34(0x1b6))/0x7)+-parseInt(_0x2f6a34(0x1c3))/0x8+parseInt(_0x2f6a34(0x1aa))/0x9*(parseInt(_0x2f6a34(0x1c4))/0xa);if(_0x42802d===_0x4162fa)break;else _0x11fe56['push'](_0x11fe56['shift']());}catch(_0xbebb00){_0x11fe56['push'](_0x11fe56['shift']());}}}(_0x8701,0x1d170));const asyncHandler=require(_0x566c92(0x1a9)),ApiError=require(_0x566c92(0x1c1)),ProductModel=require('../models/product-model');function _0x8701(){const _0x49b060=['express-async-handler','3649365tXHjVf','186392Lqdlyt','page','proCode','findById','query','status','consumerPrice','96vNYhgL','findByIdAndUpdate','exports','params','187656fNohZH','limit','proPackaging','body','findByIdAndDelete','proName','12ZgAbDs','لا\x20يوجد\x20صنف\x20بهذا\x20الرقم\x20','send','18807gfyccQ','json','../utils/apiError','124237GTrDMd','1694464swLBeC','10ERfcLg','slice','975590bisDrp'];_0x8701=function(){return _0x49b060;};return _0x8701();}module[_0x566c92(0x1b4)]={'addProduct':asyncHandler(async(_0x4b7af2,_0x288a04)=>{const _0x3ada94=_0x566c92,_0x3aceb9=_0x4b7af2[_0x3ada94(0x1b9)][_0x3ada94(0x1ad)],_0x4ee0f4=_0x4b7af2[_0x3ada94(0x1b9)][_0x3ada94(0x1bb)],_0x3c9c33=_0x4b7af2['body'][_0x3ada94(0x1b8)],_0x175b88=_0x4b7af2[_0x3ada94(0x1b9)][_0x3ada94(0x1b1)],_0x20b06f=await ProductModel['create']({'proCode':_0x3aceb9,'proName':_0x4ee0f4,'proPackaging':_0x3c9c33,'consumerPrice':_0x175b88});_0x288a04[_0x3ada94(0x1b0)](0xc9)[_0x3ada94(0x1c0)]({'data':_0x20b06f});}),'getProducts':asyncHandler(async(_0x1e9bbd,_0x4ba120)=>{const _0x4d4f1e=_0x566c92,_0x18b87f=_0x1e9bbd[_0x4d4f1e(0x1af)][_0x4d4f1e(0x1ac)]*0x1||0x1,_0x193a0c=_0x1e9bbd['query'][_0x4d4f1e(0x1b7)]*0x1||0x14,_0x455694=(_0x18b87f-0x1)*_0x193a0c,_0x10a602=await ProductModel['find']({});_0x4ba120[_0x4d4f1e(0x1b0)](0xc8)[_0x4d4f1e(0x1c0)]({'results':_0x10a602['length'],'page':_0x18b87f,'data':_0x10a602[_0x4d4f1e(0x1c5)](_0x455694,_0x193a0c*_0x18b87f)});}),'getProduct':asyncHandler(async(_0x38db49,_0x2cd9ae,_0x47f12b)=>{const _0x4d8fe9=_0x566c92,{id:_0x26d50e}=_0x38db49[_0x4d8fe9(0x1b5)],_0x34a5ef=await ProductModel[_0x4d8fe9(0x1ae)](_0x26d50e);!_0x34a5ef?_0x47f12b(new ApiError(_0x4d8fe9(0x1bd)+_0x26d50e,0x194)):_0x2cd9ae[_0x4d8fe9(0x1b0)](0xc8)[_0x4d8fe9(0x1c0)]({'data':_0x34a5ef});}),'updateProduct':asyncHandler(async(_0x1b25ee,_0x4332e7,_0x4c6d4b)=>{const _0x127615=_0x566c92,{id:_0x9e1bac}=_0x1b25ee[_0x127615(0x1b5)],_0x4120e7=_0x1b25ee[_0x127615(0x1b9)][_0x127615(0x1bb)],_0x22c1e3=_0x1b25ee[_0x127615(0x1b9)][_0x127615(0x1b8)],_0x462b0a=_0x1b25ee[_0x127615(0x1b9)][_0x127615(0x1b1)],_0x411907=await ProductModel[_0x127615(0x1b3)]({'_id':_0x9e1bac},{'proName':_0x4120e7,'proPackaging':_0x22c1e3,'consumerPrice':_0x462b0a},{'new':!![]});!_0x411907?_0x4c6d4b(new ApiError(_0x127615(0x1bd)+_0x9e1bac,0x194)):_0x4332e7['status'](0xc8)[_0x127615(0x1c0)]({'data':_0x411907});}),'deleteProduct':asyncHandler(async(_0x12ca72,_0x4a3ffb,_0x352e77)=>{const _0x42cbf4=_0x566c92,{id:_0x7bbe5e}=_0x12ca72['params'],_0x565d46=await ProductModel[_0x42cbf4(0x1ba)]({'_id':_0x7bbe5e});!_0x565d46?_0x352e77(new ApiError(_0x42cbf4(0x1bd)+_0x7bbe5e,0x194)):_0x4a3ffb[_0x42cbf4(0x1b0)](0xcc)[_0x42cbf4(0x1be)]();})};
+const asyncHandler = require('express-async-handler');
+const ApiError = require('../utils/apiError');
+const ProductModel = require('../models/product-model');
+
+const excelJS = require('exceljs');
+
+module.exports = {
+    addProduct : asyncHandler(async (req , res) => {
+        const proCode = req.body.proCode;
+        const proName = req.body.proName;
+        const proPackaging = req.body.proPackaging;
+        const consumerPrice = req.body.consumerPrice;
+
+        const product = await ProductModel.create({ proCode , proName , proPackaging , consumerPrice });
+        res.status(201).json({ data: product });
+    }),
+
+    getProducts : asyncHandler(async (req , res) => {
+        const page = req.query.page * 1 || 1
+        const limit = req.query.limit * 1 || 20
+        const skip = (page - 1) * limit
+
+        const products = await ProductModel.find({})
+        res.status(200).json({
+            results : products.length,
+            page : page,
+            data : products.slice(skip,limit*page)
+        })
+    }),
+
+    getProduct : asyncHandler( async (req,res,next) => {
+        const { id } = req.params
+
+        const product = await ProductModel.findById(id)
+        if(!product) {
+            next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404))
+        }
+        else {
+            res.status(200).json({ data : product })
+        }
+    }),
+
+    updateProduct : asyncHandler( async (req,res,next) => {
+        const { id } = req.params;
+        const proName = req.body.proName;
+        const proPackaging = req.body.proPackaging;
+        const consumerPrice = req.body.consumerPrice;
+
+        const product = await ProductModel.findByIdAndUpdate(
+            { _id : id } , { proName , proPackaging , consumerPrice } , { new : true }
+        )
+        if(!product) {
+            next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404));
+        }
+        else {
+            res.status(200).json({ data : product });
+        }
+    }),
+
+    deleteProduct : asyncHandler( async (req,res,next) => {
+        const { id } = req.params;
+
+        const product = await ProductModel.findByIdAndDelete({ _id : id });
+        if(!product) {
+            next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404));
+        }
+        else {
+            res.status(204).send();
+        }
+    }),
+
+    getReport : asyncHandler( async (req , res , next) => {
+        const workBook = new excelJS.Workbook();
+        const workSheet = workBook.addWorksheet('بيان الاصناف');
+        const path = './uploads';
+
+        workSheet.columns = [
+            { header: 'كود الصنف' , key: 'proCode' , width: 12 },
+            { header: 'اسم الصنف' , key: 'proName' , width: 50 },
+            { header: 'العبوة' , key: 'proPackaging' , width: 10 },
+            { header: 'سعر المستهلك' , key: 'consumerPrice' , width: 30 }
+        ]
+
+        var products = await ProductModel.find({})
+        products.forEach(product => {
+            workSheet.addRow(product);
+        });
+
+        workSheet.getRow(1).eachCell(cell => {
+            cell.font = { bold: true };
+        });
+
+        try {
+            const data = await workBook.xlsx.writeFile( __dirname + `/products.xlsx`)
+            .then(() => {
+                res.send({
+                status: "success",
+                message: "file successfully downloaded",
+                path: `${path}/products.xlsx`,
+                });
+            });
+        }
+        catch (err) {
+            res.send({
+                status: "error",
+                message: err,
+            });
+        }
+    })
+}

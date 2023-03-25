@@ -1,1 +1,30 @@
-const _0x22f5b3=_0x4518;(function(_0x55a8d6,_0x4e8cbc){const _0x50a36b=_0x4518,_0x4a112b=_0x55a8d6();while(!![]){try{const _0x3ec962=-parseInt(_0x50a36b(0x7e))/0x1*(-parseInt(_0x50a36b(0x7c))/0x2)+parseInt(_0x50a36b(0x76))/0x3*(-parseInt(_0x50a36b(0x78))/0x4)+-parseInt(_0x50a36b(0x7d))/0x5*(parseInt(_0x50a36b(0x81))/0x6)+parseInt(_0x50a36b(0x83))/0x7*(parseInt(_0x50a36b(0x7a))/0x8)+parseInt(_0x50a36b(0x89))/0x9*(-parseInt(_0x50a36b(0x8c))/0xa)+-parseInt(_0x50a36b(0x7f))/0xb*(-parseInt(_0x50a36b(0x8a))/0xc)+-parseInt(_0x50a36b(0x84))/0xd*(-parseInt(_0x50a36b(0x82))/0xe);if(_0x3ec962===_0x4e8cbc)break;else _0x4a112b['push'](_0x4a112b['shift']());}catch(_0x102c29){_0x4a112b['push'](_0x4a112b['shift']());}}}(_0x5c60,0xd533b));function _0x4518(_0x5e13d4,_0x520159){const _0x5c6067=_0x5c60();return _0x4518=function(_0x45183f,_0x11e989){_0x45183f=_0x45183f-0x75;let _0x5bc510=_0x5c6067[_0x45183f];return _0x5bc510;},_0x4518(_0x5e13d4,_0x520159);}const express=require('express'),{checkToken}=require(_0x22f5b3(0x75)),{addProductValidator,getProductValidator,updateProductValidator,deleteProductValidator}=require('../utils/validations/product-validator'),{addProduct,getProducts,getProduct,updateProduct,deleteProduct}=require('../controllers/product-controller'),router=express[_0x22f5b3(0x86)]();function _0x5c60(){const _0x8e5305=['1544870IgRPzF','133hbsEqa','220mextFU','delete','18AuSAka','238UnbHQi','272594cyMMFp','290927SbPPnK','get','Router','put','/deleteProduct/:id','4185APcdtz','599580nyLbxK','/getProducts','27890qUgHJB','../controllers/auth-controller','2442sdalVs','/addProduct','684FTdrWK','/updateProduct/:id','280ZqEPXc','/getProduct/:id','7422rzeiMl'];_0x5c60=function(){return _0x8e5305;};return _0x5c60();}router['post'](_0x22f5b3(0x77),checkToken,addProductValidator,addProduct),router['get'](_0x22f5b3(0x8b),checkToken,getProducts),router[_0x22f5b3(0x85)](_0x22f5b3(0x7b),checkToken,getProductValidator,getProduct),router[_0x22f5b3(0x87)](_0x22f5b3(0x79),checkToken,updateProductValidator,updateProduct),router[_0x22f5b3(0x80)](_0x22f5b3(0x88),checkToken,deleteProductValidator,deleteProduct),module['exports']=router;
+const express = require('express')
+
+const { checkToken } = require('../controllers/auth-controller');
+
+const {
+    addProductValidator,
+    getProductValidator,
+    updateProductValidator,
+    deleteProductValidator
+} = require('../utils/validations/product-validator');
+
+const {
+    addProduct,
+    getProducts,
+    getProduct,
+    updateProduct,
+    deleteProduct,
+    getReport
+} = require('../controllers/product-controller');
+
+const router = express.Router();
+
+router.post('/addProduct' , checkToken , addProductValidator , addProduct)
+router.get('/getProducts' , checkToken , getProducts)
+router.get('/getProduct/:id' , checkToken , getProductValidator , getProduct)
+router.put('/updateProduct/:id' , checkToken , updateProductValidator , updateProduct)
+router.delete('/deleteProduct/:id' , checkToken , deleteProductValidator , deleteProduct)
+router.post('/getProductsReport' , checkToken , getReport)
+
+module.exports = router;
