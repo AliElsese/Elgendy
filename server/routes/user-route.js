@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { checkToken } = require('../controllers/user-controller')
+const { checkToken } = require('../controllers/auth-controller')
 
 // User Validators
 const {
@@ -8,7 +8,7 @@ const {
     createUserValidator,
     updateUserValidator,
     deleteUserValidator
-} = require('../utils/validators/admin-validator');
+} = require('../utils/validations/user-validator');
 
 // User Services
 const {
@@ -17,7 +17,7 @@ const {
     createUser,
     updateUser,
     deleteUser,
-} = require('../controllers/admin-controller');
+} = require('../controllers/user-controller');
 
 const router = express.Router();
 

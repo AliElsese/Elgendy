@@ -27,7 +27,7 @@ app.use(cors());
 app.use('/server/uploads', express.static("server/uploads"))
 
 app.use('/auth' , authRoute);
-app.use('/users' , userRoute)
+app.use('/users' , userRoute);
 app.use('/buyInvoice' , buyRoute);
 app.use('/products' , productRoute);
 app.use('/store' , storeRoute);
