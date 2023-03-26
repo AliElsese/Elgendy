@@ -1,1 +1,43 @@
-const _0x459bd5=_0x51f0;(function(_0x31b023,_0x45893c){const _0x471eb6=_0x51f0,_0x4f39a6=_0x31b023();while(!![]){try{const _0x395d00=parseInt(_0x471eb6(0xa7))/0x1+-parseInt(_0x471eb6(0xa8))/0x2*(-parseInt(_0x471eb6(0x8d))/0x3)+parseInt(_0x471eb6(0xa0))/0x4+-parseInt(_0x471eb6(0xa3))/0x5*(-parseInt(_0x471eb6(0x96))/0x6)+-parseInt(_0x471eb6(0x92))/0x7+parseInt(_0x471eb6(0x8b))/0x8+-parseInt(_0x471eb6(0xa9))/0x9;if(_0x395d00===_0x45893c)break;else _0x4f39a6['push'](_0x4f39a6['shift']());}catch(_0x1cdd12){_0x4f39a6['push'](_0x4f39a6['shift']());}}}(_0x395f,0xe10d3));const express=require('express'),dotenv=require('dotenv'),cors=require(_0x459bd5(0x9c));dotenv[_0x459bd5(0x8c)]({'path':'./config.env'});const dbConnection=require(_0x459bd5(0x9a)),ApiError=require(_0x459bd5(0x8f)),errorMiddleware=require(_0x459bd5(0x97)),headersMiddleware=require(_0x459bd5(0x94)),authRoute=require(_0x459bd5(0xa6)),buyRoute=require(_0x459bd5(0x99)),productRoute=require(_0x459bd5(0xa2)),storeRoute=require(_0x459bd5(0xa4)),saleRoute=require(_0x459bd5(0x98));dbConnection();function _0x51f0(_0x2cda43,_0x4aeb10){const _0x395f87=_0x395f();return _0x51f0=function(_0x51f010,_0x5dca98){_0x51f010=_0x51f010-0x86;let _0x5a1381=_0x395f87[_0x51f010];return _0x5a1381;},_0x51f0(_0x2cda43,_0x4aeb10);}const app=express();app[_0x459bd5(0x93)](express[_0x459bd5(0x8a)]()),app[_0x459bd5(0x93)](headersMiddleware[_0x459bd5(0x9b)]),app[_0x459bd5(0x93)](cors()),app['use'](_0x459bd5(0x89),express[_0x459bd5(0x95)]('server/uploads')),app[_0x459bd5(0x93)]('/auth',authRoute),app['use'](_0x459bd5(0x90),buyRoute),app['use'](_0x459bd5(0x88),productRoute),app[_0x459bd5(0x93)](_0x459bd5(0x87),storeRoute),app[_0x459bd5(0x93)](_0x459bd5(0x9e),saleRoute),app[_0x459bd5(0xa5)]('*',(_0x3c6320,_0x66216a,_0x1fac1a)=>{const _0x2a36a6=_0x459bd5;_0x1fac1a(new ApiError(_0x2a36a6(0x91)+_0x3c6320[_0x2a36a6(0x9f)],0x190));}),app[_0x459bd5(0x93)](errorMiddleware);const PORT=process[_0x459bd5(0x9d)][_0x459bd5(0x8e)]||0x1fa5;app['listen'](PORT,function(){const _0x1117a5=_0x459bd5;console[_0x1117a5(0xa1)](_0x1117a5(0x86)+PORT);});function _0x395f(){const _0x35a236=['./server/middlewares/error-middleware','./server/routes/sale-route','./server/routes/buy-route','./server/database/connection','setHeaders','cors','env','/saleInvoice','originalUrl','286756zTrgEx','log','./server/routes/product-route','2645OooXNO','./server/routes/store-route','all','./server/routes/auth-route','943682NYhXSf','1111720KjptmR','16975260WyVnoV','Server\x20Running\x20on\x20http://localhost:','/store','/products','/server/uploads','json','9304792yeMVnp','config','3ekgYxb','PORT','./server/utils/apiError','/buyInvoice','Can\x27t\x20Find\x20This\x20Route:\x20','8338526hnAvWX','use','./server/middlewares/headers-middleware','static','14346QcpzZS'];_0x395f=function(){return _0x35a236;};return _0x395f();}
+const express = require('express');
+const dotenv = require('dotenv');
+const cors = require('cors');
+
+dotenv.config({path: './config.env'});
+const dbConnection = require('./server/database/connection');
+
+const ApiError = require('./server/utils/apiError');
+const errorMiddleware = require('./server/middlewares/error-middleware');
+const headersMiddleware = require('./server/middlewares/headers-middleware');
+
+const authRoute = require('./server/routes/auth-route');
+const userRoute = require('./server/routes/user-route');
+const buyRoute = require('./server/routes/buy-route');
+const productRoute = require('./server/routes/product-route');
+const storeRoute = require('./server/routes/store-route');
+const saleRoute = require('./server/routes/sale-route');
+
+dbConnection();
+
+const app = express();
+
+app.use(express.json());
+app.use(headersMiddleware.setHeaders);
+app.use(cors());
+
+app.use('/server/uploads', express.static("server/uploads"))
+
+app.use('/auth' , authRoute);
+app.use('/users' , userRoute)
+app.use('/buyInvoice' , buyRoute);
+app.use('/products' , productRoute);
+app.use('/store' , storeRoute);
+app.use('/saleInvoice' , saleRoute);
+app.all('*' , (req , res , next) => {
+    next(new ApiError(`Can't Find This Route: ${req.originalUrl}` , 400));
+});
+app.use(errorMiddleware);
+
+const PORT = process.env.PORT || 8101;
+app.listen(PORT, function() {
+    console.log(`Server Running on http://localhost:${PORT}`);
+});
