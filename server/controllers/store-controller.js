@@ -40,16 +40,19 @@ module.exports = {
     }),
 
     getStoreProducts : asyncHandler(async (req , res , next) => {
-        const page = req.query.page * 1 || 1
-        const limit = req.query.limit * 1 || 20
-        const skip = (page - 1) * limit
+        const storeProducts = await StoreModel.find({});
+        res.status(200).json({ data : storeProducts });
+        
+        // const page = req.query.page * 1 || 1
+        // const limit = req.query.limit * 1 || 20
+        // const skip = (page - 1) * limit
 
-        const storeProducts = await StoreModel.find({})
-        res.status(200).json({
-            results : storeProducts.length,
-            page : page,
-            data : storeProducts.slice(skip,limit*page)
-        })
+        // const storeProducts = await StoreModel.find({});
+        // res.status(200).json({
+        //     results : storeProducts.length,
+        //     page : page,
+        //     data : storeProducts.slice(skip,limit*page)
+        // })
     }),
 
     getStoreProduct : asyncHandler(async (req , res , next) => {

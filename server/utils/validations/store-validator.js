@@ -8,8 +8,8 @@ exports.addStoreProductValidator = [
     check('proCode').notEmpty().withMessage('كود الصنف مطلوب')
     .custom(async (val) => {
         await StoreModel.findOne({ proCode: val }).then((product) => {
-            if(product) {                
-                return Promise.reject('كود الصنف موجود بالفعل');
+            if(!product) {                
+                return Promise.reject('كود الصنف غير موجود قم بادخاله اولا');
             }
         })
     }),

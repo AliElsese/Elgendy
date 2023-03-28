@@ -1,1 +1,375 @@
-function _0x15ed(){const _0x4eb14e=['proCost','findByIdAndDelete','columns','end','slice','replace','addWorksheet','python','../models/store-model','query','2538555ocLyhZ','abs','اسم\x20العميل','تم\x20تجهيز\x20التقرير\x20بنجاح','proName','proQuantity','writeFile','success','proTaxValue','proSale','reject','status','path','الاجمالي','addRow','240rgOnDX','لا\x20توجد\x20فاتورة\x20بهذا\x20الرقم\x20','../utils/apiError','9klSSej','findById','limit','stderr:\x20','registrationNumber','Workbook','الخصم','لا\x20يوجد\x20صنف\x20بهذا\x20الكود:\x20','create','Something\x20went\x20wrong','/invoice.xlsx','true','getRow','font','4tKeEoU','stdout','send','params','invoiceId','values','الضريبة','xlsx','pipe','forEach','catch','customerName','invoiceTotal','الكمية','then','push','invoiceNumber','stderr','error','../models/sale-model','478722XMqVdT','keys','resolve','42OivaCh','eachCell','رقم\x20الفاتورة','proTaxRate','length','253439OKBQKD','رقم\x20الصنف','رقم\x20التسجيل','file','includes','proExtraSale','findOneAndUpdate','4290944DTbIwq','find','close','products','json','findByIdAndUpdate','data','page','exports','683764QTeZqD','proTotalVat','سجل\x20المبيعات','toFixed','السعر','5083560PgSxEh','express-async-handler','productsInfo','findOne','proCode','exceljs','body','false','اسم\x20الصنف','275583LnFOla'];_0x15ed=function(){return _0x4eb14e;};return _0x15ed();}const _0x2e420b=_0x31e3;(function(_0x31fe68,_0x266d6f){const _0x1c94d2=_0x31e3,_0xf5ac72=_0x31fe68();while(!![]){try{const _0x27b1b8=parseInt(_0x1c94d2(0x20d))/0x1*(parseInt(_0x1c94d2(0x1f1))/0x2)+-parseInt(_0x1c94d2(0x1e3))/0x3*(-parseInt(_0x1c94d2(0x21d))/0x4)+parseInt(_0x1c94d2(0x1d1))/0x5+-parseInt(_0x1c94d2(0x205))/0x6*(-parseInt(_0x1c94d2(0x208))/0x7)+-parseInt(_0x1c94d2(0x214))/0x8+-parseInt(_0x1c94d2(0x222))/0x9+parseInt(_0x1c94d2(0x1e0))/0xa*(-parseInt(_0x1c94d2(0x1c6))/0xb);if(_0x27b1b8===_0x266d6f)break;else _0xf5ac72['push'](_0xf5ac72['shift']());}catch(_0xea0d76){_0xf5ac72['push'](_0xf5ac72['shift']());}}}(_0x15ed,0x4a226));const asyncHandler=require(_0x2e420b(0x223)),ApiError=require(_0x2e420b(0x1e2)),SaleInvoiceModel=require(_0x2e420b(0x204)),ProductModel=require('../models/product-model'),StoreModel=require(_0x2e420b(0x1cf)),{spawn}=require('child_process'),fs=require('fs'),csv=require('csv-parser'),path=require(_0x2e420b(0x1dd)),excelJS=require(_0x2e420b(0x1c2)),getProductInfo=async _0x4f5697=>{const _0x59b59f=_0x2e420b;var _0x2a5547={'productsInfo':[],'invoiceTotal':0x0};for(var _0x8c846b=0x0;_0x8c846b<_0x4f5697[_0x59b59f(0x20c)];_0x8c846b++){var _0x18e08f=await ProductModel[_0x59b59f(0x225)]({'proCode':_0x4f5697[_0x8c846b][_0x59b59f(0x1c1)]}),_0x1cb90d={'proCode':_0x18e08f['proCode'],'proName':_0x18e08f[_0x59b59f(0x1d5)],'proQuantity':_0x4f5697[_0x8c846b][_0x59b59f(0x1d6)],'proCost':_0x4f5697[_0x8c846b]['proCost'],'proSale':_0x4f5697[_0x8c846b][_0x59b59f(0x1da)],'proExtraSale':_0x4f5697[_0x8c846b][_0x59b59f(0x212)],'proTaxRate':_0x4f5697[_0x8c846b]['proTaxRate'],'proTaxValue':_0x4f5697[_0x8c846b][_0x59b59f(0x20b)]=='5'?Math[_0x59b59f(0x1d2)]((_0x4f5697[_0x8c846b][_0x59b59f(0x1c7)]*_0x4f5697[_0x8c846b][_0x59b59f(0x1d6)]-_0x4f5697[_0x8c846b][_0x59b59f(0x1da)])*_0x4f5697[_0x8c846b][_0x59b59f(0x20b)]/0x69)['toFixed'](0x2):Math['abs']((_0x4f5697[_0x8c846b]['proCost']*_0x4f5697[_0x8c846b]['proQuantity']-_0x4f5697[_0x8c846b][_0x59b59f(0x1da)])*_0x4f5697[_0x8c846b][_0x59b59f(0x20b)]/0x72)[_0x59b59f(0x220)](0x2),'proTotalVat':Math[_0x59b59f(0x1d2)](_0x4f5697[_0x8c846b]['proCost']*_0x4f5697[_0x8c846b][_0x59b59f(0x1d6)]-_0x4f5697[_0x8c846b][_0x59b59f(0x1da)])};_0x2a5547[_0x59b59f(0x1fd)]=_0x2a5547[_0x59b59f(0x1fd)]+_0x1cb90d[_0x59b59f(0x21e)],_0x2a5547[_0x59b59f(0x224)]['push'](_0x1cb90d);}return _0x2a5547;},getStoreProducts=async _0x4f3638=>{const _0x327e1c=_0x2e420b;let _0x1c1b24=[];for(var _0x12c0a4=0x0;_0x12c0a4<_0x4f3638[_0x327e1c(0x20c)];_0x12c0a4++){var _0x45a1cb=await StoreModel[_0x327e1c(0x213)]({'proCode':_0x4f3638[_0x12c0a4]['proCode']},{'$inc':{'proQuantity':-_0x4f3638[_0x12c0a4][_0x327e1c(0x1d6)]}},{'new':!![]});(!_0x45a1cb||_0x45a1cb==undefined)&&_0x1c1b24[_0x327e1c(0x200)](_0x4f3638[_0x12c0a4]);}return _0x1c1b24;},checkStoreQuantity=async _0x2457c0=>{const _0x51b56b=_0x2e420b;let _0x73cc31=[];for(var _0x31e0e9=0x0;_0x31e0e9<_0x2457c0[_0x51b56b(0x20c)];_0x31e0e9++){await StoreModel[_0x51b56b(0x225)]({'proCode':_0x2457c0[_0x31e0e9][_0x51b56b(0x1c1)]})[_0x51b56b(0x1ff)](_0x23c1f5=>{const _0x58f3cf=_0x51b56b;_0x23c1f5[_0x58f3cf(0x1d6)]<_0x2457c0[_0x31e0e9][_0x58f3cf(0x1d6)]?_0x73cc31['push'](_0x58f3cf(0x1c4)):_0x73cc31[_0x58f3cf(0x200)](_0x58f3cf(0x1ee));});}return _0x73cc31;};function _0x31e3(_0xdec13f,_0x538b92){const _0x15ed59=_0x15ed();return _0x31e3=function(_0x31e39c,_0x43b2ae){_0x31e39c=_0x31e39c-0x1c1;let _0x365ac3=_0x15ed59[_0x31e39c];return _0x365ac3;},_0x31e3(_0xdec13f,_0x538b92);}module[_0x2e420b(0x21c)]={'createSaleInvoice':asyncHandler(async(_0x7a4ca8,_0x49c7a4,_0x539b61)=>{const _0x425905=_0x2e420b;var _0x27ec9b=await SaleInvoiceModel[_0x425905(0x225)]({'invoiceNumber':_0x7a4ca8['body'][_0x425905(0x201)]});if(_0x27ec9b)_0x539b61(new ApiError('رقم\x20الفاتورة\x20مسجل\x20من\x20قبل',0x190));else{var _0x44a15f=_0x7a4ca8[_0x425905(0x210)]['path'],_0x177a29=_0x7a4ca8[_0x425905(0x1c3)]['invoiceNumber'],_0x3e41a4=[],_0x2fe67b=[],_0x8f496=[],_0x103c82=0x0;const _0x48defa=spawn(_0x425905(0x1ce),['pdfreader.py',_0x7a4ca8[_0x425905(0x210)][_0x425905(0x1dd)]]);_0x48defa[_0x425905(0x1f2)]['on'](_0x425905(0x21a),_0x3414b9=>{const _0x2c066c=_0x425905;for(var _0x1b5ba8=0x0;_0x1b5ba8<_0x3414b9;_0x1b5ba8++){fs['createReadStream'](__dirname+('/table_'+_0x1b5ba8+'.csv'))[_0x2c066c(0x1f9)](csv())['on'](_0x2c066c(0x21a),_0x5c1fe9=>{const _0x244cd5=_0x2c066c;_0x3e41a4[_0x244cd5(0x200)](_0x5c1fe9);})['on'](_0x2c066c(0x1ca),async()=>{const _0x2b293c=_0x2c066c;for(var _0x59446f=0x0;_0x59446f<_0x3e41a4[_0x2b293c(0x20c)];_0x59446f++){if(Object[_0x2b293c(0x1f6)](_0x3e41a4[_0x59446f])[Object[_0x2b293c(0x206)](_0x3e41a4[_0x59446f])[_0x2b293c(0x20c)]-0x1]=='')continue;var _0x273863=Object['values'](_0x3e41a4[_0x59446f])[Object[_0x2b293c(0x206)](_0x3e41a4[_0x59446f])['length']-0x1][_0x2b293c(0x1cc)]('.0','');await ProductModel[_0x2b293c(0x225)]({'proCode':_0x273863})[_0x2b293c(0x1ff)](_0x42b5f2=>{const _0x113535=_0x2b293c;if(_0x42b5f2){if(Object['values'](_0x3e41a4[_0x59446f])[0x6]==''){var _0xa2bd27={'proCode':_0x273863,'proName':_0x42b5f2[_0x113535(0x1d5)],'proQuantity':Number(Object['values'](_0x3e41a4[_0x59446f])[0x8][_0x113535(0x1cc)](',','')),'proCost':Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x7][_0x113535(0x1cc)](',','')),'proSale':Math[_0x113535(0x1d2)](Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x4][_0x113535(0x1cc)](',',''))),'proExtraSale':Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x3][_0x113535(0x1cc)](',','')),'proTaxRate':Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x2][_0x113535(0x1cc)](',','')),'proTaxValue':Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x2][_0x113535(0x1cc)](',',''))==0x5?Math[_0x113535(0x1d2)]((Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x7][_0x113535(0x1cc)](',',''))*Number(Object['values'](_0x3e41a4[_0x59446f])[0x8][_0x113535(0x1cc)](',',''))-Math['abs'](Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x4][_0x113535(0x1cc)](',',''))))*Number(Object['values'](_0x3e41a4[_0x59446f])[0x2]['replace'](',',''))/0x69)[_0x113535(0x220)](0x2):Math[_0x113535(0x1d2)]((Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x7]['replace'](',',''))*Number(Object['values'](_0x3e41a4[_0x59446f])[0x8][_0x113535(0x1cc)](',',''))-Math['abs'](Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x4][_0x113535(0x1cc)](',',''))))*Number(Object['values'](_0x3e41a4[_0x59446f])[0x2][_0x113535(0x1cc)](',',''))/0x72)[_0x113535(0x220)](0x2),'proTotalVat':Math[_0x113535(0x1d2)](Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x7][_0x113535(0x1cc)](',',''))*Number(Object['values'](_0x3e41a4[_0x59446f])[0x8][_0x113535(0x1cc)](',',''))-Math['abs'](Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x4]['replace'](',',''))))};_0x103c82=_0x103c82+_0xa2bd27['proTotalVat'],_0x2fe67b[_0x113535(0x200)](_0xa2bd27);}else{var _0xa2bd27={'proCode':_0x273863,'proName':_0x42b5f2[_0x113535(0x1d5)],'proQuantity':Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x7][_0x113535(0x1cc)](',','')),'proCost':Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x6][_0x113535(0x1cc)](',','')),'proSale':Math[_0x113535(0x1d2)](Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x4][_0x113535(0x1cc)](',',''))),'proExtraSale':Number(Object['values'](_0x3e41a4[_0x59446f])[0x3]['replace'](',','')),'proTaxRate':Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x2][_0x113535(0x1cc)](',','')),'proTaxValue':Number(Object['values'](_0x3e41a4[_0x59446f])[0x2][_0x113535(0x1cc)](',',''))==0x5?Math['abs']((Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x6][_0x113535(0x1cc)](',',''))*Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x7][_0x113535(0x1cc)](',',''))-Math[_0x113535(0x1d2)](Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x4][_0x113535(0x1cc)](',',''))))*Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x2]['replace'](',',''))/0x69)[_0x113535(0x220)](0x2):Math[_0x113535(0x1d2)]((Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x6][_0x113535(0x1cc)](',',''))*Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x7][_0x113535(0x1cc)](',',''))-Math[_0x113535(0x1d2)](Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x4][_0x113535(0x1cc)](',',''))))*Number(Object['values'](_0x3e41a4[_0x59446f])[0x2][_0x113535(0x1cc)](',',''))/0x72)[_0x113535(0x220)](0x2),'proTotalVat':Math[_0x113535(0x1d2)](Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x6][_0x113535(0x1cc)](',',''))*Number(Object['values'](_0x3e41a4[_0x59446f])[0x7][_0x113535(0x1cc)](',',''))-Math[_0x113535(0x1d2)](Number(Object[_0x113535(0x1f6)](_0x3e41a4[_0x59446f])[0x4][_0x113535(0x1cc)](',',''))))};_0x103c82=_0x103c82+_0xa2bd27[_0x113535(0x21e)],_0x2fe67b[_0x113535(0x200)](_0xa2bd27);}}else _0x8f496[_0x113535(0x200)](_0x273863);})[_0x2b293c(0x1fb)](_0x516b5d=>{const _0x53dac5=_0x2b293c;return Promise[_0x53dac5(0x1db)](_0x516b5d);});}if(_0x8f496[_0x2b293c(0x20c)]==0x0){var _0x4c0979=await checkStoreQuantity(_0x2fe67b);if(_0x4c0979[_0x2b293c(0x211)]('false'))_0x539b61(new ApiError('الكمية\x20المطلوبة\x20اقل\x20من\x20الموجودة\x20في\x20المخزن',0x190));else{var _0x498152=await getStoreProducts(_0x2fe67b),_0x4b9bce=await SaleInvoiceModel[_0x2b293c(0x225)]({'invoiceNumber':_0x177a29});if(!_0x4b9bce)await SaleInvoiceModel['create']({'invoiceUrl':_0x44a15f,'invoiceNumber':_0x177a29,'products':_0x2fe67b,'invoiceTotal':_0x103c82})[_0x2b293c(0x1ff)](_0x5b7404=>{const _0x562129=_0x2b293c;_0x49c7a4[_0x562129(0x1dc)](0xc9)[_0x562129(0x218)]({'data':_0x5b7404});})['catch'](_0x11d6a2=>{const _0x29dd26=_0x2b293c;_0x49c7a4[_0x29dd26(0x1f3)](_0x11d6a2);});else{var _0x4d7ac8=_0x4b9bce['products'][_0x2b293c(0x200)](_0x2fe67b);await SaleInvoiceModel[_0x2b293c(0x213)]({'invoiceNumber':_0x177a29},{'products':_0x4d7ac8,'$inc':{'invoiceTotal':_0x103c82}},{'new':!![]})[_0x2b293c(0x1ff)](_0x193327=>{const _0x35d17c=_0x2b293c;_0x49c7a4['status'](0xc8)[_0x35d17c(0x218)]({'data':_0x193327});})[_0x2b293c(0x1fb)](_0x2ace3e=>{_0x49c7a4['send'](_0x2ace3e);});}}}else _0x539b61(new ApiError(_0x2b293c(0x1ea)+_0x8f496+'\x20قم\x20بادخاله\x20اولا',0x190));});}}),_0x48defa[_0x425905(0x202)]['on'](_0x425905(0x21a),_0x39b39a=>{const _0x43f5e2=_0x425905;console[_0x43f5e2(0x203)](_0x43f5e2(0x1e6)+_0x39b39a);}),_0x48defa['on'](_0x425905(0x216),_0x208763=>{console['log'](_0x208763);});}}),'addInvoice':asyncHandler(async(_0xae4b2a,_0x5f38a7)=>{const _0x327370=_0x2e420b,_0x56c286=_0xae4b2a[_0x327370(0x1c3)][_0x327370(0x201)],_0x472c38=_0xae4b2a['body']['products'],_0x3e7c60=await getProductInfo(_0x472c38),_0xe3d0df=await getStoreProducts(_0x3e7c60['productsInfo']),_0x4ee522=await SaleInvoiceModel[_0x327370(0x1eb)]({'invoiceNumber':_0x56c286,'products':_0x3e7c60[_0x327370(0x224)],'invoiceTotal':_0x3e7c60[_0x327370(0x1fd)]});_0x5f38a7[_0x327370(0x1dc)](0xc9)['json']({'data':_0x4ee522});}),'getInvoices':asyncHandler(async(_0x22e812,_0x17b5db)=>{const _0x5491d2=_0x2e420b,_0x41ffd2=_0x22e812[_0x5491d2(0x1d0)][_0x5491d2(0x21b)]*0x1||0x1,_0xe61585=_0x22e812[_0x5491d2(0x1d0)][_0x5491d2(0x1e5)]*0x1||0x14,_0x418f4c=(_0x41ffd2-0x1)*_0xe61585,_0x35fc97=await SaleInvoiceModel['find']({});_0x17b5db[_0x5491d2(0x1dc)](0xc8)[_0x5491d2(0x218)]({'results':_0x35fc97[_0x5491d2(0x20c)],'page':_0x41ffd2,'data':_0x35fc97[_0x5491d2(0x1cb)](_0x418f4c,_0xe61585*_0x41ffd2)});}),'getInvoice':asyncHandler(async(_0x5165a9,_0x3bf049,_0x297447)=>{const _0x42ef4c=_0x2e420b,{id:_0x337340}=_0x5165a9['params'],_0x4da788=await SaleInvoiceModel[_0x42ef4c(0x1e4)](_0x337340);!_0x4da788?_0x297447(new ApiError(_0x42ef4c(0x1e1)+_0x337340,0x194)):_0x3bf049[_0x42ef4c(0x1dc)](0xc8)['json']({'data':_0x4da788});}),'updateInvoice':asyncHandler(async(_0x2f7b4e,_0x37f056,_0x5a37a1)=>{const _0x282d3d=_0x2e420b,{id:_0x4039e1}=_0x2f7b4e['params'],_0x92052c=_0x2f7b4e[_0x282d3d(0x1c3)]['invoiceNumber'],_0x49501b=_0x2f7b4e[_0x282d3d(0x1c3)]['products'],_0x5084eb=await SaleInvoiceModel[_0x282d3d(0x219)]({'_id':_0x4039e1},{'invoiceNumber':_0x92052c,'products':_0x49501b},{'new':!![]});!_0x5084eb?_0x5a37a1(new ApiError(_0x282d3d(0x1e1)+_0x4039e1,0x194)):_0x37f056[_0x282d3d(0x1dc)](0xc8)['json']({'data':_0x5084eb});}),'deleteInvoice':asyncHandler(async(_0x9e3a48,_0x1140e3,_0x309c5d)=>{const _0x50d73a=_0x2e420b,{id:_0x5287f2}=_0x9e3a48[_0x50d73a(0x1f4)],_0xeac316=await SaleInvoiceModel[_0x50d73a(0x1c8)]({'_id':_0x5287f2});!_0xeac316?_0x309c5d(new ApiError('لا\x20توجد\x20فاتورة\x20بهذا\x20الرقم\x20'+_0x5287f2,0x194)):_0x1140e3['status'](0xcc)[_0x50d73a(0x1f3)]();}),'getReport':asyncHandler(async(_0xf6d95f,_0x2f6d68,_0xc2cecc)=>{const _0x53d71c=_0x2e420b,_0x332d0a=new excelJS[(_0x53d71c(0x1e8))](),_0x3794f5=_0x332d0a[_0x53d71c(0x1cd)](_0x53d71c(0x21f)),_0x3955e9=path[_0x53d71c(0x207)]('./فواتير\x20البيع'),_0x4fad74=_0xf6d95f[_0x53d71c(0x1c3)][_0x53d71c(0x1e7)],_0x6b2096=_0xf6d95f[_0x53d71c(0x1c3)][_0x53d71c(0x1fc)];var _0x5cb32b=[],_0x496a18=await SaleInvoiceModel[_0x53d71c(0x215)]({});for(var _0xcc06b=0x0;_0xcc06b<_0x496a18[_0x53d71c(0x20c)];_0xcc06b++){for(var _0x5ba2b8=0x0;_0x5ba2b8<_0x496a18[_0xcc06b][_0x53d71c(0x217)][_0x53d71c(0x20c)];_0x5ba2b8++){var _0x10066f={'invoiceNumber':_0x496a18[_0xcc06b][_0x53d71c(0x201)],'registrationNumber':_0x4fad74,'customerName':_0x6b2096,'proCode':_0x496a18[_0xcc06b][_0x53d71c(0x217)][_0x5ba2b8][_0x53d71c(0x1c1)],'proName':_0x496a18[_0xcc06b][_0x53d71c(0x217)][_0x5ba2b8]['proName'],'proQuantity':_0x496a18[_0xcc06b][_0x53d71c(0x217)][_0x5ba2b8][_0x53d71c(0x1d6)],'proCost':_0x496a18[_0xcc06b]['products'][_0x5ba2b8]['proCost'],'proSale':_0x496a18[_0xcc06b]['products'][_0x5ba2b8][_0x53d71c(0x1da)],'proTaxValue':_0x496a18[_0xcc06b][_0x53d71c(0x217)][_0x5ba2b8][_0x53d71c(0x1d9)],'proTotalVat':_0x496a18[_0xcc06b][_0x53d71c(0x217)][_0x5ba2b8]['proTotalVat']};_0x5cb32b[_0x53d71c(0x200)](_0x10066f);}}_0x3794f5[_0x53d71c(0x1c9)]=[{'header':_0x53d71c(0x20a),'key':_0x53d71c(0x201),'width':0xf},{'header':_0x53d71c(0x20f),'key':_0x53d71c(0x1e7),'width':0xf},{'header':'اسم\x20العميل','key':_0x53d71c(0x1fc),'width':0xf},{'header':_0x53d71c(0x20e),'key':'proCode','width':0xf},{'header':_0x53d71c(0x1c5),'key':_0x53d71c(0x1d5),'width':0x32},{'header':_0x53d71c(0x1fe),'key':_0x53d71c(0x1d6),'width':0xf},{'header':_0x53d71c(0x221),'key':'proCost','width':0xf},{'header':_0x53d71c(0x1e9),'key':_0x53d71c(0x1da),'width':0xf},{'header':_0x53d71c(0x1f7),'key':_0x53d71c(0x1d9),'width':0xf},{'header':_0x53d71c(0x1de),'key':_0x53d71c(0x21e),'width':0xf}],_0x5cb32b[_0x53d71c(0x1fa)](_0x1bf7c1=>{const _0x19ddd4=_0x53d71c;_0x3794f5[_0x19ddd4(0x1df)](_0x1bf7c1);}),_0x3794f5['getRow'](0x1)[_0x53d71c(0x209)](_0x2afade=>{const _0x117f5e=_0x53d71c;_0x2afade[_0x117f5e(0x1f0)]={'bold':!![]};});try{const _0x145005=await _0x332d0a[_0x53d71c(0x1f8)][_0x53d71c(0x1d7)](_0x3955e9+_0x53d71c(0x1ed))[_0x53d71c(0x1ff)](()=>{const _0x246519=_0x53d71c;_0x2f6d68[_0x246519(0x1f3)]({'status':_0x246519(0x1d8),'message':_0x246519(0x1d4),'path':_0x3955e9+'/invoices.xlsx'});});}catch(_0x28e277){_0x2f6d68[_0x53d71c(0x1f3)]({'status':_0x53d71c(0x203),'message':_0x53d71c(0x1ec)});}}),'getSingleReport':asyncHandler(async(_0x197fd8,_0x708460,_0x478c4a)=>{const _0x50503a=_0x2e420b,_0x279128=new excelJS[(_0x50503a(0x1e8))](),_0x254d69=_0x279128[_0x50503a(0x1cd)](_0x50503a(0x21f)),_0x54f57a=path[_0x50503a(0x207)]('./فواتير\x20البيع'),_0xf591a2=_0x197fd8['body']['registrationNumber'],_0x3693f3=_0x197fd8[_0x50503a(0x1c3)][_0x50503a(0x1fc)];var _0x4a12a1=[],_0x248c6a=await SaleInvoiceModel['findOne']({'_id':_0x197fd8[_0x50503a(0x1c3)][_0x50503a(0x1f5)]});for(var _0x14205b=0x0;_0x14205b<_0x248c6a[_0x50503a(0x217)][_0x50503a(0x20c)];_0x14205b++){var _0x3af8d4={'invoiceNumber':_0x248c6a[_0x50503a(0x201)],'registrationNumber':_0xf591a2,'customerName':_0x3693f3,'proCode':_0x248c6a[_0x50503a(0x217)][_0x14205b][_0x50503a(0x1c1)],'proName':_0x248c6a[_0x50503a(0x217)][_0x14205b][_0x50503a(0x1d5)],'proQuantity':_0x248c6a['products'][_0x14205b]['proQuantity'],'proCost':_0x248c6a[_0x50503a(0x217)][_0x14205b][_0x50503a(0x1c7)],'proSale':_0x248c6a['products'][_0x14205b][_0x50503a(0x1da)],'proTaxValue':_0x248c6a[_0x50503a(0x217)][_0x14205b][_0x50503a(0x1d9)],'proTotalVat':_0x248c6a[_0x50503a(0x217)][_0x14205b]['proTotalVat']};_0x4a12a1[_0x50503a(0x200)](_0x3af8d4);}_0x254d69[_0x50503a(0x1c9)]=[{'header':_0x50503a(0x20a),'key':_0x50503a(0x201),'width':0xf},{'header':_0x50503a(0x20f),'key':_0x50503a(0x1e7),'width':0xf},{'header':_0x50503a(0x1d3),'key':'customerName','width':0xf},{'header':_0x50503a(0x20e),'key':_0x50503a(0x1c1),'width':0xf},{'header':'اسم\x20الصنف','key':'proName','width':0x32},{'header':'الكمية','key':_0x50503a(0x1d6),'width':0xf},{'header':_0x50503a(0x221),'key':'proCost','width':0xf},{'header':'الخصم','key':_0x50503a(0x1da),'width':0xf},{'header':_0x50503a(0x1f7),'key':_0x50503a(0x1d9),'width':0xf},{'header':'الاجمالي','key':'proTotalVat','width':0xf}],_0x4a12a1[_0x50503a(0x1fa)](_0x3577cf=>{const _0x5afb62=_0x50503a;_0x254d69[_0x5afb62(0x1df)](_0x3577cf);}),_0x254d69[_0x50503a(0x1ef)](0x1)[_0x50503a(0x209)](_0x19ec54=>{const _0x1c5e5a=_0x50503a;_0x19ec54[_0x1c5e5a(0x1f0)]={'bold':!![]};});try{const _0x595ada=await _0x279128[_0x50503a(0x1f8)]['writeFile'](_0x54f57a+'/singleInvoice.xlsx')[_0x50503a(0x1ff)](()=>{const _0x4b0a5a=_0x50503a;_0x708460[_0x4b0a5a(0x1f3)]({'status':_0x4b0a5a(0x1d8),'message':'تم\x20تجهيز\x20التقرير\x20بنجاح','path':_0x54f57a+'/singleInvoice.xlsx'});});}catch(_0x3e98a9){_0x708460[_0x50503a(0x1f3)]({'status':_0x50503a(0x203),'message':_0x50503a(0x1ec)});}})};
+const asyncHandler = require('express-async-handler');
+const ApiError = require('../utils/apiError');
+const SaleInvoiceModel = require('../models/sale-model');
+const ProductModel = require('../models/product-model');
+const StoreModel = require('../models/store-model');
+
+const { spawn } = require('child_process');
+
+const fs = require('fs');
+const csv = require('csv-parser');
+
+const path = require('path');
+const excelJS = require('exceljs');
+
+const getProductInfo = async (products) => {
+    var invoice = {
+        productsInfo : [],
+        invoiceTotal : 0
+    }
+    for(var i = 0; i < products.length; i++) {
+        var product = await ProductModel.findOne({ proCode: products[i].proCode });
+        // if(!product || product.length == 0) {
+        //     return (new ApiError(`Product Not Found With This Code:${products[i].proCode} Insert It First..` , 404));
+        // }
+        var productInfo = {
+            proCode: product.proCode,
+            proName: product.proName,
+            proQuantity: products[i].proQuantity,
+            proCost: products[i].proCost,
+            proSale: products[i].proSale,
+            proExtraSale: products[i].proExtraSale,
+            proTaxRate: products[i].proTaxRate,
+            proTaxValue: (products[i].proTaxRate == '5' ? Math.abs(( ( ( (products[i].proCost * products[i].proQuantity) - products[i].proSale ) * products[i].proTaxRate ) / 105 )).toFixed(2) : Math.abs((( ( (products[i].proCost * products[i].proQuantity) - products[i].proSale ) * products[i].proTaxRate ) / 114 )).toFixed(2)),
+            proTotalVat: Math.abs((products[i].proCost * products[i].proQuantity) - products[i].proSale),
+        }
+        invoice.invoiceTotal = invoice.invoiceTotal + productInfo.proTotalVat;
+        invoice.productsInfo.push(productInfo);
+    }
+    return invoice;
+}
+
+const getStoreProducts = async (products) => {
+    let storeProducts = []
+    for(var i = 0; i < products.length; i++) {
+        var product = await StoreModel.findOneAndUpdate({ proCode: products[i].proCode } , {
+            $inc:{ proQuantity: -(products[i].proQuantity) },
+        } , { new: true });
+        if(!product || product == undefined) {
+            storeProducts.push(products[i]);
+        }
+    }
+    return storeProducts;
+}
+
+const checkStoreQuantity = async (products) => {
+    let heheArr = []
+    for(var i = 0; i < products.length; i++) {
+        await StoreModel.findOne({ proCode: products[i].proCode }).then(product => {
+            if(product.proQuantity < products[i].proQuantity) {
+                heheArr.push('false')
+            }
+            else { heheArr.push('true') }
+        })
+    }
+    return heheArr
+}
+
+module.exports = {
+    createSaleInvoice : asyncHandler(async (req , res , next) => {
+        var oldInvoice = await SaleInvoiceModel.findOne({ invoiceNumber: req.body.invoiceNumber })
+        if(oldInvoice) {
+            next(new ApiError(`رقم الفاتورة مسجل من قبل` , 400))
+        }
+        else {
+            var invoiceUrl = req.file.path;
+            var invoiceNumber = req.body.invoiceNumber;
+            var results = []
+            var products = []
+            var unfoundProducts = []
+            var invoiceTotal = 0
+            const childPython = spawn('python' , ['pdfreader.py' , req.file.path])
+            childPython.stdout.on('data' , (data) => {
+                for(var y = 0; y < data; y++) {
+                    fs.createReadStream(__dirname + `/table_${y}.csv`).pipe(csv()).on('data' , (response) => {
+                        results.push(response)
+                    }).on('end' , async () => {
+                        for(var i = 0; i < results.length; i++) {
+                            if(Object.values(results[i])[Object.keys(results[i]).length - 1] == '') continue;
+                            var productCode = (Object.values(results[i])[Object.keys(results[i]).length - 1]).replace('.0' , '')
+                            await ProductModel.findOne({ proCode: productCode }).then(product => {
+                                if(product) {
+                                    if((Object.values(results[i])[6]) == '') {
+                                        var invoiceProduct = {
+                                            proCode: productCode,
+                                            proName: product.proName,
+                                            proQuantity: Number((Object.values(results[i])[8]).replace(',','')),
+                                            proCost: Number((Object.values(results[i])[7]).replace(',','')),
+                                            proSale: Math.abs(Number((Object.values(results[i])[4]).replace(',',''))),
+                                            proExtraSale: Number((Object.values(results[i])[3]).replace(',','')),
+                                            proTaxRate: Number((Object.values(results[i])[2]).replace(',','')),
+                                            proTaxValue: (Number((Object.values(results[i])[2]).replace(',','')) == 5 ? Math.abs(( ( ( (Number((Object.values(results[i])[7]).replace(',','')) * Number((Object.values(results[i])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 105 )).toFixed(2) : Math.abs((( ( (Number((Object.values(results[i])[7]).replace(',','')) * Number((Object.values(results[i])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 114 )).toFixed(2)),
+                                            proTotalVat: Math.abs((Number((Object.values(results[i])[7]).replace(',','')) * Number((Object.values(results[i])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))))
+                                        }
+                                        invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                                        products.push(invoiceProduct);
+                                    }
+                                    else {
+                                        var invoiceProduct = {
+                                            proCode: productCode,
+                                            proName: product.proName,
+                                            proQuantity: Number((Object.values(results[i])[7]).replace(',','')),
+                                            proCost: Number((Object.values(results[i])[6]).replace(',','')),
+                                            proSale: Math.abs(Number((Object.values(results[i])[4]).replace(',',''))),
+                                            proExtraSale: Number((Object.values(results[i])[3]).replace(',','')),
+                                            proTaxRate: Number((Object.values(results[i])[2]).replace(',','')),
+                                            proTaxValue: (Number((Object.values(results[i])[2]).replace(',','')) == 5 ? Math.abs(( ( ( (Number((Object.values(results[i])[6]).replace(',','')) * Number((Object.values(results[i])[7]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 105 )).toFixed(2) : Math.abs((( ( (Number((Object.values(results[i])[6]).replace(',','')) * Number((Object.values(results[i])[7]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 114 )).toFixed(2)),
+                                            proTotalVat: Math.abs((Number((Object.values(results[i])[6]).replace(',','')) * Number((Object.values(results[i])[7]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))))
+                                        }
+                                        invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                                        products.push(invoiceProduct);
+                                    }
+                                }
+                                else {
+                                    unfoundProducts.push(productCode)
+                                }
+                            }).catch(err => {
+                                return Promise.reject(err);
+                            })
+                        }
+                        if(unfoundProducts.length == 0) {
+                            var checkStoreQuantity2 = await checkStoreQuantity(products)
+                            if(checkStoreQuantity2.includes('false')) {
+                                next(new ApiError('الكمية المطلوبة اقل من الموجودة في المخزن' , 400))
+                            }
+                            else {
+                                var storeProducts = await getStoreProducts(products);
+                                var invoice = await SaleInvoiceModel.findOne({ invoiceNumber: invoiceNumber })
+                                if(!invoice) {
+                                    await SaleInvoiceModel.create(
+                                        { invoiceUrl , invoiceNumber , products , invoiceTotal }
+                                    ).then(saleInvoice => {
+                                        res.status(201).json({ data: saleInvoice })
+                                    }).catch(err => {
+                                        res.send(err)
+                                    })
+                                }
+                                else {
+                                    var newProductsInvoice = invoice.products.push(products);
+                                    await SaleInvoiceModel.findOneAndUpdate(
+                                        { invoiceNumber } , { products: newProductsInvoice , $inc:{ invoiceTotal: invoiceTotal } } , { new: true }
+                                    ).then(newinvoice => {
+                                        res.status(200).json({ data: newinvoice })
+                                    }).catch(err => {
+                                        res.send(err)
+                                    })
+                                }
+                            }
+                        }
+                        else {
+                            next(new ApiError(`لا يوجد صنف بهذا الكود: ${unfoundProducts} قم بادخاله اولا` , 400))
+                        }
+                    })
+                }
+            })
+            childPython.stderr.on('data' , (data) => {
+                console.error(`stderr: ${data}`)
+            })
+            childPython.on('close' , (code) => {
+                console.log(code)
+            })
+        }
+    }),
+
+    addInvoice : asyncHandler(async (req , res ) => {
+        const invoiceNumber = req.body.invoiceNumber;
+        const products = req.body.products;
+
+        const productsInfo = await getProductInfo(products);
+
+        const storeProducts = await getStoreProducts(productsInfo.productsInfo);
+        // if(storeProducts.length != 0) { await StoreModel.create(storeProducts); }
+
+        const invoiceProducts = await SaleInvoiceModel.create({ invoiceNumber , products: productsInfo.productsInfo , invoiceTotal: productsInfo.invoiceTotal });
+        res.status(201).json({ data: invoiceProducts });
+    }),
+
+    getInvoices : asyncHandler(async (req , res) => {
+        const invoices = await SaleInvoiceModel.find({})
+        res.status(200).json({ data : invoices })
+        // const page = req.query.page * 1 || 1
+        // const limit = req.query.limit * 1 || 20
+        // const skip = (page - 1) * limit
+
+        // const invoices = await SaleInvoiceModel.find({})
+        // res.status(200).json({
+        //     results : invoices.length,
+        //     page : page,
+        //     data : invoices.slice(skip,limit*page)
+        // })
+    }),
+
+    getInvoice : asyncHandler( async (req,res,next) => {
+        const { id } = req.params
+
+        const invoice = await SaleInvoiceModel.findById(id)
+        if(!invoice) {
+            next(new ApiError(`لا توجد فاتورة بهذا الرقم ${id}` , 404))
+        }
+        else {
+            res.status(200).json({ data: invoice })
+        }
+    }),
+
+    updateInvoice : asyncHandler( async (req,res,next) => {
+        const { id } = req.params;
+        const invoiceNumber = req.body.invoiceNumber;
+        const products = req.body.products;
+
+        const invoice = await SaleInvoiceModel.findByIdAndUpdate(
+            { _id : id } , { invoiceNumber , products } , { new : true }
+        )
+        if(!invoice) {
+            next(new ApiError(`لا توجد فاتورة بهذا الرقم ${id}` , 404));
+        }
+        else {
+            res.status(200).json({ data: invoice });
+        }
+    }),
+
+    deleteInvoice : asyncHandler( async (req,res,next) => {
+        const { id } = req.params;
+
+        const invoice = await SaleInvoiceModel.findByIdAndDelete({ _id : id });
+        if(!invoice) {
+            next(new ApiError(`لا توجد فاتورة بهذا الرقم ${id}` , 404));
+        }
+        else {
+            res.status(204).send();
+        }
+    }),
+
+    getReport : asyncHandler( async (req , res , next) => {
+        const workBook = new excelJS.Workbook();
+        const workSheet = workBook.addWorksheet('سجل المبيعات');
+        const filePath = path.resolve("./فواتير البيع");
+        const registrationNumber = req.body.registrationNumber;
+        const customerName = req.body.customerName;
+
+        var products = [];
+        var invoices = await SaleInvoiceModel.find({})
+        for(var i = 0; i < invoices.length; i++) {
+            for(var x = 0; x < invoices[i].products.length; x++) {
+                var product1 = {
+                    invoiceNumber: invoices[i].invoiceNumber,
+                    registrationNumber: registrationNumber,
+                    customerName: customerName,
+                    proCode: invoices[i].products[x].proCode,
+                    proName: invoices[i].products[x].proName,
+                    proQuantity: invoices[i].products[x].proQuantity,
+                    proCost: invoices[i].products[x].proCost,
+                    proSale: invoices[i].products[x].proSale,
+                    proTaxValue: invoices[i].products[x].proTaxValue,
+                    proTotalVat: invoices[i].products[x].proTotalVat,
+                }
+                products.push(product1);
+            }
+        }
+
+        // res.send(products)
+        workSheet.columns = [
+            { header: 'رقم الفاتورة' , key: 'invoiceNumber' , width: 15 },
+            { header: 'رقم التسجيل' , key: 'registrationNumber' , width: 15 },
+            { header: 'اسم العميل' , key: 'customerName' , width: 15 },
+            { header: 'رقم الصنف' , key: 'proCode' , width: 15 },
+            { header: 'اسم الصنف' , key: 'proName' , width: 50 },
+            { header: 'الكمية' , key: 'proQuantity' , width: 15 },
+            { header: 'السعر' , key: 'proCost' , width: 15 },
+            { header: 'الخصم' , key: 'proSale' , width: 15 },
+            { header: 'الضريبة' , key: 'proTaxValue' , width: 15 },
+            { header: 'الاجمالي' , key: 'proTotalVat' , width: 15 }
+        ]
+
+        products.forEach(product => {
+            workSheet.addRow(product);
+        });
+
+        workSheet.getRow(1).eachCell(cell => {
+            cell.font = { bold: true };
+        });
+
+        try {
+            const data = await workBook.xlsx.writeFile( filePath + `/invoice.xlsx`)
+            .then(() => {
+                res.send({
+                status: "success",
+                message: "تم تجهيز التقرير بنجاح",
+                path: `${filePath}/invoices.xlsx`,
+                });
+            });
+        }
+        catch (err) {
+            res.send({
+                status: "error",
+                message: "Something went wrong",
+            });
+        }
+    }),
+
+    getSingleReport : asyncHandler( async (req , res , next) => {
+        const workBook = new excelJS.Workbook();
+        const workSheet = workBook.addWorksheet('سجل المبيعات');
+        const filePath = path.resolve("./فواتير البيع");
+        const registrationNumber = req.body.registrationNumber;
+        const customerName = req.body.customerName;
+
+        var products = [];
+        var invoice = await SaleInvoiceModel.findOne({ _id: req.body.invoiceId })
+        
+            for(var i = 0; i < invoice.products.length; i++) {
+                var product1 = {
+                    invoiceNumber: invoice.invoiceNumber,
+                    registrationNumber: registrationNumber,
+                    customerName: customerName,
+                    proCode: invoice.products[i].proCode,
+                    proName: invoice.products[i].proName,
+                    proQuantity: invoice.products[i].proQuantity,
+                    proCost: invoice.products[i].proCost,
+                    proSale: invoice.products[i].proSale,
+                    proTaxValue: invoice.products[i].proTaxValue,
+                    proTotalVat: invoice.products[i].proTotalVat,
+                }
+                products.push(product1);
+            }
+        
+
+        // res.send(products)
+        workSheet.columns = [
+            { header: 'رقم الفاتورة' , key: 'invoiceNumber' , width: 15 },
+            { header: 'رقم التسجيل' , key: 'registrationNumber' , width: 15 },
+            { header: 'اسم العميل' , key: 'customerName' , width: 15 },
+            { header: 'رقم الصنف' , key: 'proCode' , width: 15 },
+            { header: 'اسم الصنف' , key: 'proName' , width: 50 },
+            { header: 'الكمية' , key: 'proQuantity' , width: 15 },
+            { header: 'السعر' , key: 'proCost' , width: 15 },
+            { header: 'الخصم' , key: 'proSale' , width: 15 },
+            { header: 'الضريبة' , key: 'proTaxValue' , width: 15 },
+            { header: 'الاجمالي' , key: 'proTotalVat' , width: 15 }
+        ]
+
+        products.forEach(product => {
+            workSheet.addRow(product);
+        });
+
+        workSheet.getRow(1).eachCell(cell => {
+            cell.font = { bold: true };
+        });
+
+        try {
+            const data = await workBook.xlsx.writeFile( filePath + `/singleInvoice.xlsx`)
+            .then(() => {
+                res.send({
+                status: "success",
+                message: "تم تجهيز التقرير بنجاح",
+                path: `${filePath}/singleInvoice.xlsx`,
+                });
+            });
+        }
+        catch (err) {
+            res.send({
+                status: "error",
+                message: "Something went wrong",
+            });
+        }
+    })
+}
