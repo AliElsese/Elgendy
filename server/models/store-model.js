@@ -1,1 +1,19 @@
-function _0xfb7d(){const _0x11b713=['3177260MsaXvD','128MEenZY','24BtGzFd','The\x20product\x20code\x20is\x20required','Store','98472Ksvafz','1651BYNOYX','exports','208836jPIIBk','The\x20product\x20name\x20is\x20required','17yNAPpE','50tFoGAK','mongoose','6ycdpJX','model','1634463WKaMVa','388682TJZrMx','2337742dKKAey','128901IEYLYu'];_0xfb7d=function(){return _0x11b713;};return _0xfb7d();}const _0xf9b672=_0x1dae;(function(_0xf56aa4,_0xe2b4e8){const _0x3f76ec=_0x1dae,_0x398357=_0xf56aa4();while(!![]){try{const _0x73b3df=-parseInt(_0x3f76ec(0x152))/0x1*(-parseInt(_0x3f76ec(0x150))/0x2)+-parseInt(_0x3f76ec(0x147))/0x3*(-parseInt(_0x3f76ec(0x149))/0x4)+-parseInt(_0x3f76ec(0x148))/0x5+parseInt(_0x3f76ec(0x155))/0x6*(-parseInt(_0x3f76ec(0x145))/0x7)+-parseInt(_0x3f76ec(0x14a))/0x8*(-parseInt(_0x3f76ec(0x157))/0x9)+-parseInt(_0x3f76ec(0x153))/0xa*(parseInt(_0x3f76ec(0x146))/0xb)+-parseInt(_0x3f76ec(0x14d))/0xc*(parseInt(_0x3f76ec(0x14e))/0xd);if(_0x73b3df===_0xe2b4e8)break;else _0x398357['push'](_0x398357['shift']());}catch(_0x2a8236){_0x398357['push'](_0x398357['shift']());}}}(_0xfb7d,0xdb831));function _0x1dae(_0xf995f6,_0x56f2aa){const _0xfb7d6d=_0xfb7d();return _0x1dae=function(_0x1daed4,_0x37c219){_0x1daed4=_0x1daed4-0x145;let _0x2d05c7=_0xfb7d6d[_0x1daed4];return _0x2d05c7;},_0x1dae(_0xf995f6,_0x56f2aa);}const mongoose=require(_0xf9b672(0x154)),storeSchema=new mongoose['Schema']({'proCode':{'type':String,'required':[!![],_0xf9b672(0x14b)],'unique':!![]},'proName':{'type':String,'required':[!![],_0xf9b672(0x151)]},'proQuantity':{'type':Number},'proCost':{'type':Number},'proSale':{'type':Number},'proExtraSale':{'type':Number},'proTaxRate':{'type':Number},'proTaxValue':{'type':Number},'proTotalVat':{'type':Number}},{'timestamps':!![]}),StoreModel=mongoose[_0xf9b672(0x156)](_0xf9b672(0x14c),storeSchema);module[_0xf9b672(0x14f)]=StoreModel;
+const mongoose = require('mongoose');
+
+const storeSchema = new mongoose.Schema({
+    proCode: {
+        type: String,
+        required: [true , 'The product code is required'],
+        unique: true
+    },
+    proName: {
+        type: String,
+        required: [true , 'The product name is required'],
+    },
+    proQuantity: { type: Number },
+    proCost: { type: Number },
+}, { timestamps: true });
+
+const StoreModel = mongoose.model('Store', storeSchema);
+
+module.exports = StoreModel;

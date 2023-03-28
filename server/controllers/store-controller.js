@@ -1,1 +1,117 @@
-const _0x493558=_0x28ca;function _0x28ca(_0x11795b,_0x5219f8){const _0x305510=_0x3055();return _0x28ca=function(_0x28cadf,_0x893721){_0x28cadf=_0x28cadf-0xe2;let _0xd75e0a=_0x305510[_0x28cadf];return _0xd75e0a;},_0x28ca(_0x11795b,_0x5219f8);}(function(_0x3267c9,_0x1847eb){const _0xc80d7f=_0x28ca,_0x15f12d=_0x3267c9();while(!![]){try{const _0x6c9f29=-parseInt(_0xc80d7f(0x11d))/0x1*(-parseInt(_0xc80d7f(0xf3))/0x2)+-parseInt(_0xc80d7f(0xed))/0x3*(-parseInt(_0xc80d7f(0x11a))/0x4)+-parseInt(_0xc80d7f(0xf5))/0x5*(parseInt(_0xc80d7f(0x114))/0x6)+parseInt(_0xc80d7f(0x116))/0x7*(parseInt(_0xc80d7f(0xf6))/0x8)+parseInt(_0xc80d7f(0x102))/0x9+parseInt(_0xc80d7f(0xe3))/0xa*(parseInt(_0xc80d7f(0xff))/0xb)+-parseInt(_0xc80d7f(0x11c))/0xc;if(_0x6c9f29===_0x1847eb)break;else _0x15f12d['push'](_0x15f12d['shift']());}catch(_0x3ec026){_0x15f12d['push'](_0x15f12d['shift']());}}}(_0x3055,0x5cd7d));const asyncHandler=require(_0x493558(0xef)),ApiError=require(_0x493558(0xf9)),StoreModel=require(_0x493558(0x115)),ProductModel=require(_0x493558(0xfd)),path=require(_0x493558(0xf2)),excelJS=require(_0x493558(0x101)),getProductInfo=async _0x8ab195=>{const _0x689827=_0x493558;var _0x36ac77=await ProductModel['findOne']({'proCode':_0x8ab195});return _0x36ac77[_0x689827(0xfb)];};module[_0x493558(0x100)]={'addStoreProduct':asyncHandler(async(_0x18a83a,_0xb19303,_0x3ec992)=>{const _0x145a62=_0x493558,_0x105f44=await getProductInfo(_0x18a83a[_0x145a62(0x10a)]['proCode']),_0x5cd215={'proCode':_0x18a83a[_0x145a62(0x10a)][_0x145a62(0x10f)],'proName':_0x105f44,'proQuantity':_0x18a83a[_0x145a62(0x10a)][_0x145a62(0x10b)],'proCost':_0x18a83a[_0x145a62(0x10a)][_0x145a62(0x107)],'proSale':_0x18a83a[_0x145a62(0x10a)]['proSale'],'proExtraSale':_0x18a83a[_0x145a62(0x10a)]['proExtraSale'],'proTaxRate':_0x18a83a[_0x145a62(0x10a)][_0x145a62(0xe5)],'proTaxValue':_0x18a83a[_0x145a62(0x10a)][_0x145a62(0xe5)]=='5'?Math[_0x145a62(0x10c)]((_0x18a83a[_0x145a62(0x10a)][_0x145a62(0x107)]*_0x18a83a['body'][_0x145a62(0x10b)]-_0x18a83a[_0x145a62(0x10a)]['proSale'])*_0x18a83a[_0x145a62(0x10a)][_0x145a62(0xe5)]/0x69)[_0x145a62(0x118)](0x2):Math[_0x145a62(0x10c)]((_0x18a83a[_0x145a62(0x10a)]['proCost']*_0x18a83a[_0x145a62(0x10a)][_0x145a62(0x10b)]-_0x18a83a['body'][_0x145a62(0x10d)])*_0x18a83a['body']['proTaxRate']/0x72)[_0x145a62(0x118)](0x2),'proTotalVat':Math['abs'](_0x18a83a[_0x145a62(0x10a)][_0x145a62(0x107)]*_0x18a83a[_0x145a62(0x10a)][_0x145a62(0x10b)]-_0x18a83a[_0x145a62(0x10a)][_0x145a62(0x10d)])},_0x5e265e=await StoreModel[_0x145a62(0x11e)](_0x5cd215);_0xb19303['status'](0xc9)[_0x145a62(0x109)]({'data':_0x5e265e});}),'updateStoreProduct':asyncHandler(async(_0x358c7d,_0x2a5dbe,_0x8b7076)=>{const _0x2ee7e0=_0x493558,_0x4151c2=_0x358c7d[_0x2ee7e0(0x10a)]['proQuantity'],_0x28e32f=_0x358c7d['body'][_0x2ee7e0(0x107)],_0x4aaf36=_0x358c7d[_0x2ee7e0(0x10a)][_0x2ee7e0(0x10d)],_0x43335e=_0x358c7d[_0x2ee7e0(0x10a)]['proExtraSale'],_0x30671e=_0x358c7d[_0x2ee7e0(0x10a)]['proTaxRate'],_0x2be972=_0x358c7d[_0x2ee7e0(0x10a)][_0x2ee7e0(0xe2)],_0x325033=_0x358c7d[_0x2ee7e0(0x10a)][_0x2ee7e0(0xf8)],_0x264d70=await StoreModel[_0x2ee7e0(0xe4)]({'_id':_0x358c7d[_0x2ee7e0(0xeb)]['id']},{'proQuantity':_0x4151c2,'proCost':_0x28e32f,'proSale':_0x4aaf36,'proExtraSale':_0x43335e,'proTaxRate':_0x30671e,'proTaxValue':_0x2be972,'proTotalVat':_0x325033},{'new':!![]});!_0x264d70?_0x8b7076(new ApiError(_0x2ee7e0(0xe7)+id,0x194)):_0x2a5dbe[_0x2ee7e0(0x113)](0xc8)[_0x2ee7e0(0x109)]({'data':_0x264d70});}),'getStoreProducts':asyncHandler(async(_0x5cb2ce,_0x490803,_0x44c9cf)=>{const _0x8be0ee=_0x493558,_0x1c39d4=_0x5cb2ce[_0x8be0ee(0xf4)][_0x8be0ee(0xec)]*0x1||0x1,_0x5eedb4=_0x5cb2ce['query'][_0x8be0ee(0xfa)]*0x1||0x14,_0x4b6942=(_0x1c39d4-0x1)*_0x5eedb4,_0x4930be=await StoreModel[_0x8be0ee(0x106)]({});_0x490803[_0x8be0ee(0x113)](0xc8)['json']({'results':_0x4930be[_0x8be0ee(0xf1)],'page':_0x1c39d4,'data':_0x4930be[_0x8be0ee(0x11b)](_0x4b6942,_0x5eedb4*_0x1c39d4)});}),'getStoreProduct':asyncHandler(async(_0x584e9b,_0x338484,_0x656cec)=>{const _0x55ada6=_0x493558,{id:_0x5e9197}=_0x584e9b[_0x55ada6(0xeb)],_0x230190=await StoreModel['findById'](_0x5e9197);!_0x230190?_0x656cec(new ApiError(_0x55ada6(0xe7)+_0x5e9197,0x194)):_0x338484['status'](0xc8)[_0x55ada6(0x109)]({'data':_0x230190});}),'deleteStoreProduct':asyncHandler(async(_0x341961,_0x54184b,_0x3aaee6)=>{const _0x1650a6=_0x493558,{id:_0x1c5002}=_0x341961[_0x1650a6(0xeb)],_0xbb2335=await StoreModel[_0x1650a6(0x111)]({'_id':_0x1c5002});!_0xbb2335?_0x3aaee6(new ApiError(_0x1650a6(0xe7)+_0x1c5002,0x194)):_0x54184b[_0x1650a6(0x113)](0xcc)[_0x1650a6(0xea)]();}),'getReport':asyncHandler(async(_0x158672,_0x146b77,_0x573903)=>{const _0x220146=_0x493558,_0x42cd8c=new excelJS[(_0x220146(0xee))](),_0x5d68a8=_0x42cd8c[_0x220146(0x112)]('بيان\x20المخزن'),_0x50f2c7=path[_0x220146(0xe9)](_0x220146(0x10e));_0x5d68a8['columns']=[{'header':_0x220146(0xfc),'key':'proCode','width':0xf},{'header':_0x220146(0x119),'key':_0x220146(0xfb),'width':0x32},{'header':_0x220146(0xf7),'key':'proQuantity','width':0xf},{'header':'السعر','key':_0x220146(0x107),'width':0xf}];var _0x5d53c6=await StoreModel['find']({});_0x5d53c6[_0x220146(0x110)](_0x7b4eb4=>{_0x5d68a8['addRow'](_0x7b4eb4);}),_0x5d68a8[_0x220146(0xfe)](0x1)[_0x220146(0x105)](_0x58fcaa=>{const _0x384e53=_0x220146;_0x58fcaa[_0x384e53(0x108)]={'bold':!![]};});try{const _0x1aae52=await _0x42cd8c['xlsx'][_0x220146(0x103)](__dirname+'/store.xlsx')[_0x220146(0x117)](()=>{const _0x105184=_0x220146;_0x146b77[_0x105184(0xea)]({'status':_0x105184(0xf0),'message':_0x105184(0xe8),'path':path+'/products.xlsx'});});}catch(_0x2071bf){_0x146b77[_0x220146(0xea)]({'status':_0x220146(0xe6),'message':_0x220146(0x104)});}})};function _0x3055(){const _0x5849bd=['36966dTSsWV','Workbook','express-async-handler','success','length','path','313948kktyDy','query','5oJnAhS','472616UGCyId','الكمية','proTotalVat','../utils/apiError','limit','proName','كود\x20الصنف','../models/product-model','getRow','49731aSnoMJ','exports','exceljs','6016392fkUGlh','writeFile','Something\x20went\x20wrong','eachCell','find','proCost','font','json','body','proQuantity','abs','proSale','./الاصناف','proCode','forEach','findByIdAndDelete','addWorksheet','status','622554LMpsXG','../models/store-model','77hbYMMp','then','toFixed','اسم\x20الصنف','44NcCpBo','slice','18024600CGLsFe','1EfsEcI','create','proTaxValue','830RzmmSl','findByIdAndUpdate','proTaxRate','error','لا\x20يوجد\x20صنف\x20بهذا\x20الرقم\x20','تم\x20تجهيز\x20البيان\x20بنجاح','resolve','send','params','page'];_0x3055=function(){return _0x5849bd;};return _0x3055();}
+const asyncHandler = require('express-async-handler');
+const ApiError = require('../utils/apiError');
+
+const StoreModel = require('../models/store-model');
+const ProductModel = require('../models/product-model');
+
+const path = require('path');
+const excelJS = require('exceljs');
+
+const getProductInfo = async (productCode) => {
+    var product = await ProductModel.findOne({ proCode: productCode });
+    return product.proName;
+}
+
+module.exports = {
+    addStoreProduct : asyncHandler(async (req , res , next) => {
+        const productName = await getProductInfo(req.body.proCode);
+        const productInfo = {
+            proCode: req.body.proCode,
+            proName: productName,
+            proQuantity: req.body.proQuantity,
+            proCost: req.body.proCost,
+        }
+
+        const product = await StoreModel.create(productInfo);
+        res.status(201).json({ data: product });
+    }),
+
+    updateStoreProduct : asyncHandler(async (req , res , next) => {
+        const proQuantity = req.body.proQuantity;
+        const proCost = req.body.proCost;
+
+        const product = await StoreModel.findByIdAndUpdate({ _id: req.params.id } , { proQuantity , proCost } , { new: true });
+        if(!product) {
+            next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404));
+        }
+        else {
+            res.status(200).json({ data: product });
+        }
+    }),
+
+    getStoreProducts : asyncHandler(async (req , res , next) => {
+        const page = req.query.page * 1 || 1
+        const limit = req.query.limit * 1 || 20
+        const skip = (page - 1) * limit
+
+        const storeProducts = await StoreModel.find({})
+        res.status(200).json({
+            results : storeProducts.length,
+            page : page,
+            data : storeProducts.slice(skip,limit*page)
+        })
+    }),
+
+    getStoreProduct : asyncHandler(async (req , res , next) => {
+        const { id } = req.params
+
+        const product = await StoreModel.findById(id)
+        if(!product) {
+            next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404))
+        }
+        else {
+            res.status(200).json({ data: product })
+        }
+    }),
+
+    deleteStoreProduct : asyncHandler( async (req,res,next) => {
+        const { id } = req.params;
+
+        const product = await StoreModel.findByIdAndDelete({ _id : id });
+        if(!product) {
+            next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404));
+        }
+        else {
+            res.status(204).send();
+        }
+    }),
+
+    getReport : asyncHandler( async (req , res , next) => {
+        const workBook = new excelJS.Workbook();
+        const workSheet = workBook.addWorksheet('بيان المخزن');
+        const filePath = path.resolve("./الاصناف");
+
+        workSheet.columns = [
+            { header: 'كود الصنف' , key: 'proCode' , width: 15 },
+            { header: 'اسم الصنف' , key: 'proName' , width: 50 },
+            { header: 'الكمية' , key: 'proQuantity' , width: 15 },
+            { header: 'السعر' , key: 'proCost' , width: 15 }
+        ]
+
+        var products = await StoreModel.find({})
+        products.forEach(product => {
+            workSheet.addRow(product);
+        });
+
+        workSheet.getRow(1).eachCell(cell => {
+            cell.font = { bold: true };
+        });
+
+        try {
+            const data = await workBook.xlsx.writeFile( __dirname + `/store.xlsx`)
+            .then(() => {
+                res.send({
+                status: "success",
+                message: "تم تجهيز البيان بنجاح",
+                path: `${path}/products.xlsx`,
+                });
+            });
+        }
+        catch (err) {
+            res.send({
+                status: "error",
+                message: "Something went wrong",
+            });
+        }
+    })
+}
