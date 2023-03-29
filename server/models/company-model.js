@@ -17,8 +17,9 @@ const companySchema = new mongoose.Schema({
         type: String,
         required: [true , 'رقم التسيجل الضريبي مطلوب']
     },
-    companyImage: {
+    companyBranche: {
         type: String,
+        required: [true , 'الفرع مطلوب']
     }
 } , { timestamps: true });
 

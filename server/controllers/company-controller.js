@@ -26,9 +26,10 @@ module.exports = {
         const companyScope = req.body.companyScope;
         const companyAddress = req.body.companyAddress;
         const companyTaxNumber = req.body.companyTaxNumber;
+        const companyBranche = req.body.companyBranche;
 
         const company = await CompanyModel.findOneAndUpdate(
-            { _id: id } , { companyName , companyScope , companyAddress , companyTaxNumber } , { new: true }
+            { _id: id } , { companyName , companyScope , companyAddress , companyTaxNumber , companyBranche } , { new: true }
         );
         if(!company) {
             next(new ApiError('هذه الشركة غير موجوده' , 404));
