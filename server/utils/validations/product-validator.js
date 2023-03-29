@@ -1,1 +1,50 @@
-const _0x43fd18=_0x2325;(function(_0x6bf7fe,_0x2dd7df){const _0x1c4a26=_0x2325,_0x24ef6a=_0x6bf7fe();while(!![]){try{const _0x2401b6=-parseInt(_0x1c4a26(0x81))/0x1*(parseInt(_0x1c4a26(0x82))/0x2)+parseInt(_0x1c4a26(0x85))/0x3*(parseInt(_0x1c4a26(0x8e))/0x4)+-parseInt(_0x1c4a26(0x8f))/0x5+-parseInt(_0x1c4a26(0x84))/0x6+parseInt(_0x1c4a26(0x86))/0x7*(-parseInt(_0x1c4a26(0x91))/0x8)+-parseInt(_0x1c4a26(0x83))/0x9*(-parseInt(_0x1c4a26(0x76))/0xa)+parseInt(_0x1c4a26(0x80))/0xb;if(_0x2401b6===_0x2dd7df)break;else _0x24ef6a['push'](_0x24ef6a['shift']());}catch(_0x30d69a){_0x24ef6a['push'](_0x24ef6a['shift']());}}}(_0x5564,0x565b8));function _0x5564(){const _0x38ac27=['custom','isMongoId','كود\x20الصنف\x20مطلوب','4914448BTSzMv','5qeKsfV','48360uvPmUm','418086gOYRga','1162146AmdBpn','1821HOtVnM','60109DZtdBF','proName','addProductValidator','express-validator','findOne','../../models/product-model','deleteProductValidator','../apiError','3092EzHrIz','1298870hEKoiO','withMessage','32OorcqT','then','كود\x20الصنف\x20موجود\x20بالفعل','اسم\x20الصنف\x20مطلوب','10WbghKJ','updateProductValidator','getProductValidator','reject','notEmpty','../../middlewares/validator-middleware','Invalid\x20Product\x20Id\x20Format'];_0x5564=function(){return _0x38ac27;};return _0x5564();}function _0x2325(_0x4fcc84,_0x373a88){const _0x556464=_0x5564();return _0x2325=function(_0x2325f7,_0x4e7542){_0x2325f7=_0x2325f7-0x74;let _0x5103dc=_0x556464[_0x2325f7];return _0x5103dc;},_0x2325(_0x4fcc84,_0x373a88);}const {check}=require(_0x43fd18(0x89)),ApiError=require(_0x43fd18(0x8d)),validatorMiddleware=require(_0x43fd18(0x7b)),ProductModel=require(_0x43fd18(0x8b));exports[_0x43fd18(0x88)]=[check('proCode')[_0x43fd18(0x7a)]()[_0x43fd18(0x90)](_0x43fd18(0x7f))[_0x43fd18(0x7d)](async _0x195959=>{const _0x375dbd=_0x43fd18;await ProductModel[_0x375dbd(0x8a)]({'proCode':_0x195959})[_0x375dbd(0x92)](_0x301caa=>{const _0x14a726=_0x375dbd;if(_0x301caa)return Promise[_0x14a726(0x79)](_0x14a726(0x74));});}),check(_0x43fd18(0x87))[_0x43fd18(0x7a)]()[_0x43fd18(0x90)](_0x43fd18(0x75)),validatorMiddleware],exports[_0x43fd18(0x78)]=[check('id')[_0x43fd18(0x7e)]()[_0x43fd18(0x90)](_0x43fd18(0x7c)),validatorMiddleware],exports[_0x43fd18(0x77)]=[check('id')[_0x43fd18(0x7e)]()[_0x43fd18(0x90)](_0x43fd18(0x7c)),check(_0x43fd18(0x87))[_0x43fd18(0x7a)]()['withMessage']('اسم\x20الصنف\x20مطلوب'),validatorMiddleware],exports[_0x43fd18(0x8c)]=[check('id')['isMongoId']()['withMessage'](_0x43fd18(0x7c)),validatorMiddleware];
+const { check } = require('express-validator');
+const ApiError = require('../apiError');
+const validatorMiddleware = require('../../middlewares/validator-middleware');
+
+const ProductModel = require('../../models/product-model')
+
+exports.addProductValidator = [
+    check('proCode').notEmpty().withMessage('كود الصنف مطلوب')
+    .custom(async (val) => {
+        await ProductModel.findOne({ proCode: val }).then((product) => {
+            if(product) {                
+                return Promise.reject('كود الصنف موجود بالفعل');
+            }
+        })
+    }),
+
+    check('proName').notEmpty().withMessage('اسم الصنف مطلوب'),
+
+    validatorMiddleware
+]
+
+exports.getProductValidator = [
+    check('id').isMongoId().withMessage('Invalid Product Id Format'),
+    validatorMiddleware
+]
+
+exports.getProductCodeValidator = [
+    check('proCode').notEmpty().withMessage('كود الصنف مطلوب')
+    .custom(async (val) => {
+        await ProductModel.findOne({ proCode: val }).then((product) => {
+            if(!product) {                
+                return Promise.reject('كود الصنف غير موجود');
+            }
+        })
+    }),
+    validatorMiddleware
+]
+
+exports.updateProductValidator = [
+    check('id').isMongoId().withMessage('Invalid Product Id Format'),
+
+    check('proName').notEmpty().withMessage('اسم الصنف مطلوب'),
+
+    validatorMiddleware
+]
+
+exports.deleteProductValidator = [
+    check('id').isMongoId().withMessage('Invalid Product Id Format'),
+    validatorMiddleware
+]

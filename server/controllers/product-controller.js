@@ -110,5 +110,17 @@ module.exports = {
                 message: "Something went wrong",
             });
         }
+    }),
+
+    getProductByCode : (async (req , res , next) => {
+        const { proCode } = req.body
+
+        const product = await ProductModel.findOne({ proCode })
+        if(!product) {
+            next(new ApiError(`لا يوجد صنف بهذا الرقم ${proCode}` , 404))
+        }
+        else {
+            res.status(200).json({ data : product })
+        }
     })
 }
