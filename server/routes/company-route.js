@@ -16,17 +16,15 @@ const {
     getAllCompanies,
     createCompany,
     updateCompany,
-    deleteCompany,
-    uploadCompanyImage,
-    resizeImage
+    deleteCompany
 } = require('../controllers/company-controller');
 
 const router = express.Router();
 
 router.get('/companies' , checkToken , getAllCompanies);
 router.get('/getCompany/:id' , checkToken , getCompanyValidator , getCompany);
-router.post('/createCompany' , checkToken , uploadCompanyImage , resizeImage , createCompanyValidator , createCompany);
-router.put('/updateCompany/:id' , checkToken , uploadCompanyImage , resizeImage , updateCompanyValidator , updateCompany);
+router.post('/createCompany' , checkToken , createCompanyValidator , createCompany);
+router.put('/updateCompany/:id' , checkToken , updateCompanyValidator , updateCompany);
 router.delete('/deleteCompany/:id' , checkToken , deleteCompanyValidator , deleteCompany);
 
 module.exports = router;
