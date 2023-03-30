@@ -16,6 +16,8 @@ exports.addProductValidator = [
 
     check('proName').notEmpty().withMessage('اسم الصنف مطلوب'),
 
+    check('proTaxRate').notEmpty().withMessage('نسبة الضريبة مطلوبة'),
+
     validatorMiddleware
 ]
 
@@ -40,6 +42,8 @@ exports.updateProductValidator = [
     check('id').isMongoId().withMessage('Invalid Product Id Format'),
 
     check('proName').notEmpty().withMessage('اسم الصنف مطلوب'),
+
+    check('proTaxRate').notEmpty().withMessage('نسبة الضريبة مطلوبة'),
 
     validatorMiddleware
 ]

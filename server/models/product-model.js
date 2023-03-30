@@ -13,7 +13,8 @@ const productSchema = new mongoose.Schema({
         type: String,
         default: 'CAR'
     },
-    proPrice: { type: Number }
+    proPrice: { type: Number },
+    proTaxRate: { type: Number }
 }, { timestamps: true });
 
 const ProductModel = mongoose.model('Product', productSchema);
