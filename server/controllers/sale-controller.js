@@ -12,44 +12,50 @@ const csv = require('csv-parser');
 const path = require('path');
 const excelJS = require('exceljs');
 
-const getProductInfo = async (products) => {
-    var invoice = {
-        productsInfo : [],
-        invoiceTotal : 0
-    }
-    for(var i = 0; i < products.length; i++) {
-        var product = await ProductModel.findOne({ proCode: products[i].proCode });
-        // if(!product || product.length == 0) {
-        //     return (new ApiError(`Product Not Found With This Code:${products[i].proCode} Insert It First..` , 404));
-        // }
-        var productInfo = {
-            proCode: product.proCode,
-            proName: product.proName,
-            proQuantity: products[i].proQuantity,
-            proCost: products[i].proCost,
-            proSale: products[i].proSale,
-            proExtraSale: products[i].proExtraSale,
-            proTaxRate: products[i].proTaxRate,
-            proTaxValue: (products[i].proTaxRate == '5' ? Math.abs(( ( ( (products[i].proCost * products[i].proQuantity) - products[i].proSale ) * products[i].proTaxRate ) / 105 )).toFixed(2) : Math.abs((( ( (products[i].proCost * products[i].proQuantity) - products[i].proSale ) * products[i].proTaxRate ) / 114 )).toFixed(2)),
-            proTotalVat: Math.abs((products[i].proCost * products[i].proQuantity) - products[i].proSale),
-        }
-        invoice.invoiceTotal = invoice.invoiceTotal + productInfo.proTotalVat;
-        invoice.productsInfo.push(productInfo);
-    }
-    return invoice;
+const getCompanyInfo = async(companyId) => {
+    const company = await CompanyModel.find({ _id: companyId })
+    return company;
 }
 
-const getStoreProducts = async (products) => {
+const updateStoreProducts = async (products) => {
     let storeProducts = []
     for(var i = 0; i < products.length; i++) {
         var product = await StoreModel.findOneAndUpdate({ proCode: products[i].proCode } , {
             $inc:{ proQuantity: -(products[i].proQuantity) },
         } , { new: true });
-        if(!product || product == undefined) {
-            storeProducts.push(products[i]);
-        }
+        storeProducts.push(product)
     }
     return storeProducts;
+}
+
+const getProductTotal = async (products) => {
+    var invoice = {
+        productsInfo : [],
+        invoiceTotal : 0,
+        invoiceTotalSale : 0,
+        invoiceTotalTax : 0,
+        invoiceTotalVat : 0
+    }
+    for(var i = 0; i < products.length; i++) {
+        var product = await ProductModel.findOne({ proCode: products[i].proCode });
+        var productInfo = {
+            proCode: product.proCode,
+            proName: product.proName,
+            proPackaging: product.proPackaging,
+            proPrice: product.proPrice,
+            proQuantity: products[i].proQuantity,
+            proSale: Number((product.proPrice * products[i].proQuantity * 0.1175).toFixed(2)),
+            proTaxRate: product.proTaxRate,
+            proTaxValue: (product.proTaxRate != 0 ? Number((((products[i].proQuantity * product.proPrice) - (product.proPrice * products[i].proQuantity * 0.1175)) * product.proTaxRate).toFixed(2)) : 0),
+            proTotalVat: Number(((products[i].proQuantity * product.proPrice) - (product.proPrice * products[i].proQuantity * 0.1175)).toFixed(2)),
+        }
+        invoice.invoiceTotal = invoice.invoiceTotal + productInfo.proTotalVat;
+        invoice.invoiceTotalSale = invoice.invoiceTotalSale + productInfo.proSale;
+        invoice.invoiceTotalTax = invoice.invoiceTotalTax + productInfo.proTaxValue;
+        invoice.productsInfo.push(productInfo);
+    }
+    invoice.invoiceTotalVat = invoice.invoiceTotal - invoice.invoiceTotalSale + invoice.invoiceTotalTax
+    return invoice;
 }
 
 const checkStoreQuantity = async (products) => {
@@ -172,15 +178,43 @@ module.exports = {
     }),
 
     addInvoice : asyncHandler(async (req , res ) => {
+        // بيانات الشركة
+        const company = await getCompanyInfo(req.body.companyId);
+        // بيانات العميل
+        const clientName = req.body.clientName;
+        const clientAddress = req.body.clientAddress;
+        const registrationNumber = req.body.registrationNumber;
+        // التاريخ
+        const d = new Date();
+        const invoiceDate = d.toLocaleDateString();
+        // رقم الفاتورة
         const invoiceNumber = req.body.invoiceNumber;
+        // الاصناف
         const products = req.body.products;
+        // تعديل كميات المخزن
+        const storeProducts = await updateStoreProducts(products);
+        // ايجاد الاجمالي
+        const invoiceTotal = await getProductTotal(products);
+        // بيانات الفاتورة
+        const invoiceData = {
+            companyName: company[0].companyName,
+            companyScope: company[0].companyScope,
+            companyBranche: company[0].companyBranche,
+            companyAddress: company[0].companyAddress,
+            companyTaxNumber: company[0].companyTaxNumber,
+            clientName: clientName,
+            clientAddress: clientAddress,
+            registrationNumber: registrationNumber,
+            invoiceDate: invoiceDate,
+            invoiceNumber: invoiceNumber,
+            products: invoiceTotal.productsInfo,
+            invoiceTotal: invoiceTotal.invoiceTotal,
+            invoiceTotalSale: invoiceTotal.invoiceTotalSale,
+            invoiceTotalTax: invoiceTotal.invoiceTotalTax,
+            invoiceTotalVat: invoiceTotal.invoiceTotalVat
+        }
 
-        const productsInfo = await getProductInfo(products);
-
-        const storeProducts = await getStoreProducts(productsInfo.productsInfo);
-        // if(storeProducts.length != 0) { await StoreModel.create(storeProducts); }
-
-        const invoiceProducts = await SaleInvoiceModel.create({ invoiceNumber , products: productsInfo.productsInfo , invoiceTotal: productsInfo.invoiceTotal });
+        const invoiceProducts = await SaleInvoiceModel.create(invoiceData);
         res.status(201).json({ data: invoiceProducts });
     }),
 
@@ -203,17 +237,35 @@ module.exports = {
 
     updateInvoice : asyncHandler( async (req,res,next) => {
         const { id } = req.params;
+        // بيانات الشركة
+        const company = await getCompanyInfo(req.body.companyId);
+        // بيانات العميل
+        const clientName = req.body.clientName;
+        const clientAddress = req.body.clientAddress;
+        const registrationNumber = req.body.registrationNumber;
+        // رقم الفاتورة
         const invoiceNumber = req.body.invoiceNumber;
-        const products = req.body.products;
+        // بيانات الفاتورة
+        const invoiceData = {
+            companyName: company[0].companyName,
+            companyScope: company[0].companyScope,
+            companyBranche: company[0].companyBranche,
+            companyAddress: company[0].companyAddress,
+            companyTaxNumber: company[0].companyTaxNumber,
+            clientName: clientName,
+            clientAddress: clientAddress,
+            registrationNumber: registrationNumber,
+            invoiceNumber: invoiceNumber,
+        }
 
-        const invoice = await SaleInvoiceModel.findByIdAndUpdate(
-            { _id : id } , { invoiceNumber , products } , { new : true }
+        const invoiceProducts = await SaleInvoiceModel.findByIdAndUpdate(
+            { _id : id } , { invoiceData } , { new : true }
         )
         if(!invoice) {
             next(new ApiError(`لا توجد فاتورة بهذا الرقم ${id}` , 404));
         }
         else {
-            res.status(200).json({ data: invoice });
+            res.status(200).json({ data: invoiceProducts });
         }
     }),
 
@@ -230,48 +282,52 @@ module.exports = {
     }),
 
     getReport : asyncHandler( async (req , res , next) => {
+        const d = new Date();
+        const dateNumber = d.toLocaleDateString().replaceAll('/' , '-')
         const workBook = new excelJS.Workbook();
         const workSheet = workBook.addWorksheet('سجل المبيعات');
-        const filePath = path.resolve("./فواتير البيع");
-        const registrationNumber = req.body.registrationNumber;
-        const customerName = req.body.customerName;
+        const filePath = path.resolve("./uploads/فواتير البيع");
 
-        var products = [];
         var invoices = await SaleInvoiceModel.find({})
-        for(var i = 0; i < invoices.length; i++) {
-            for(var x = 0; x < invoices[i].products.length; x++) {
-                var product1 = {
-                    invoiceNumber: invoices[i].invoiceNumber,
-                    registrationNumber: registrationNumber,
-                    customerName: customerName,
-                    proCode: invoices[i].products[x].proCode,
-                    proName: invoices[i].products[x].proName,
-                    proQuantity: invoices[i].products[x].proQuantity,
-                    proCost: invoices[i].products[x].proCost,
-                    proSale: invoices[i].products[x].proSale,
-                    proTaxValue: invoices[i].products[x].proTaxValue,
-                    proTotalVat: invoices[i].products[x].proTotalVat,
-                }
-                products.push(product1);
-            }
-        }
 
-        // res.send(products)
         workSheet.columns = [
             { header: 'رقم الفاتورة' , key: 'invoiceNumber' , width: 15 },
+            { header: 'التاريخ' , key: 'invoiceDate' , width: 15 },
             { header: 'رقم التسجيل' , key: 'registrationNumber' , width: 15 },
-            { header: 'اسم العميل' , key: 'customerName' , width: 15 },
+            { header: 'اسم العميل' , key: 'clientName' , width: 15 },
             { header: 'رقم الصنف' , key: 'proCode' , width: 15 },
-            { header: 'اسم الصنف' , key: 'proName' , width: 50 },
+            { header: 'اسم الصنف' , key: 'proName' , width: 30 },
+            { header: 'السعر' , key: 'proPrice' , width: 15 },
             { header: 'الكمية' , key: 'proQuantity' , width: 15 },
-            { header: 'السعر' , key: 'proCost' , width: 15 },
             { header: 'الخصم' , key: 'proSale' , width: 15 },
             { header: 'الضريبة' , key: 'proTaxValue' , width: 15 },
             { header: 'الاجمالي' , key: 'proTotalVat' , width: 15 }
         ]
 
-        products.forEach(product => {
-            workSheet.addRow(product);
+        var invoiceItems = []
+        for(var i = 0; i < invoices.length; i++) {
+            console.log(invoices[i].invoiceNumber)
+            for(var x = 0; x < invoices[i].products.length; x++) {
+                console.log(invoices[i].products[x].proCode)
+                var invoice = {
+                    invoiceNumber: invoices[i].invoiceNumber,
+                    invoiceDate: invoices[i].invoiceDate,
+                    registrationNumber: invoices[i].registrationNumber,
+                    clientName: invoices[i].clientName,
+                    proCode: invoices[i].products[x].proCode,
+                    proName: invoices[i].products[x].proName,
+                    proPrice: invoices[i].products[x].proPrice,
+                    proQuantity: invoices[i].products[x].proQuantity,
+                    proSale: invoices[i].products[x].proSale,
+                    proTaxValue: invoices[i].products[x].proTaxValue,
+                    proTotalVat: invoices[i].products[x].proTotalVat,
+                }
+                invoiceItems.push(invoice)
+            }
+        }
+
+        invoiceItems.forEach(invoice => {
+            workSheet.addRow(invoice);
         });
 
         workSheet.getRow(1).eachCell(cell => {
@@ -279,12 +335,11 @@ module.exports = {
         });
 
         try {
-            const data = await workBook.xlsx.writeFile( filePath + `/invoice.xlsx`)
+            const data = await workBook.xlsx.writeFile( filePath + `/invoice-${uuidv4()}(${dateNumber}).xlsx`)
             .then(() => {
                 res.send({
                 status: "success",
-                message: "تم تجهيز التقرير بنجاح",
-                path: `${filePath}/invoices.xlsx`,
+                message: "تم تجهيز التقرير بنجاح"
                 });
             });
         }
