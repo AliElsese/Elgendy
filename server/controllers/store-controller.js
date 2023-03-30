@@ -10,17 +10,17 @@ const excelJS = require('exceljs');
 
 const getProductInfo = async (productCode) => {
     var product = await ProductModel.findOne({ proCode: productCode });
-    return product.proName;
+    return product;
 }
 
 module.exports = {
     addStoreProduct : asyncHandler(async (req , res , next) => {
-        const productName = await getProductInfo(req.body.proCode);
+        const productDate = await getProductInfo(req.body.proCode);
         const productInfo = {
             proCode: req.body.proCode,
-            proName: productName,
+            proName: productDate.proName,
             proQuantity: req.body.proQuantity,
-            proPrice: req.body.proPrice,
+            proPrice: productDate.proPrice,
         }
 
         const product = await StoreModel.create(productInfo);
@@ -29,9 +29,8 @@ module.exports = {
 
     updateStoreProduct : asyncHandler(async (req , res , next) => {
         const proQuantity = req.body.proQuantity;
-        const proPrice = req.body.proPrice;
 
-        const product = await StoreModel.findByIdAndUpdate({ _id: req.params.id } , { proQuantity , proPrice } , { new: true });
+        const product = await StoreModel.findByIdAndUpdate({ _id: req.params.id } , { proPrice } , { new: true });
         if(!product) {
             next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404));
         }
@@ -39,6 +38,7 @@ module.exports = {
             res.status(200).json({ data: product });
         }
     }),
+
 
     getStoreProducts : asyncHandler(async (req , res , next) => {
         const storeProducts = await StoreModel.find({})
