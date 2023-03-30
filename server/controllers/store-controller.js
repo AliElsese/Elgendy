@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const asyncHandler = require('express-async-handler');
 const ApiError = require('../utils/apiError');
 
@@ -40,19 +41,16 @@ module.exports = {
     }),
 
     getStoreProducts : asyncHandler(async (req , res , next) => {
-        const storeProducts = await StoreModel.find({});
-        res.status(200).json({ data : storeProducts });
-        
-        // const page = req.query.page * 1 || 1
-        // const limit = req.query.limit * 1 || 20
-        // const skip = (page - 1) * limit
+        const page = req.query.page * 1 || 1
+        const limit = req.query.limit * 1 || 20
+        const skip = (page - 1) * limit
 
-        // const storeProducts = await StoreModel.find({});
-        // res.status(200).json({
-        //     results : storeProducts.length,
-        //     page : page,
-        //     data : storeProducts.slice(skip,limit*page)
-        // })
+        const storeProducts = await StoreModel.find({})
+        res.status(200).json({
+            results : storeProducts.length,
+            page : page,
+            data : storeProducts.slice(skip,limit*page)
+        })
     }),
 
     getStoreProduct : asyncHandler(async (req , res , next) => {
@@ -80,9 +78,11 @@ module.exports = {
     }),
 
     getReport : asyncHandler( async (req , res , next) => {
+        const d = new Date();
+        const dateNumber = d.toLocaleDateString().replaceAll('/' , '-')
         const workBook = new excelJS.Workbook();
         const workSheet = workBook.addWorksheet('بيان المخزن');
-        const filePath = path.resolve("./الاصناف");
+        const filePath = path.resolve("./uploads/المخزن");
 
         workSheet.columns = [
             { header: 'كود الصنف' , key: 'proCode' , width: 15 },
@@ -101,12 +101,11 @@ module.exports = {
         });
 
         try {
-            const data = await workBook.xlsx.writeFile( __dirname + `/store.xlsx`)
+            const data = await workBook.xlsx.writeFile( filePath + `/store-${uuidv4()}(${dateNumber}).xlsx`)
             .then(() => {
                 res.send({
                 status: "success",
                 message: "تم تجهيز البيان بنجاح",
-                path: `${path}/products.xlsx`,
                 });
             });
         }

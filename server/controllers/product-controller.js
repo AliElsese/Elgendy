@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const asyncHandler = require('express-async-handler');
 const ApiError = require('../utils/apiError');
 const ProductModel = require('../models/product-model');
@@ -17,19 +18,16 @@ module.exports = {
     }),
 
     getProducts : asyncHandler(async (req , res) => {
+        const page = req.query.page * 1 || 1
+        const limit = req.query.limit * 1 || 20
+        const skip = (page - 1) * limit
+
         const products = await ProductModel.find({})
-        res.status(200).json({ data : products })
-
-        // const page = req.query.page * 1 || 1
-        // const limit = req.query.limit * 1 || 20
-        // const skip = (page - 1) * limit
-
-        // const products = await ProductModel.find({})
-        // res.status(200).json({
-        //     results : products.length,
-        //     page : page,
-        //     data : products.slice(skip,limit*page)
-        // })
+        res.status(200).json({
+            results : products.length,
+            page : page,
+            data : products.slice(skip,limit*page)
+        })
     }),
 
     getProduct : asyncHandler( async (req,res,next) => {
@@ -74,9 +72,11 @@ module.exports = {
     }),
 
     getReport : asyncHandler( async (req , res , next) => {
+        const d = new Date();
+        const dateNumber = d.toLocaleDateString().replaceAll('/' , '-')
         const workBook = new excelJS.Workbook();
         const workSheet = workBook.addWorksheet('بيان الاصناف');
-        const filePath = path.resolve("./الاصناف");
+        const filePath = path.resolve("./uploads/الاصناف");
 
         workSheet.columns = [
             { header: 'كود الصنف' , key: 'proCode' , width: 12 },
@@ -95,19 +95,18 @@ module.exports = {
         });
 
         try {
-            const data = await workBook.xlsx.writeFile( filePath + `/products.xlsx`)
+            const data = await workBook.xlsx.writeFile( filePath + `/products-${uuidv4()}(${dateNumber}).xlsx`)
             .then(() => {
                 res.send({
                 status: "success",
                 message: "تم تجهيز البيان بنجاح",
-                path: `${filePath}/products.xlsx`,
                 });
             });
         }
         catch (err) {
             res.send({
                 status: "error",
-                message: "Something went wrong",
+                message: err,
             });
         }
     }),
