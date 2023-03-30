@@ -239,12 +239,15 @@ module.exports = {
         const { id } = req.params;
         // بيانات الشركة
         const company = await getCompanyInfo(req.body.companyId);
+        const companyName = company[0].companyName;
+        const companyScope = company[0].companyScope;
+        const companyBranche = company[0].companyBranche;
+        const companyAddress = company[0].companyAddress;
+        const companyTaxNumber = company[0].companyTaxNumber;
         // بيانات العميل
         const clientName = req.body.clientName;
         const clientAddress = req.body.clientAddress;
         const registrationNumber = req.body.registrationNumber;
-        // رقم الفاتورة
-        const invoiceNumber = req.body.invoiceNumber;
         // بيانات الفاتورة
         const invoiceData = {
             companyName: company[0].companyName,
@@ -254,14 +257,13 @@ module.exports = {
             companyTaxNumber: company[0].companyTaxNumber,
             clientName: clientName,
             clientAddress: clientAddress,
-            registrationNumber: registrationNumber,
-            invoiceNumber: invoiceNumber,
+            registrationNumber: registrationNumber
         }
 
         const invoiceProducts = await SaleInvoiceModel.findByIdAndUpdate(
-            { _id : id } , { invoiceData } , { new : true }
+            { _id : id } , { companyName , companyScope , companyBranche , companyAddress , companyTaxNumber , clientName , clientAddress , registrationNumber } , { new : true }
         )
-        if(!invoice) {
+        if(!invoiceProducts) {
             next(new ApiError(`لا توجد فاتورة بهذا الرقم ${id}` , 404));
         }
         else {
