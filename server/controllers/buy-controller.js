@@ -172,17 +172,6 @@ module.exports = {
     getInvoices : asyncHandler(async (req , res) => {
         const invoices = await BuyInvoiceModel.find({})
         res.status(200).json({ data : invoices })
-
-        // const page = req.query.page * 1 || 1
-        // const limit = req.query.limit * 1 || 20
-        // const skip = (page - 1) * limit
-
-        // const invoices = await BuyInvoiceModel.find({})
-        // res.status(200).json({
-        //     results : invoices.length,
-        //     page : page,
-        //     data : invoices.slice(skip,limit*page)
-        // })
     }),
 
     getInvoice : asyncHandler( async (req,res,next) => {

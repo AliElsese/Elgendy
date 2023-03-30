@@ -11,7 +11,7 @@ const storeSchema = new mongoose.Schema({
         required: [true , 'The product name is required'],
     },
     proQuantity: { type: Number },
-    proCost: { type: Number },
+    proPrice: { type: Number },
 }, { timestamps: true });
 
 const StoreModel = mongoose.model('Store', storeSchema);

@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(headersMiddleware.setHeaders);
 app.use(cors());
 
-app.use('/server/uploads', express.static(path.join(__dirname , 'server/uploads')))
+app.use('/server/uploads', express.static(path.join(__dirname , 'uploads')))
 
 app.use('/auth' , authRoute);
 app.use('/users' , userRoute);

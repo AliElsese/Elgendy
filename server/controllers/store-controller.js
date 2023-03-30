@@ -20,7 +20,7 @@ module.exports = {
             proCode: req.body.proCode,
             proName: productName,
             proQuantity: req.body.proQuantity,
-            proCost: req.body.proCost,
+            proPrice: req.body.proPrice,
         }
 
         const product = await StoreModel.create(productInfo);
@@ -29,9 +29,9 @@ module.exports = {
 
     updateStoreProduct : asyncHandler(async (req , res , next) => {
         const proQuantity = req.body.proQuantity;
-        const proCost = req.body.proCost;
+        const proPrice = req.body.proPrice;
 
-        const product = await StoreModel.findByIdAndUpdate({ _id: req.params.id } , { proQuantity , proCost } , { new: true });
+        const product = await StoreModel.findByIdAndUpdate({ _id: req.params.id } , { proQuantity , proPrice } , { new: true });
         if(!product) {
             next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404));
         }
@@ -41,16 +41,8 @@ module.exports = {
     }),
 
     getStoreProducts : asyncHandler(async (req , res , next) => {
-        const page = req.query.page * 1 || 1
-        const limit = req.query.limit * 1 || 20
-        const skip = (page - 1) * limit
-
         const storeProducts = await StoreModel.find({})
-        res.status(200).json({
-            results : storeProducts.length,
-            page : page,
-            data : storeProducts.slice(skip,limit*page)
-        })
+        res.status(200).json({ data : storeProducts })
     }),
 
     getStoreProduct : asyncHandler(async (req , res , next) => {
@@ -88,7 +80,7 @@ module.exports = {
             { header: 'كود الصنف' , key: 'proCode' , width: 15 },
             { header: 'اسم الصنف' , key: 'proName' , width: 50 },
             { header: 'الكمية' , key: 'proQuantity' , width: 15 },
-            { header: 'السعر' , key: 'proCost' , width: 15 }
+            { header: 'السعر' , key: 'proPrice' , width: 15 }
         ]
 
         var products = await StoreModel.find({})

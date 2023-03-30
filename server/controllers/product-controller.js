@@ -11,23 +11,15 @@ module.exports = {
         const proCode = req.body.proCode;
         const proName = req.body.proName;
         const proPackaging = req.body.proPackaging;
-        const consumerPrice = req.body.consumerPrice;
+        const proPrice = req.body.proPrice;
 
-        const product = await ProductModel.create({ proCode , proName , proPackaging , consumerPrice });
+        const product = await ProductModel.create({ proCode , proName , proPackaging , proPrice });
         res.status(201).json({ data: product });
     }),
 
     getProducts : asyncHandler(async (req , res) => {
-        const page = req.query.page * 1 || 1
-        const limit = req.query.limit * 1 || 20
-        const skip = (page - 1) * limit
-
         const products = await ProductModel.find({})
-        res.status(200).json({
-            results : products.length,
-            page : page,
-            data : products.slice(skip,limit*page)
-        })
+        res.status(200).json({ data : products })
     }),
 
     getProduct : asyncHandler( async (req,res,next) => {
@@ -46,10 +38,10 @@ module.exports = {
         const { id } = req.params;
         const proName = req.body.proName;
         const proPackaging = req.body.proPackaging;
-        const consumerPrice = req.body.consumerPrice;
+        const proPrice = req.body.proPrice;
 
         const product = await ProductModel.findByIdAndUpdate(
-            { _id : id } , { proName , proPackaging , consumerPrice } , { new : true }
+            { _id : id } , { proName , proPackaging , proPrice } , { new : true }
         )
         if(!product) {
             next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404));
@@ -82,7 +74,7 @@ module.exports = {
             { header: 'كود الصنف' , key: 'proCode' , width: 12 },
             { header: 'اسم الصنف' , key: 'proName' , width: 50 },
             { header: 'العبوة' , key: 'proPackaging' , width: 10 },
-            { header: 'سعر المستهلك' , key: 'consumerPrice' , width: 30 }
+            { header: 'السعر' , key: 'proPrice' , width: 30 }
         ]
 
         var products = await ProductModel.find({})
