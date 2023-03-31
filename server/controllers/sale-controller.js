@@ -1,8 +1,10 @@
+const { v4: uuidv4 } = require('uuid');
 const asyncHandler = require('express-async-handler');
 const ApiError = require('../utils/apiError');
 const SaleInvoiceModel = require('../models/sale-model');
 const ProductModel = require('../models/product-model');
 const StoreModel = require('../models/store-model');
+const CompanyModel = require('../models/company-model');
 
 const { spawn } = require('child_process');
 
