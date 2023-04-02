@@ -16,7 +16,7 @@ exports.addStoreProductValidator = [
 
     check('proQuantity').notEmpty().withMessage('كمية الصنف مطلوبة'),
 
-    check('proPrice').notEmpty().withMessage('سعر الصنف مطلوب'),
+    check('proTaxRate').notEmpty().withMessage('نسبة ضريبة الصنف مطلوبة'),
 
     validatorMiddleware
 ]
@@ -32,6 +32,8 @@ exports.updateStoreProductValidator = [
     check('proQuantity').notEmpty().withMessage('كمية الصنف مطلوبة'),
 
     check('proPrice').notEmpty().withMessage('سعر الصنف مطلوب'),
+
+    check('proTaxRate').notEmpty().withMessage('نسبة ضريبة الصنف مطلوبة'),
 
     validatorMiddleware
 ]

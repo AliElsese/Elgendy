@@ -16,7 +16,9 @@ exports.addProductValidator = [
 
     check('proName').notEmpty().withMessage('اسم الصنف مطلوب'),
 
-    check('proTaxRate').notEmpty().withMessage('نسبة الضريبة مطلوبة'),
+    check('proPackaging').notEmpty().withMessage('عبوة الصنف مطلوب'),
+
+    check('proPrice').notEmpty().withMessage('سعر الصنف مطلوب'),
 
     validatorMiddleware
 ]
@@ -35,6 +37,7 @@ exports.getProductCodeValidator = [
             }
         })
     }),
+
     validatorMiddleware
 ]
 
@@ -43,8 +46,10 @@ exports.updateProductValidator = [
 
     check('proName').notEmpty().withMessage('اسم الصنف مطلوب'),
 
-    check('proTaxRate').notEmpty().withMessage('نسبة الضريبة مطلوبة'),
+    check('proPackaging').notEmpty().withMessage('عبوة الصنف مطلوب'),
 
+    check('proPrice').notEmpty().withMessage('سعر الصنف مطلوب'),
+    
     validatorMiddleware
 ]
 

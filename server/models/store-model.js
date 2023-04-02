@@ -10,8 +10,13 @@ const storeSchema = new mongoose.Schema({
         type: String,
         required: [true , 'The product name is required'],
     },
-    proQuantity: { type: Number },
+    proPackaging: { 
+        type: String,
+        default: 'CAR'
+    },
     proPrice: { type: Number },
+    proQuantity: { type: Number },
+    proTaxRate: { type: Number }
 }, { timestamps: true });
 
 const StoreModel = mongoose.model('Store', storeSchema);

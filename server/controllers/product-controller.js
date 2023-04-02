@@ -12,9 +12,8 @@ module.exports = {
         const proName = req.body.proName;
         const proPackaging = req.body.proPackaging;
         const proPrice = req.body.proPrice;
-        const proTaxRate = req.body.proTaxRate;
 
-        const product = await ProductModel.create({ proCode , proName , proPackaging , proPrice , proTaxRate });
+        const product = await ProductModel.create({ proCode , proName , proPackaging , proPrice });
         res.status(201).json({ data: product });
     }),
 
@@ -40,10 +39,9 @@ module.exports = {
         const proName = req.body.proName;
         const proPackaging = req.body.proPackaging;
         const proPrice = req.body.proPrice;
-        const proTaxRate = req.body.proTaxRate;
 
         const product = await ProductModel.findByIdAndUpdate(
-            { _id : id } , { proName , proPackaging , proPrice , proTaxRate } , { new : true }
+            { _id : id } , { proName , proPackaging , proPrice } , { new : true }
         )
         if(!product) {
             next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404));
@@ -67,7 +65,7 @@ module.exports = {
 
     getReport : asyncHandler( async (req , res , next) => {
         const d = new Date();
-        const dateNumber = d.toLocaleDateString().replaceAll('/' , '-')
+        const dateNumber = d.toLocaleDateString('en-GB').replaceAll('/' , '-')
         const workBook = new excelJS.Workbook();
         const workSheet = workBook.addWorksheet('بيان الاصناف');
         const filePath = path.resolve("./uploads/الاصناف");
@@ -76,8 +74,7 @@ module.exports = {
             { header: 'كود الصنف' , key: 'proCode' , width: 12 },
             { header: 'اسم الصنف' , key: 'proName' , width: 50 },
             { header: 'العبوة' , key: 'proPackaging' , width: 15 },
-            { header: 'السعر' , key: 'proPrice' , width: 12 },
-            { header: 'نسبة الضريبة' , key: 'proTaxRate' , width: 12 }
+            { header: 'السعر' , key: 'proPrice' , width: 12 }
         ]
 
         var products = await ProductModel.find({})

@@ -15,30 +15,19 @@ const getProductInfo = async (productCode) => {
 
 module.exports = {
     addStoreProduct : asyncHandler(async (req , res , next) => {
-        const productDate = await getProductInfo(req.body.proCode);
+        const productData = await getProductInfo(req.body.proCode);
         const productInfo = {
             proCode: req.body.proCode,
-            proName: productDate.proName,
+            proName: productData.proName,
+            proPackaging: productData.proPackaging,
+            proPrice: productData.proPrice,
             proQuantity: req.body.proQuantity,
-            proPrice: productDate.proPrice,
+            proTaxRate: req.body.proTaxRate
         }
 
         const product = await StoreModel.create(productInfo);
         res.status(201).json({ data: product });
     }),
-
-    updateStoreProduct : asyncHandler(async (req , res , next) => {
-        const proQuantity = req.body.proQuantity;
-
-        const product = await StoreModel.findByIdAndUpdate({ _id: req.params.id } , { proPrice } , { new: true });
-        if(!product) {
-            next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404));
-        }
-        else {
-            res.status(200).json({ data: product });
-        }
-    }),
-
 
     getStoreProducts : asyncHandler(async (req , res , next) => {
         const storeProducts = await StoreModel.find({})
@@ -57,6 +46,20 @@ module.exports = {
         }
     }),
 
+    updateStoreProduct : asyncHandler(async (req , res , next) => {
+        const proPrice = req.body.proPrice;
+        const proQuantity = req.body.proQuantity;
+        const proTaxRate = req.body.proTaxRate;
+
+        const product = await StoreModel.findByIdAndUpdate({ _id: req.params.id } , { proPrice , proQuantity , proTaxRate } , { new: true });
+        if(!product) {
+            next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404));
+        }
+        else {
+            res.status(200).json({ data: product });
+        }
+    }),
+
     deleteStoreProduct : asyncHandler( async (req,res,next) => {
         const { id } = req.params;
 
@@ -71,7 +74,7 @@ module.exports = {
 
     getReport : asyncHandler( async (req , res , next) => {
         const d = new Date();
-        const dateNumber = d.toLocaleDateString().replaceAll('/' , '-')
+        const dateNumber = d.toLocaleDateString('en-GB').replaceAll('/' , '-')
         const workBook = new excelJS.Workbook();
         const workSheet = workBook.addWorksheet('بيان المخزن');
         const filePath = path.resolve("./uploads/المخزن");
@@ -79,8 +82,10 @@ module.exports = {
         workSheet.columns = [
             { header: 'كود الصنف' , key: 'proCode' , width: 15 },
             { header: 'اسم الصنف' , key: 'proName' , width: 50 },
+            { header: 'العبوة' , key: 'proPackaging' , width: 15 },
+            { header: 'السعر' , key: 'proPrice' , width: 15 },
             { header: 'الكمية' , key: 'proQuantity' , width: 15 },
-            { header: 'السعر' , key: 'proPrice' , width: 15 }
+            { header: 'نسبة الضريبة' , key: 'proTaxRate' , width: 15 },
         ]
 
         var products = await StoreModel.find({})
