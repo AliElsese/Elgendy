@@ -62,15 +62,6 @@ exports.updateInvoiceValidator = [
 
     check('companyId').notEmpty().withMessage('اختيار الشركة مطلوب'),
 
-    check('invoiceNumber').notEmpty().withMessage('رقم الفاتورة مطلوب')
-    .custom(async (val) => {
-        await SaleInvoiceModel.findOne({ invoiceNumber: val }).then((invoice) => {
-            if(invoice) {                
-                return Promise.reject('رقم الفاتورة مستخدم من قبل');
-            }
-        })
-    }),
-
     validatorMiddleware
 ]
 

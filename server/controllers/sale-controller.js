@@ -8,6 +8,7 @@ const CompanyModel = require('../models/company-model');
 
 const { spawn } = require('child_process');
 
+const pdf = require('pdf-creator-node');
 const fs = require('fs');
 const csv = require('csv-parser');
 
@@ -39,7 +40,7 @@ const getProductTotal = async (products) => {
         invoiceTotalVat : 0
     }
     for(var i = 0; i < products.length; i++) {
-        var product = await ProductModel.findOne({ proCode: products[i].proCode });
+        var product = await StoreModel.findOne({ proCode: products[i].proCode });
         var productInfo = {
             proCode: product.proCode,
             proName: product.proName,
@@ -51,134 +52,16 @@ const getProductTotal = async (products) => {
             proTaxValue: (product.proTaxRate != 0 ? Number((((products[i].proQuantity * product.proPrice) - (product.proPrice * products[i].proQuantity * 0.1175)) * product.proTaxRate).toFixed(2)) : 0),
             proTotalVat: Number(((products[i].proQuantity * product.proPrice) - (product.proPrice * products[i].proQuantity * 0.1175)).toFixed(2)),
         }
-        invoice.invoiceTotal = invoice.invoiceTotal + productInfo.proTotalVat;
-        invoice.invoiceTotalSale = invoice.invoiceTotalSale + productInfo.proSale;
-        invoice.invoiceTotalTax = invoice.invoiceTotalTax + productInfo.proTaxValue;
+        invoice.invoiceTotal = Number((invoice.invoiceTotal + productInfo.proTotalVat).toFixed(2));
+        invoice.invoiceTotalSale = Number((invoice.invoiceTotalSale + productInfo.proSale).toFixed(2));
+        invoice.invoiceTotalTax = Number((invoice.invoiceTotalTax + productInfo.proTaxValue).toFixed(2));
         invoice.productsInfo.push(productInfo);
     }
-    invoice.invoiceTotalVat = invoice.invoiceTotal - invoice.invoiceTotalSale + invoice.invoiceTotalTax
+    invoice.invoiceTotalVat = Number((invoice.invoiceTotal - invoice.invoiceTotalSale + invoice.invoiceTotalTax).toFixed(2))
     return invoice;
 }
 
-const checkStoreQuantity = async (products) => {
-    let heheArr = []
-    for(var i = 0; i < products.length; i++) {
-        await StoreModel.findOne({ proCode: products[i].proCode }).then(product => {
-            if(product.proQuantity < products[i].proQuantity) {
-                heheArr.push('false')
-            }
-            else { heheArr.push('true') }
-        })
-    }
-    return heheArr
-}
-
 module.exports = {
-    createSaleInvoice : asyncHandler(async (req , res , next) => {
-        var oldInvoice = await SaleInvoiceModel.findOne({ invoiceNumber: req.body.invoiceNumber })
-        if(oldInvoice) {
-            next(new ApiError(`رقم الفاتورة مسجل من قبل` , 400))
-        }
-        else {
-            var invoiceUrl = req.file.path;
-            var invoiceNumber = req.body.invoiceNumber;
-            var results = []
-            var products = []
-            var unfoundProducts = []
-            var invoiceTotal = 0
-            const childPython = spawn('python' , ['pdfreader.py' , req.file.path])
-            childPython.stdout.on('data' , (data) => {
-                for(var y = 0; y < data; y++) {
-                    fs.createReadStream(__dirname + `/table_${y}.csv`).pipe(csv()).on('data' , (response) => {
-                        results.push(response)
-                    }).on('end' , async () => {
-                        for(var i = 0; i < results.length; i++) {
-                            if(Object.values(results[i])[Object.keys(results[i]).length - 1] == '') continue;
-                            var productCode = (Object.values(results[i])[Object.keys(results[i]).length - 1]).replace('.0' , '')
-                            await ProductModel.findOne({ proCode: productCode }).then(product => {
-                                if(product) {
-                                    if((Object.values(results[i])[6]) == '') {
-                                        var invoiceProduct = {
-                                            proCode: productCode,
-                                            proName: product.proName,
-                                            proQuantity: Number((Object.values(results[i])[8]).replace(',','')),
-                                            proCost: Number((Object.values(results[i])[7]).replace(',','')),
-                                            proSale: Math.abs(Number((Object.values(results[i])[4]).replace(',',''))),
-                                            proExtraSale: Number((Object.values(results[i])[3]).replace(',','')),
-                                            proTaxRate: Number((Object.values(results[i])[2]).replace(',','')),
-                                            proTaxValue: (Number((Object.values(results[i])[2]).replace(',','')) == 5 ? Math.abs(( ( ( (Number((Object.values(results[i])[7]).replace(',','')) * Number((Object.values(results[i])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 105 )).toFixed(2) : Math.abs((( ( (Number((Object.values(results[i])[7]).replace(',','')) * Number((Object.values(results[i])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 114 )).toFixed(2)),
-                                            proTotalVat: Math.abs((Number((Object.values(results[i])[7]).replace(',','')) * Number((Object.values(results[i])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))))
-                                        }
-                                        invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
-                                        products.push(invoiceProduct);
-                                    }
-                                    else {
-                                        var invoiceProduct = {
-                                            proCode: productCode,
-                                            proName: product.proName,
-                                            proQuantity: Number((Object.values(results[i])[7]).replace(',','')),
-                                            proCost: Number((Object.values(results[i])[6]).replace(',','')),
-                                            proSale: Math.abs(Number((Object.values(results[i])[4]).replace(',',''))),
-                                            proExtraSale: Number((Object.values(results[i])[3]).replace(',','')),
-                                            proTaxRate: Number((Object.values(results[i])[2]).replace(',','')),
-                                            proTaxValue: (Number((Object.values(results[i])[2]).replace(',','')) == 5 ? Math.abs(( ( ( (Number((Object.values(results[i])[6]).replace(',','')) * Number((Object.values(results[i])[7]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 105 )).toFixed(2) : Math.abs((( ( (Number((Object.values(results[i])[6]).replace(',','')) * Number((Object.values(results[i])[7]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 114 )).toFixed(2)),
-                                            proTotalVat: Math.abs((Number((Object.values(results[i])[6]).replace(',','')) * Number((Object.values(results[i])[7]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))))
-                                        }
-                                        invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
-                                        products.push(invoiceProduct);
-                                    }
-                                }
-                                else {
-                                    unfoundProducts.push(productCode)
-                                }
-                            }).catch(err => {
-                                return Promise.reject(err);
-                            })
-                        }
-                        if(unfoundProducts.length == 0) {
-                            var checkStoreQuantity2 = await checkStoreQuantity(products)
-                            if(checkStoreQuantity2.includes('false')) {
-                                next(new ApiError('الكمية المطلوبة اقل من الموجودة في المخزن' , 400))
-                            }
-                            else {
-                                var storeProducts = await getStoreProducts(products);
-                                var invoice = await SaleInvoiceModel.findOne({ invoiceNumber: invoiceNumber })
-                                if(!invoice) {
-                                    await SaleInvoiceModel.create(
-                                        { invoiceUrl , invoiceNumber , products , invoiceTotal }
-                                    ).then(saleInvoice => {
-                                        res.status(201).json({ data: saleInvoice })
-                                    }).catch(err => {
-                                        res.send(err)
-                                    })
-                                }
-                                else {
-                                    var newProductsInvoice = invoice.products.push(products);
-                                    await SaleInvoiceModel.findOneAndUpdate(
-                                        { invoiceNumber } , { products: newProductsInvoice , $inc:{ invoiceTotal: invoiceTotal } } , { new: true }
-                                    ).then(newinvoice => {
-                                        res.status(200).json({ data: newinvoice })
-                                    }).catch(err => {
-                                        res.send(err)
-                                    })
-                                }
-                            }
-                        }
-                        else {
-                            next(new ApiError(`لا يوجد صنف بهذا الكود: ${unfoundProducts} قم بادخاله اولا` , 400))
-                        }
-                    })
-                }
-            })
-            childPython.stderr.on('data' , (data) => {
-                console.error(`stderr: ${data}`)
-            })
-            childPython.on('close' , (code) => {
-                console.log(code)
-            })
-        }
-    }),
-
     addInvoice : asyncHandler(async (req , res ) => {
         // بيانات الشركة
         const company = await getCompanyInfo(req.body.companyId);
@@ -188,7 +71,7 @@ module.exports = {
         const registrationNumber = req.body.registrationNumber;
         // التاريخ
         const d = new Date();
-        const invoiceDate = d.toLocaleDateString();
+        const invoiceDate = d.toLocaleDateString('en-GB').replaceAll('/' , '-')
         // رقم الفاتورة
         const invoiceNumber = req.body.invoiceNumber;
         // الاصناف
@@ -250,17 +133,6 @@ module.exports = {
         const clientName = req.body.clientName;
         const clientAddress = req.body.clientAddress;
         const registrationNumber = req.body.registrationNumber;
-        // بيانات الفاتورة
-        const invoiceData = {
-            companyName: company[0].companyName,
-            companyScope: company[0].companyScope,
-            companyBranche: company[0].companyBranche,
-            companyAddress: company[0].companyAddress,
-            companyTaxNumber: company[0].companyTaxNumber,
-            clientName: clientName,
-            clientAddress: clientAddress,
-            registrationNumber: registrationNumber
-        }
 
         const invoiceProducts = await SaleInvoiceModel.findByIdAndUpdate(
             { _id : id } , { companyName , companyScope , companyBranche , companyAddress , companyTaxNumber , clientName , clientAddress , registrationNumber } , { new : true }
@@ -287,7 +159,7 @@ module.exports = {
 
     getReport : asyncHandler( async (req , res , next) => {
         const d = new Date();
-        const dateNumber = d.toLocaleDateString().replaceAll('/' , '-')
+        const dateNumber = d.toLocaleDateString('en-GB').replaceAll('/' , '-')
         const workBook = new excelJS.Workbook();
         const workSheet = workBook.addWorksheet('سجل المبيعات');
         const filePath = path.resolve("./uploads/فواتير البيع");
@@ -310,7 +182,6 @@ module.exports = {
 
         var invoiceItems = []
         for(var i = 0; i < invoices.length; i++) {
-            console.log(invoices[i].invoiceNumber)
             for(var x = 0; x < invoices[i].products.length; x++) {
                 console.log(invoices[i].products[x].proCode)
                 var invoice = {
@@ -356,69 +227,95 @@ module.exports = {
     }),
 
     getSingleReport : asyncHandler( async (req , res , next) => {
-        const workBook = new excelJS.Workbook();
-        const workSheet = workBook.addWorksheet('سجل المبيعات');
-        const filePath = path.resolve("./فواتير البيع");
-        const registrationNumber = req.body.registrationNumber;
-        const customerName = req.body.customerName;
-
-        var products = [];
-        var invoice = await SaleInvoiceModel.findOne({ _id: req.body.invoiceId })
-        
-            for(var i = 0; i < invoice.products.length; i++) {
-                var product1 = {
-                    invoiceNumber: invoice.invoiceNumber,
-                    registrationNumber: registrationNumber,
-                    customerName: customerName,
-                    proCode: invoice.products[i].proCode,
-                    proName: invoice.products[i].proName,
-                    proQuantity: invoice.products[i].proQuantity,
-                    proCost: invoice.products[i].proCost,
-                    proSale: invoice.products[i].proSale,
-                    proTaxValue: invoice.products[i].proTaxValue,
-                    proTotalVat: invoice.products[i].proTotalVat,
-                }
-                products.push(product1);
-            }
-        
-
-        // res.send(products)
-        workSheet.columns = [
-            { header: 'رقم الفاتورة' , key: 'invoiceNumber' , width: 15 },
-            { header: 'رقم التسجيل' , key: 'registrationNumber' , width: 15 },
-            { header: 'اسم العميل' , key: 'customerName' , width: 15 },
-            { header: 'رقم الصنف' , key: 'proCode' , width: 15 },
-            { header: 'اسم الصنف' , key: 'proName' , width: 50 },
-            { header: 'الكمية' , key: 'proQuantity' , width: 15 },
-            { header: 'السعر' , key: 'proCost' , width: 15 },
-            { header: 'الخصم' , key: 'proSale' , width: 15 },
-            { header: 'الضريبة' , key: 'proTaxValue' , width: 15 },
-            { header: 'الاجمالي' , key: 'proTotalVat' , width: 15 }
-        ]
-
-        products.forEach(product => {
-            workSheet.addRow(product);
-        });
-
-        workSheet.getRow(1).eachCell(cell => {
-            cell.font = { bold: true };
-        });
-
-        try {
-            const data = await workBook.xlsx.writeFile( filePath + `/singleInvoice.xlsx`)
-            .then(() => {
-                res.send({
-                status: "success",
-                message: "تم تجهيز التقرير بنجاح",
-                path: `${filePath}/singleInvoice.xlsx`,
-                });
+        const d = new Date();
+        const dateNumber = d.toLocaleDateString('en-GB').replaceAll('/' , '-')
+        const invoice = await SaleInvoiceModel.findById({ _id: req.body.invoiceId }).lean();
+        const html = fs.readFileSync(path.join(__dirname , './template.html') , 'utf8')
+        var options = {
+            format: "A4",
+            orientation: "portrait",
+            // width: "210mm",
+            // height: "297mm"
+        };
+        var document = {
+            html: html,
+            data: {
+              invoice: invoice,
+            },
+            path: `./uploads/فواتير البيع/invoice(${invoice.invoiceNumber})-(${dateNumber}).pdf`,
+            type: "pdf",
+        };
+        pdf.create(document, options)
+            .then((response) => {
+                res.status(200).json({ data: response })
+            })
+            .catch((error) => {
+                next(new ApiError(`${error}` , 500))
             });
-        }
-        catch (err) {
-            res.send({
-                status: "error",
-                message: "Something went wrong",
-            });
-        }
+
+        // const d = new Date();
+        // const dateNumber = d.toLocaleDateString('en-GB').replaceAll('/' , '-')
+        // const workBook = new excelJS.Workbook();
+        // const workSheet = workBook.addWorksheet('سجل المبيعات');
+        // const filePath = path.resolve("./uploads/فواتير البيع");
+
+        // var products = [];
+        // var invoice = await SaleInvoiceModel.findOne({ _id: req.body.invoiceId })
+        
+        //     for(var i = 0; i < invoice.products.length; i++) {
+        //         var product1 = {
+        //             invoiceNumber: invoice.invoiceNumber,
+        //             registrationNumber: registrationNumber,
+        //             customerName: customerName,
+        //             proCode: invoice.products[i].proCode,
+        //             proName: invoice.products[i].proName,
+        //             proQuantity: invoice.products[i].proQuantity,
+        //             proCost: invoice.products[i].proCost,
+        //             proSale: invoice.products[i].proSale,
+        //             proTaxValue: invoice.products[i].proTaxValue,
+        //             proTotalVat: invoice.products[i].proTotalVat,
+        //         }
+        //         products.push(product1);
+        //     }
+        
+
+        // // res.send(products)
+        // workSheet.columns = [
+        //     { header: 'رقم الفاتورة' , key: 'invoiceNumber' , width: 15 },
+        //     { header: 'رقم التسجيل' , key: 'registrationNumber' , width: 15 },
+        //     { header: 'اسم العميل' , key: 'customerName' , width: 15 },
+        //     { header: 'رقم الصنف' , key: 'proCode' , width: 15 },
+        //     { header: 'اسم الصنف' , key: 'proName' , width: 50 },
+        //     { header: 'الكمية' , key: 'proQuantity' , width: 15 },
+        //     { header: 'السعر' , key: 'proCost' , width: 15 },
+        //     { header: 'الخصم' , key: 'proSale' , width: 15 },
+        //     { header: 'الضريبة' , key: 'proTaxValue' , width: 15 },
+        //     { header: 'الاجمالي' , key: 'proTotalVat' , width: 15 }
+        // ]
+
+        // products.forEach(product => {
+        //     workSheet.addRow(product);
+        // });
+
+        // workSheet.getRow(1).eachCell(cell => {
+        //     cell.font = { bold: true };
+        // });
+
+        // try {
+        //     const data = await workBook.xlsx.writeFile( filePath + `/singleInvoice-${uuidv4()}(${dateNumber}).xlsx`)
+        //     .then(() => {
+        //         res.send({
+        //         status: "success",
+        //         message: "تم تجهيز التقرير بنجاح",
+        //         path: `${filePath}/singleInvoice.xlsx`,
+        //         });
+        //     });
+        // }
+        // catch (err) {
+        //     res.send({
+        //         status: "error",
+        //         message: "Something went wrong",
+        //     });
+        // }
     })
 }
