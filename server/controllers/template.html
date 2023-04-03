@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>document</title>
+
+    <style>
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      .container {
+        padding: 50px 10%;
+      }
+      h5 {
+        font-size: 1.2rem;
+      }
+      h6 {
+        font-size: 1rem;
+      }
+      .records-content {
+        background: #fff;
+      }
+
+      .i-num {
+        text-align: center;
+        margin-top: 12px;
+        border: 1px solid #000;
+        padding: 3px 16px;
+
+        max-width: fit-content;
+
+        margin: 0 auto;
+      }
+
+      .table-custom th,
+      .table-custom td {
+        border: 1px solid #000;
+      }
+      .table-custom td {
+        font-weight: 600;
+        text-align: center;
+      }
+
+      .table-custom td.not-font {
+        font-weight: 500;
+      }
+
+      .mb-2 {
+        margin-bottom: 8px;
+      }
+      .mt-5 {
+        margin-top: 30px;
+      }
+      .mt-4 {
+        margin-top: 18px;
+      }
+      table.table-custom {
+        caption-side: bottom;
+        border-collapse: collapse;
+        width: 100%;
+        overflow: hidden;
+        margin: 20px auto 0;
+      }
+      table.table-custom td {
+        font-size: 15px;
+      }
+      .table-custom th {
+        white-space: nowrap;
+      }
+      .table-custom th,
+      .table-custom td {
+        padding: 8px 8px;
+      }
+      .w-60 {
+        width: 60%;
+      }
+      .w-40 {
+        width: 40%;
+      }
+      .w-20 {
+        width: 20%;
+      }
+      .margint-5 {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <table
+      width="100%"
+      border="0"
+      cellspacing="0"
+      cellpadding="0"
+      bgcolor="#fff"
+    >
+      <tr>
+        <td class="container">
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <thead>
+              <tr>
+                <th
+                  style="
+                    font-size: 19.2px;
+                    font-weight: bold;
+                    width: 33.3333%;
+                    text-align: right;
+                  "
+                >
+                {{invoice.companyName}}
+                </th>
+                <th
+                  style="
+                    font-size: 19.2px;
+                    font-weight: bold;
+                    width: 33.3333%;
+                    text-align: center;
+                  "
+                >
+                  رقم الفاتورة :
+                </th>
+                <th
+                  style="
+                    font-size: 16px;
+                    font-weight: bold;
+                    width: 33.3333%;
+                    text-align: left;
+                  "
+                >
+                  رقم التسجيل الضريبى : {{invoice.companyTaxNumber}}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-size: 16px; width: 33.3333%; text-align: right">
+                  <p>{{invoice.companyScope}}</p>
+                  <p>{{invoice.companyBranche}}</p>
+                </td>
+                <th
+                  style="font-size: 16px; width: 33.3333%; text-align: center"
+                  text-align:
+                  right;
+                >
+                  <div class="i-num">{{invoice.invoiceNumber}}</div>
+                </th>
+                <td
+                  style="
+                    font-size: 16px;
+                    font-weight: bold;
+                    width: 33.3333%;
+                    text-align: left;
+                  "
+                  text-align:
+                  right;
+                >
+                  العنوان : {{invoice.companyAddress}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h6 class="mt-5 mb-2">التاريخ : <span>{{invoice.invoiceDate}}</span></h6>
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="width: 120px">
+                <h6>المطلوب من السادة :</h6>
+              </td>
+              <td style="border-bottom: 1px dashed #000">{{invoice.clientName}}</td>
+            </tr>
+          </table>
+          <table
+            width="100%"
+            border="0"
+            cellspacing="0"
+            cellpadding="0"
+            style="margin-top: 10px"
+          >
+            <tr>
+              <td style="width: 60%">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td style="width: 120px">
+                      <h6>العنوان :</h6>
+                    </td>
+                    <td>{{invoice.clientAddress}}</td>
+                  </tr>
+                </table>
+              </td>
+              <td style="width: 40%">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td style="width: 100px">
+                      <h6>رقم التسجيل:</h6>
+                    </td>
+                    <td>{{invoice.registrationNumber}}</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+
+          <table width="100%" class="table-custom">
+            <thead>
+              <tr>
+                <th scope="col">كود الصنف</th>
+                <th scope="col">البيان</th>
+                <th scope="col">الوحدة</th>
+                <th scope="col">سعر الوحدة</th>
+                <th scope="col">الكمية</th>
+                <th scope="col">الخصم</th>
+                <th scope="col">الضريبة</th>
+                <th scope="col">الاجمالى</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each invoice.products}}
+              <tr>
+                <td>{{this.proCode}}</td>
+                <td style="text-align: right">{{this.proName}}</td>
+                <td>{{this.proPackaging}}</td>
+                <td>{{this.proPrice}}</td>
+                <td>{{this.proQuantity}}</td>
+                <td>{{this.proSale}}</td>
+                <td>{{this.proTaxValue}}</td>
+                <td>{{this.proTotalVat}}</td>
+              </tr>
+              {{/each}}
+              <tr>
+                <td colspan="3" style="text-align: right">
+                  العنوان : منشأه الحبشى
+                </td>
+                <td colspan="2" style="text-align: right">اجمالى الفاتورة</td>
+                <td></td>
+                <td></td>
+                <td>{{invoice.invoiceTotal}}</td>
+              </tr>
+              <tr>
+                <td
+                  colspan="3"
+                  class="text-end not-font"
+                  style="text-align: right"
+                >
+                  البضاعة المباعة بحالة جيده والشركة غير مسئولة عن سوء النخزين
+                </td>
+                <td colspan="2" style="text-align: right">قيمة الخصم</td>
+                <td></td>
+                <td></td>
+                <td>{{invoice.invoiceTotalSale}}</td>
+              </tr>
+              <tr>
+                <td
+                  colspan="3"
+                  class="text-end not-font"
+                  style="text-align: right"
+                >
+                  اسم المندوب :
+                </td>
+                <td colspan="2" style="text-align: right">
+                  ضريبة المبيعات 14%
+                </td>
+                <td></td>
+                <td></td>
+                <td>{{invoice.invoiceTotalTax}}</td>
+              </tr>
+              <tr>
+                <td
+                  colspan="3"
+                  class="no-border"
+                  style="text-align: right; border: 0"
+                ></td>
+                <td colspan="4" style="text-align: right">
+                  الاجمالى شامل الضريبة
+                </td>
+
+                <td>{{invoice.invoiceTotalVat}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <script>
+      // window.print();
+    </script>
+  </body>
+</html>

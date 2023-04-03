@@ -247,75 +247,10 @@ module.exports = {
         };
         pdf.create(document, options)
             .then((response) => {
-                res.status(200).json({ data: response })
+                res.status(200).json({ data: response.filename })
             })
             .catch((error) => {
                 next(new ApiError(`${error}` , 500))
             });
-
-        // const d = new Date();
-        // const dateNumber = d.toLocaleDateString('en-GB').replaceAll('/' , '-')
-        // const workBook = new excelJS.Workbook();
-        // const workSheet = workBook.addWorksheet('سجل المبيعات');
-        // const filePath = path.resolve("./uploads/فواتير البيع");
-
-        // var products = [];
-        // var invoice = await SaleInvoiceModel.findOne({ _id: req.body.invoiceId })
-        
-        //     for(var i = 0; i < invoice.products.length; i++) {
-        //         var product1 = {
-        //             invoiceNumber: invoice.invoiceNumber,
-        //             registrationNumber: registrationNumber,
-        //             customerName: customerName,
-        //             proCode: invoice.products[i].proCode,
-        //             proName: invoice.products[i].proName,
-        //             proQuantity: invoice.products[i].proQuantity,
-        //             proCost: invoice.products[i].proCost,
-        //             proSale: invoice.products[i].proSale,
-        //             proTaxValue: invoice.products[i].proTaxValue,
-        //             proTotalVat: invoice.products[i].proTotalVat,
-        //         }
-        //         products.push(product1);
-        //     }
-        
-
-        // // res.send(products)
-        // workSheet.columns = [
-        //     { header: 'رقم الفاتورة' , key: 'invoiceNumber' , width: 15 },
-        //     { header: 'رقم التسجيل' , key: 'registrationNumber' , width: 15 },
-        //     { header: 'اسم العميل' , key: 'customerName' , width: 15 },
-        //     { header: 'رقم الصنف' , key: 'proCode' , width: 15 },
-        //     { header: 'اسم الصنف' , key: 'proName' , width: 50 },
-        //     { header: 'الكمية' , key: 'proQuantity' , width: 15 },
-        //     { header: 'السعر' , key: 'proCost' , width: 15 },
-        //     { header: 'الخصم' , key: 'proSale' , width: 15 },
-        //     { header: 'الضريبة' , key: 'proTaxValue' , width: 15 },
-        //     { header: 'الاجمالي' , key: 'proTotalVat' , width: 15 }
-        // ]
-
-        // products.forEach(product => {
-        //     workSheet.addRow(product);
-        // });
-
-        // workSheet.getRow(1).eachCell(cell => {
-        //     cell.font = { bold: true };
-        // });
-
-        // try {
-        //     const data = await workBook.xlsx.writeFile( filePath + `/singleInvoice-${uuidv4()}(${dateNumber}).xlsx`)
-        //     .then(() => {
-        //         res.send({
-        //         status: "success",
-        //         message: "تم تجهيز التقرير بنجاح",
-        //         path: `${filePath}/singleInvoice.xlsx`,
-        //         });
-        //     });
-        // }
-        // catch (err) {
-        //     res.send({
-        //         status: "error",
-        //         message: "Something went wrong",
-        //     });
-        // }
     })
 }
