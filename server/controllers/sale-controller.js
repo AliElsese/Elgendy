@@ -247,7 +247,7 @@ module.exports = {
         };
         pdf.create(document, options)
             .then((response) => {
-                res.status(200).json({ data: response.filename })
+                res.status(200).json({ data: (response.filename).replaceAll('\\' , '/') })
             })
             .catch((error) => {
                 next(new ApiError(`${error}` , 500))

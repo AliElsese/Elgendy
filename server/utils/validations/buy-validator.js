@@ -1,1 +1,78 @@
-const _0x3dd82d=_0x4734;function _0x4734(_0x2ffa75,_0x1234de){const _0x4b829f=_0x4b82();return _0x4734=function(_0x47346f,_0x41abb6){_0x47346f=_0x47346f-0x89;let _0x33ab4a=_0x4b829f[_0x47346f];return _0x33ab4a;},_0x4734(_0x2ffa75,_0x1234de);}function _0x4b82(){const _0x301b17=['invoiceNumber','proCost','then','reject','withMessage','6125vOOEvJ','../../models/product-model','الاصناف\x20مطلوبة','جميع\x20المدخلات\x20مطلوبة','4984pcUVFS','proSale','5231394tFovdW','notEmpty','../apiError','custom','proTaxValue','\x20قم\x20بادخاله\x20اولا','proCode','1699009UPiVRM','جميع\x20المخلات\x20مطلوبة','رقم\x20الفاتورة\x20مطلوب','deleteInvoiceValidator','proTaxRate','1401474IELfte','../../models/buy-model','4591916qZPuzg','updateInvoiceValidator','Invalid\x20Invoice\x20Id\x20Format','products','proQuantity','لا\x20يوجد\x20صنف\x20بهذا\x20الكود:\x20','findOne','2860395YQIQaR','2aoLpSB','7971336nBqptP','saveBuyInvoice','length','../../middlewares/validator-middleware'];_0x4b82=function(){return _0x301b17;};return _0x4b82();}(function(_0x4a0dfa,_0x3204d4){const _0xd4945b=_0x4734,_0x261a35=_0x4a0dfa();while(!![]){try{const _0x1a9a89=-parseInt(_0xd4945b(0xa8))/0x1*(-parseInt(_0xd4945b(0x91))/0x2)+-parseInt(_0xd4945b(0x90))/0x3+parseInt(_0xd4945b(0x9f))/0x4*(parseInt(_0xd4945b(0x9b))/0x5)+-parseInt(_0xd4945b(0xad))/0x6+-parseInt(_0xd4945b(0x89))/0x7+-parseInt(_0xd4945b(0x92))/0x8+parseInt(_0xd4945b(0xa1))/0x9;if(_0x1a9a89===_0x3204d4)break;else _0x261a35['push'](_0x261a35['shift']());}catch(_0x492e93){_0x261a35['push'](_0x261a35['shift']());}}}(_0x4b82,0xec208));const {check}=require('express-validator'),ApiError=require(_0x3dd82d(0xa3)),validatorMiddleware=require(_0x3dd82d(0x95)),BuyInvoiceModel=require(_0x3dd82d(0xae)),ProductModel=require(_0x3dd82d(0x9c));exports[_0x3dd82d(0x93)]=[check(_0x3dd82d(0x96))['notEmpty']()['withMessage']('رقم\x20الفاتورة\x20مطلوب')[_0x3dd82d(0xa4)](async _0x42ba6a=>{const _0x39eb23=_0x3dd82d;await BuyInvoiceModel[_0x39eb23(0x8f)]({'invoiceNumber':_0x42ba6a})[_0x39eb23(0x98)](_0x417c3b=>{if(_0x417c3b)return Promise['reject']('رقم\x20الفاتورة\x20موجود\x20بالفعل');});}),validatorMiddleware],exports['addInvoiceValidator']=[check('invoiceNumber')[_0x3dd82d(0xa2)]()[_0x3dd82d(0x9a)](_0x3dd82d(0xaa))[_0x3dd82d(0xa4)](async _0x1d4ab1=>{const _0x109e73=_0x3dd82d;await BuyInvoiceModel[_0x109e73(0x8f)]({'invoiceNumber':_0x1d4ab1})[_0x109e73(0x98)](_0x5d4a37=>{if(_0x5d4a37)return Promise['reject']('رقم\x20الفاتورة\x20موجود\x20بالفعل');});}),check(_0x3dd82d(0x8c))[_0x3dd82d(0xa2)]()[_0x3dd82d(0x9a)](_0x3dd82d(0x9d))[_0x3dd82d(0xa4)](async _0x1fd717=>{const _0x479e4b=_0x3dd82d;for(var _0x4e2fe1=0x0;_0x4e2fe1<_0x1fd717[_0x479e4b(0x94)];_0x4e2fe1++){if(!_0x1fd717[_0x4e2fe1][_0x479e4b(0xa7)]||!_0x1fd717[_0x4e2fe1][_0x479e4b(0x8d)]||!_0x1fd717[_0x4e2fe1][_0x479e4b(0x97)]||!_0x1fd717[_0x4e2fe1]['proSale']||!_0x1fd717[_0x4e2fe1]['proTaxRate'])throw new Error(_0x479e4b(0x9e));await ProductModel[_0x479e4b(0x8f)]({'proCode':_0x1fd717[_0x4e2fe1][_0x479e4b(0xa7)]})[_0x479e4b(0x98)](_0x4cb261=>{const _0x4172ae=_0x479e4b;if(!_0x4cb261)return Promise[_0x4172ae(0x99)](_0x4172ae(0x8e)+_0x1fd717[_0x4e2fe1][_0x4172ae(0xa7)]+'\x20قم\x20بادخاله\x20اولا');});}}),validatorMiddleware],exports['getInvoiceValidator']=[check('id')['isMongoId']()[_0x3dd82d(0x9a)](_0x3dd82d(0x8b)),validatorMiddleware],exports[_0x3dd82d(0x8a)]=[check('id')['isMongoId']()[_0x3dd82d(0x9a)](_0x3dd82d(0x8b)),check(_0x3dd82d(0x96))['notEmpty']()[_0x3dd82d(0x9a)](_0x3dd82d(0xaa)),check(_0x3dd82d(0x8c))[_0x3dd82d(0xa2)]()[_0x3dd82d(0x9a)](_0x3dd82d(0x9d))[_0x3dd82d(0xa4)](async _0x2de37d=>{const _0x1ef9f5=_0x3dd82d;for(var _0x1ac821=0x0;_0x1ac821<_0x2de37d[_0x1ef9f5(0x94)];_0x1ac821++){if(!_0x2de37d[_0x1ac821][_0x1ef9f5(0x8d)]||!_0x2de37d[_0x1ac821][_0x1ef9f5(0x97)]||!_0x2de37d[_0x1ac821][_0x1ef9f5(0xa0)]||!_0x2de37d[_0x1ac821][_0x1ef9f5(0xac)]||!_0x2de37d[_0x1ac821][_0x1ef9f5(0xa5)]||!_0x2de37d[_0x1ac821]['proTotalVat'])throw new Error(_0x1ef9f5(0xa9));await ProductModel['findOne']({'proCode':_0x2de37d[_0x1ac821][_0x1ef9f5(0xa7)]})['then'](_0x2832d9=>{const _0x1e1053=_0x1ef9f5;if(!_0x2832d9)return Promise[_0x1e1053(0x99)](_0x1e1053(0x8e)+_0x2de37d[_0x1ac821][_0x1e1053(0xa7)]+_0x1e1053(0xa6));});}}),validatorMiddleware],exports[_0x3dd82d(0xab)]=[check('id')['isMongoId']()[_0x3dd82d(0x9a)](_0x3dd82d(0x8b)),validatorMiddleware];
+const { check } = require('express-validator');
+const ApiError = require('../apiError');
+const validatorMiddleware = require('../../middlewares/validator-middleware');
+
+const BuyInvoiceModel = require('../../models/buy-model');
+const ProductModel = require('../../models/product-model');
+
+exports.saveBuyInvoice = [
+    check('invoiceNumber').notEmpty().withMessage('رقم الفاتورة مطلوب')
+    .custom(async (val) => {
+        await BuyInvoiceModel.findOne({ invoiceNumber: val }).then((invoice) => {
+            if(invoice) {                
+                return Promise.reject('رقم الفاتورة موجود بالفعل');
+            }
+        })
+    }),
+
+    check('products').notEmpty().withMessage('الاصناف مطلوبة')
+    .custom(async (products) => {
+        for(var i = 0; i < products.length; i++) {
+            if(!products[i].proCode || !products[i].proQuantity || !products[i].proPrice || !products[i].proSale || !products[i].proTaxRate) {
+                throw new Error('كل المدخلات مطلوبة');
+            }
+            await ProductModel.findOne({ proCode: products[i].proCode }).then((product) => {
+                if(!product) {
+                    return Promise.reject(`لا يوجد صنف بهذا الكود: ${products[i].proCode} قم بادخاله اولا`);
+                }
+            })
+        }
+    }),
+
+    validatorMiddleware
+]
+
+exports.addInvoiceValidator = [
+    check('invoiceNumber').notEmpty().withMessage('رقم الفاتورة مطلوب')
+    .custom(async (val) => {
+        await BuyInvoiceModel.findOne({ invoiceNumber: val }).then((invoice) => {
+            if(invoice) {                
+                return Promise.reject('رقم الفاتورة موجود بالفعل');
+            }
+        })
+    }),
+
+    check('products').notEmpty().withMessage('الاصناف مطلوبة')
+    .custom(async (products) => {
+        for(var i = 0; i < products.length; i++) {
+            if(!products[i].proCode || !products[i].proQuantity || !products[i].proPrice || !products[i].proSale || !products[i].proTaxRate) {
+                throw new Error('جميع المدخلات مطلوبة');
+            }
+            await ProductModel.findOne({ proCode: products[i].proCode }).then((product) => {
+                if(!product) {
+                    return Promise.reject(`لا يوجد صنف بهذا الكود: ${products[i].proCode} قم بادخاله اولا`);
+                }
+            })
+        }
+    }),
+
+    validatorMiddleware
+]
+
+exports.getInvoiceValidator = [
+    check('id').isMongoId().withMessage('Invalid Invoice Id Format'),
+    validatorMiddleware
+]
+
+exports.updateInvoiceValidator = [
+    check('id').isMongoId().withMessage('Invalid Invoice Id Format'),
+
+    check('invoiceNumber').notEmpty().withMessage('رقم الفاتورة مطلوب'),
+
+    validatorMiddleware
+]
+
+exports.deleteInvoiceValidator = [
+    check('id').isMongoId().withMessage('Invalid Invoice Id Format'),
+    validatorMiddleware
+]
