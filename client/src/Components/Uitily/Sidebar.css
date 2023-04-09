@@ -1,0 +1,134 @@
+.sidebar {
+  width: 0;
+  right: -100%;
+  z-index: 1002;
+  background: #fff;
+  bottom: 0;
+  margin-top: 0;
+  position: fixed;
+  top: 70px;
+  box-shadow: 0 2px 2px rgb(15 34 58 / 8%);
+  transition: all 0.2s ease-out;
+  padding: 0.531rem 1.5rem;
+  overflow-y: auto;
+}
+.sidebar.active {
+  width: 240px;
+  right: 0;
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    width: 240px;
+    right: 0;
+    transition: all 0.2s;
+  }
+  .sidebar.active {
+    width: 0;
+    right: -100%;
+  }
+}
+.sidebar .logout {
+  display: none;
+}
+.sidebar::-webkit-scrollbar {
+  width: 10px;
+  height: 8px;
+  background-color: #fff;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: #adb0b3;
+}
+@media (max-width: 480px) {
+  .sidebar .logout {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+  }
+}
+.sidebar .nav-item .nav-link {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  position: relative;
+  color: #5d6064;
+}
+.sidebar .nav-item .nav-link:hover {
+  color: var(--main-color);
+}
+.sidebar .nav-link .arrow-icon {
+  position: absolute;
+  left: 10px;
+}
+.sidebar
+  .nav-item
+  .nav-link[data-bs-toggle="collapse"][aria-expanded="true"]
+  .arrow-icon {
+  transform: rotate(270deg);
+}
+
+a.nav-link.menu-link {
+  margin-top: 20px;
+  padding-bottom: 10px;
+}
+.accordion-button:not(.collapsed) {
+  color: #5d6064;
+  background-color: #fff;
+  box-shadow: none;
+}
+.accordion {
+  --bs-accordion-border-width: 0px;
+  --bs-accordion-btn-padding-x: 0.5rem;
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+}
+.accordion-button::after {
+  content: none;
+}
+.accordion-body {
+  padding: 5px 0px 10px;
+}
+.accordion-header {
+  width: 100%;
+
+  color: #5d6064;
+}
+.accordion-header button {
+  color: #5d6064;
+}
+.sidebar .arrow-icon {
+  position: absolute;
+  left: 10px;
+}
+.accordion .accordion-header button[aria-expanded="true"] .arrow-icon {
+  transform: rotate(180deg);
+}
+
+.accordion li.nav-item a.nav-link {
+  margin-right: 18px;
+}
+
+.accordion .nav-link:before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border: 1px solid #5d6064;
+  border-radius: 50%;
+  position: absolute;
+  right: 2px;
+  top: 17px;
+
+  transition: all 0.4s ease-in-out;
+}
+
+.accordion li.nav-item:hover {
+  color: var(--main-color);
+}
+.accordion .nav-link.active {
+  color: var(--main-color);
+}
+.accordion .nav-link.active:before {
+  border-color: var(--main-color);
+}

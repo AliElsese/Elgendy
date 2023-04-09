@@ -38,6 +38,15 @@ app.use('/saleInvoice' , saleRoute);
 app.all('*' , (req , res , next) => {
     next(new ApiError(`Can't Find This Route: ${req.originalUrl}` , 400));
 });
+
+// ----------------------------
+__dirname = path.resolve();
+app.use(express.static(path.join(__dirname , '/client/build')));
+app.get('*' , (req,res) => {
+    res.sendFile(path.resolve(__dirname , 'client' , 'build' , 'index.html'))
+})
+
+// ----------------------------
 app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 8101;

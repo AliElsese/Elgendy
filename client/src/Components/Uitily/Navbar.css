@@ -1,0 +1,43 @@
+nav.mainnav {
+  display: flex;
+  position: sticky;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1002;
+  background-color: #fff;
+  transition: all 0.1s ease-out;
+  height: 70px;
+  align-items: center;
+}
+.logo-brand {
+  font-size: 24px;
+  text-transform: capitalize;
+  color: var(--main-color);
+}
+nav.mainnav .icon {
+  font-size: 30px;
+  color: var(--main-color);
+  margin-right: 30px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+@media (max-width: 480px) {
+  nav.mainnav .logout-btn {
+    display: none;
+  }
+}
+nav.mainnav.nav-trans {
+  position: fixed;
+  background: rgb(255 255 255 / 25%);
+}
+.nav-trans .logo-brand {
+  color: #fff;
+}
+
+@media (max-width: 480px) {
+  nav.nav-trans .logout-btn {
+    display: inline-block;
+  }
+}
