@@ -13,7 +13,7 @@ import {
 //get All Company
 export const getAllCompany = () => async (dispatch) => {
   try {
-    const response = await useGetDataToken("/companies/companies");
+    const response = await useGetDataToken("/api/companies/companies");
 
     dispatch({
       type: GET_ALL_COMPANY,
@@ -30,7 +30,7 @@ export const getAllCompany = () => async (dispatch) => {
 //create new company
 export const createNewCompany = (data) => async (dispatch) => {
   try {
-    const response = await useInsertData(`/companies/createCompany`, data);
+    const response = await useInsertData(`/api/companies/createCompany`, data);
     dispatch({
       type: CREATE_NEW_COMPANY,
       payload: response,
@@ -46,7 +46,7 @@ export const createNewCompany = (data) => async (dispatch) => {
 // get one Company
 export const getOneCompany = (id) => async (dispatch) => {
   try {
-    const response = await useGetDataToken(`/companies/getCompany/${id}`);
+    const response = await useGetDataToken(`/api/companies/getCompany/${id}`);
 
     dispatch({
       type: GET_ONE_COMPANY,
@@ -65,7 +65,7 @@ export const getOneCompany = (id) => async (dispatch) => {
 export const updateCompany = (id, body) => async (dispatch) => {
   try {
     const response = await useUpdateData(
-      `/companies/updateCompany/${id}`,
+      `/api/companies/updateCompany/${id}`,
       body
     );
 
@@ -83,7 +83,7 @@ export const updateCompany = (id, body) => async (dispatch) => {
 //delete Company with id
 export const deleteCompany = (id) => async (dispatch) => {
   try {
-    const response = await useDeleteData(`/companies/deleteCompany/${id}`);
+    const response = await useDeleteData(`/api/companies/deleteCompany/${id}`);
 
     dispatch({
       type: DELETE_COMPANY,

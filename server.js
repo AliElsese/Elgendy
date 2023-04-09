@@ -28,13 +28,13 @@ app.use(cors());
 
 app.use('/uploads', express.static(path.join(__dirname , 'uploads')))
 
-app.use('/auth' , authRoute);
-app.use('/users' , userRoute);
-app.use('/companies' , companyRoute);
-app.use('/buyInvoice' , buyRoute);
-app.use('/products' , productRoute);
-app.use('/store' , storeRoute);
-app.use('/saleInvoice' , saleRoute);
+app.use('/api/auth' , authRoute);
+app.use('/api/users' , userRoute);
+app.use('/api/companies' , companyRoute);
+app.use('/api/buyInvoice' , buyRoute);
+app.use('/api/products' , productRoute);
+app.use('/api/store' , storeRoute);
+app.use('/api/saleInvoice' , saleRoute);
 
 // ----------------------------
 __dirname = path.resolve();

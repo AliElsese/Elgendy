@@ -15,7 +15,7 @@ import {
 //get All saleInvoice
 export const getAllSaleInvoice = () => async (dispatch) => {
   try {
-    const response = await useGetDataToken(`/saleInvoice/getInvoices`);
+    const response = await useGetDataToken(`/api/saleInvoice/getInvoices`);
 
     dispatch({
       type: GET_ALL_SALE_INVOICES,
@@ -31,7 +31,7 @@ export const getAllSaleInvoice = () => async (dispatch) => {
 //create new SaleInvoice
 export const createNewSaleInvoice = (data) => async (dispatch) => {
   try {
-    const response = await useInsertData(`/saleInvoice/addInvoice`, data);
+    const response = await useInsertData(`/api/saleInvoice/addInvoice`, data);
     dispatch({
       type: CREATE_NEW_SALE_INVOICE,
       payload: response,
@@ -47,7 +47,7 @@ export const createNewSaleInvoice = (data) => async (dispatch) => {
 // get one SaleInvoice
 export const getOneSaleInvoice = (id) => async (dispatch) => {
   try {
-    const response = await useGetDataToken(`/saleInvoice/getInvoice/${id}`);
+    const response = await useGetDataToken(`/api/saleInvoice/getInvoice/${id}`);
 
     dispatch({
       type: GET_ONE_SALE_INVOICE,
@@ -66,7 +66,7 @@ export const getOneSaleInvoice = (id) => async (dispatch) => {
 export const updateSaleInvoice = (id, body) => async (dispatch) => {
   try {
     const response = await useUpdateData(
-      `/saleInvoice/updateProduct/${id}`,
+      `/api/saleInvoice/updateProduct/${id}`,
       body
     );
 
@@ -84,7 +84,7 @@ export const updateSaleInvoice = (id, body) => async (dispatch) => {
 //delete SaleInvoice with id
 export const deleteSaleInvoice = (id) => async (dispatch) => {
   try {
-    const response = await useDeleteData(`/saleInvoice/deleteInvoice/${id}`);
+    const response = await useDeleteData(`/api/saleInvoice/deleteInvoice/${id}`);
 
     dispatch({
       type: DELETE_SALE_INVOICE,
@@ -100,7 +100,7 @@ export const deleteSaleInvoice = (id) => async (dispatch) => {
 //print SaleInvoice
 export const printSaleInvoice = () => async (dispatch) => {
   try {
-    const response = await useInsertData(`/saleInvoice/getInvoicesReport`);
+    const response = await useInsertData(`/api/saleInvoice/getInvoicesReport`);
 
     dispatch({
       type: PRINT_SALE_INVOICE,
@@ -117,7 +117,7 @@ export const printSaleInvoice = () => async (dispatch) => {
 export const printOneSaleInvoice = (data) => async (dispatch) => {
   try {
     const response = await useInsertData(
-      `/saleInvoice/generateSingleInvoice`,
+      `/api/saleInvoice/generateSingleInvoice`,
       data
     );
 
