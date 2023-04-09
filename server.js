@@ -35,9 +35,6 @@ app.use('/buyInvoice' , buyRoute);
 app.use('/products' , productRoute);
 app.use('/store' , storeRoute);
 app.use('/saleInvoice' , saleRoute);
-app.all('*' , (req , res , next) => {
-    next(new ApiError(`Can't Find This Route: ${req.originalUrl}` , 400));
-});
 
 // ----------------------------
 __dirname = path.resolve();
