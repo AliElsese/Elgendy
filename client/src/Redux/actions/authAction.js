@@ -3,7 +3,7 @@ import { useInsertData } from "../../hooks/useInsertData";
 //loginAuth
 export const loginAuth = (data) => async (dispatch) => {
   try {
-    const response = await useInsertData(`/api/auth/userlogin`, data);
+    const response = await useInsertData(`z/auth/userlogin`, data);
     dispatch({
       type: LOGIN_USER,
       payload: response,
@@ -18,7 +18,7 @@ export const loginAuth = (data) => async (dispatch) => {
 
 export const activeCodeAuth = (data) => async (dispatch) => {
   try {
-    const response = await useInsertData(`/api/auth/activationCode`, data);
+    const response = await useInsertData(`/auth/activationCode`, data);
     dispatch({
       type: ACTIVE_CODE,
       payload: response,

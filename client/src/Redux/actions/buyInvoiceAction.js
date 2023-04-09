@@ -18,7 +18,7 @@ import {
 //get All BuyInvoice
 export const getAllBuyInvoice = () => async (dispatch) => {
   try {
-    const response = await useGetDataToken(`/api/buyInvoice/getInvoices`);
+    const response = await useGetDataToken(`/buyInvoice/getInvoices`);
 
     dispatch({
       type: GET_ALL_BUY_INVOICES,
@@ -35,7 +35,7 @@ export const getAllBuyInvoice = () => async (dispatch) => {
 //create new BuyInvoice
 export const createNewBuyInvoice = (data) => async (dispatch) => {
   try {
-    const response = await useInsertData(`/api/buyInvoice/addInvoice`, data);
+    const response = await useInsertData(`/buyInvoice/addInvoice`, data);
     dispatch({
       type: CREATE_NEW_BUY_INVOICE,
       payload: response,
@@ -51,7 +51,7 @@ export const createNewBuyInvoice = (data) => async (dispatch) => {
 export const createNewPdfBuyInvoice = (formData) => async (dispatch) => {
   try {
     const response = await useInsertDataWithFile(
-      `/api/buyInvoice/saveInvoice`,
+      `/buyInvoice/saveInvoice`,
       formData
     );
     dispatch({
@@ -69,7 +69,7 @@ export const createNewPdfBuyInvoice = (formData) => async (dispatch) => {
 // get one BuyInvoice
 export const getOneBuyInvoice = (id) => async (dispatch) => {
   try {
-    const response = await useGetDataToken(`/api/buyInvoice/getInvoice/${id}`);
+    const response = await useGetDataToken(`/buyInvoice/getInvoice/${id}`);
 
     dispatch({
       type: GET_ONE_BUY_INVOICE,
@@ -88,7 +88,7 @@ export const getOneBuyInvoice = (id) => async (dispatch) => {
 export const updateBuyInvoice = (id, body) => async (dispatch) => {
   try {
     const response = await useUpdateData(
-      `/api/buyInvoice/updateProduct/${id}`,
+      `/buyInvoice/updateProduct/${id}`,
       body
     );
 
@@ -106,7 +106,7 @@ export const updateBuyInvoice = (id, body) => async (dispatch) => {
 //delete BuyInvoice with id
 export const deleteBuyInvoice = (id) => async (dispatch) => {
   try {
-    const response = await useDeleteData(`/api/buyInvoice/deleteInvoice/${id}`);
+    const response = await useDeleteData(`/buyInvoice/deleteInvoice/${id}`);
 
     dispatch({
       type: DELETE_BUY_INVOICE,
@@ -122,7 +122,7 @@ export const deleteBuyInvoice = (id) => async (dispatch) => {
 //print BuyInvoice
 export const printBuyInvoice = () => async (dispatch) => {
   try {
-    const response = await useInsertData(`/api/buyInvoice/getInvoicesReport`);
+    const response = await useInsertData(`/buyInvoice/getInvoicesReport`);
 
     dispatch({
       type: PRINT_BUY_INVOICE,

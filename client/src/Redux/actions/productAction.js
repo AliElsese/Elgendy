@@ -15,7 +15,7 @@ import {
 //get All Product
 export const getAllProduct = () => async (dispatch) => {
   try {
-    const response = await useGetDataToken(`/api/products/getProducts`);
+    const response = await useGetDataToken(`/products/getProducts`);
 
     dispatch({
       type: GET_ALL_PRODUCTS,
@@ -32,7 +32,7 @@ export const getAllProduct = () => async (dispatch) => {
 //create new Product
 export const createNewProduct = (data) => async (dispatch) => {
   try {
-    const response = await useInsertData(`/api/products/addProduct`, data);
+    const response = await useInsertData(`/products/addProduct`, data);
     dispatch({
       type: CREATE_NEW_PRODUCT,
       payload: response,
@@ -48,7 +48,7 @@ export const createNewProduct = (data) => async (dispatch) => {
 // get one Product
 export const getOneProduct = (id) => async (dispatch) => {
   try {
-    const response = await useGetDataToken(`/api/products/getProduct/${id}`);
+    const response = await useGetDataToken(`/products/getProduct/${id}`);
 
     dispatch({
       type: GET_ONE_PRODUCT,
@@ -66,7 +66,7 @@ export const getOneProduct = (id) => async (dispatch) => {
 // getProductCode
 export const getProductCode = (body) => async (dispatch) => {
   try {
-    const response = await useInsertData("/api/products/getProductCode", body);
+    const response = await useInsertData("/products/getProductCode", body);
 
     dispatch({
       type: GET_PRODUCT_CODE,
@@ -84,7 +84,7 @@ export const getProductCode = (body) => async (dispatch) => {
 // update Product
 export const updateProduct = (id, body) => async (dispatch) => {
   try {
-    const response = await useUpdateData(`/api/products/updateProduct/${id}`, body);
+    const response = await useUpdateData(`/products/updateProduct/${id}`, body);
 
     dispatch({
       type: UPDATE_PRODUCT,
@@ -100,7 +100,7 @@ export const updateProduct = (id, body) => async (dispatch) => {
 //delete Product with id
 export const deleteProduct = (id) => async (dispatch) => {
   try {
-    const response = await useDeleteData(`/api/products/deleteProduct/${id}`);
+    const response = await useDeleteData(`/products/deleteProduct/${id}`);
 
     dispatch({
       type: DELETE_PRODUCT,
@@ -116,7 +116,7 @@ export const deleteProduct = (id) => async (dispatch) => {
 //print Products
 export const printAllProduct = () => async (dispatch) => {
   try {
-    const response = await useInsertData(`/api/products/getProductsReport`);
+    const response = await useInsertData(`/products/getProductsReport`);
 
     dispatch({
       type: PRINT_PRODUCT,

@@ -14,7 +14,7 @@ import {
 //get All Store
 export const getAllStore = () => async (dispatch) => {
   try {
-    const response = await useGetDataToken(`/api/store/getStoreProducts`);
+    const response = await useGetDataToken(`/store/getStoreProducts`);
 
     dispatch({
       type: GET_ALL_STORES,
@@ -31,7 +31,7 @@ export const getAllStore = () => async (dispatch) => {
 //create new Store
 export const createNewStore = (data) => async (dispatch) => {
   try {
-    const response = await useInsertData(`/api/store/addStoreProduct/`, data);
+    const response = await useInsertData(`/store/addStoreProduct/`, data);
     dispatch({
       type: CREATE_NEW_STORE,
       payload: response,
@@ -47,7 +47,7 @@ export const createNewStore = (data) => async (dispatch) => {
 // get one Store
 export const getOneStore = (id) => async (dispatch) => {
   try {
-    const response = await useGetDataToken(`/api/store/getStoreProduct/${id}`);
+    const response = await useGetDataToken(`/store/getStoreProduct/${id}`);
 
     dispatch({
       type: GET_ONE_STORE,
@@ -66,7 +66,7 @@ export const getOneStore = (id) => async (dispatch) => {
 export const updateStore = (id, body) => async (dispatch) => {
   try {
     const response = await useUpdateData(
-      `/api/store/updateStoreProduct/${id}`,
+      `/store/updateStoreProduct/${id}`,
       body
     );
 
@@ -84,7 +84,7 @@ export const updateStore = (id, body) => async (dispatch) => {
 //delete Store with id
 export const deleteStore = (id) => async (dispatch) => {
   try {
-    const response = await useDeleteData(`/api/store/deleteStoreProduct/${id}`);
+    const response = await useDeleteData(`/store/deleteStoreProduct/${id}`);
 
     dispatch({
       type: DELETE_STORE,
@@ -100,7 +100,7 @@ export const deleteStore = (id) => async (dispatch) => {
 //Print Store
 export const printStore = () => async (dispatch) => {
   try {
-    const response = await useInsertData(`/api/store/getStoreReport`);
+    const response = await useInsertData(`/store/getStoreReport`);
 
     dispatch({
       type: PRINT_STORE,

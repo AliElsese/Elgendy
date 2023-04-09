@@ -13,7 +13,7 @@ import useDeleteData from "./../../hooks/useDeleteData";
 //get All Users
 export const getAllUsers = () => async (dispatch) => {
   try {
-    const response = await useGetDataToken("/api/users/users");
+    const response = await useGetDataToken("/users/users");
 
     dispatch({
       type: GET_ALL_USERS,
@@ -30,7 +30,7 @@ export const getAllUsers = () => async (dispatch) => {
 //create new user
 export const createNewUser = (data) => async (dispatch) => {
   try {
-    const response = await useInsertData(`/api/users/createUser`, data);
+    const response = await useInsertData(`/users/createUser`, data);
     dispatch({
       type: CREATE_NEW_USER,
       payload: response,
@@ -46,7 +46,7 @@ export const createNewUser = (data) => async (dispatch) => {
 // get one user
 export const getOneUser = (id) => async (dispatch) => {
   try {
-    const response = await useGetDataToken(`/api/users/getUser/${id}`);
+    const response = await useGetDataToken(`/users/getUser/${id}`);
 
     dispatch({
       type: GET_ONE_USER,
@@ -62,7 +62,7 @@ export const getOneUser = (id) => async (dispatch) => {
 // update user
 export const updateUser = (id, body) => async (dispatch) => {
   try {
-    const response = await useUpdateData(`/api/users/updateUser/${id}`, body);
+    const response = await useUpdateData(`/users/updateUser/${id}`, body);
 
     dispatch({
       type: UPDATE_USER,
@@ -78,7 +78,7 @@ export const updateUser = (id, body) => async (dispatch) => {
 //delete User with id
 export const deleteUser = (id) => async (dispatch) => {
   try {
-    const response = await useDeleteData(`/api/users/deleteUser/${id}`);
+    const response = await useDeleteData(`/users/deleteUser/${id}`);
 
     dispatch({
       type: DELETE_USER,
