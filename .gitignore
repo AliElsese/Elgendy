@@ -2,4 +2,6 @@ node_modules/
 
 .vscode/
 
-client/
+client/build
+
+python/
