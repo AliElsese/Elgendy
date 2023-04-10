@@ -1,2 +1,1 @@
-web: python pdfreader.py
-worker: python pdfreader.py 
+web: node server.js
