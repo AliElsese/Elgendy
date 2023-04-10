@@ -1,1 +1,2 @@
-web: npm install && cd server && pip install -r requirements.txt && npm start
+web: python pdfreader.py
+worker: python pdfreader.py 
