@@ -3,11 +3,3 @@ node_modules/
 .vscode/
 
 client/
-
-python/
-
-heroku.yml
-
-Procfile
-
-requirements.txt
