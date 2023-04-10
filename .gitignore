@@ -2,4 +2,12 @@ node_modules/
 
 .vscode/
 
-client/build
+client/
+
+python/
+
+heroku.yml
+
+Procfile
+
+requirements.txt
