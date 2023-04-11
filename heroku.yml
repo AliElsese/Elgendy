@@ -1,0 +1,6 @@
+build:
+  config:
+    # Set the buildpacks in order
+    buildpacks:
+      - heroku/python
+      - heroku/nodejs
