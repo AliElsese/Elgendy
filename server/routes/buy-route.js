@@ -21,7 +21,7 @@ const {
 } = require('../utils/validations/buy-validator');
 
 const {
-    createBuyInvoice,
+    buyInvoiceGenerate,
     addInvoice,
     getInvoices,
     getInvoice,
@@ -32,7 +32,7 @@ const {
 
 const router = express.Router();
 
-router.post('/saveInvoice' , upload.single('invoiceFile') , createBuyInvoice);
+router.post('/saveInvoice' , upload.single('invoiceFile') , buyInvoiceGenerate);
 router.post('/addInvoice' , checkToken , addInvoiceValidator , addInvoice);
 router.get('/getInvoices' , checkToken , getInvoices);
 router.get('/getInvoice/:id' , checkToken , getInvoiceValidator , getInvoice);

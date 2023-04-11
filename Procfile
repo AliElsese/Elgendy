@@ -1,1 +1,0 @@
-web: npm install && cd server && pip install -r requirements.txt && npm start

@@ -1,3 +1,4 @@
+const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const asyncHandler = require('express-async-handler');
 const ApiError = require('../utils/apiError');
@@ -10,9 +11,7 @@ const { spawn } = require('child_process');
 
 const pdf = require('pdf-creator-node');
 const fs = require('fs');
-const csv = require('csv-parser');
 
-const path = require('path');
 const excelJS = require('exceljs');
 
 const getCompanyInfo = async(companyId) => {

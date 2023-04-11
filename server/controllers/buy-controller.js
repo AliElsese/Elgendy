@@ -1,19 +1,37 @@
 const { v4: uuidv4 } = require('uuid');
+const path = require('path');
 const asyncHandler = require('express-async-handler');
 const ApiError = require('../utils/apiError');
 const BuyInvoiceModel = require('../models/buy-model');
 const ProductModel = require('../models/product-model');
 const StoreModel = require('../models/store-model');
 
-const { spawn } = require('child_process');
-
 const fs = require('fs');
-const csv = require('csv-parser');
 
-const path = require('path');
 const excelJS = require('exceljs');
 const pdfToExcel = require('pdf-to-excel');
 const reader = require('xlsx')
+
+const checkProductCode = async (products) => {
+    var productStatus = {
+        status: [],
+        codesFound: [],
+        codesNotFound: []
+    };
+    for(let i = 0; i < products.length; i++) {
+        var proCode = Object.values(products[i])[1];
+        var product = await ProductModel.findOne({ proCode });
+        if(!product) {
+            productStatus.status.push('false');
+            productStatus.codesNotFound.push(proCode);
+        }
+        else {
+            productStatus.status.push('true');
+            productStatus.codesFound.push(proCode);
+        }
+    }
+    return productStatus;
+}
 
 const getProductInfo = async (products) => {
     var invoice = {
@@ -56,110 +74,232 @@ const getStoreProducts = async (products) => {
 }
 
 module.exports = {
-    createBuyInvoice : asyncHandler(async (req , res , next) => {
-        // التاريخ
-        const d = new Date();
-        const invoiceDate = d.toLocaleDateString('en-GB').replaceAll('/' , '-')
-
+    buyInvoiceGenerate: asyncHandler(async (req , res , next) => {
         await pdfToExcel.genXlsx(req.file.path , __dirname + `/excelfrompdf.xlsx`)
         const excelFile = reader.readFile(__dirname + `/excelfrompdf.xlsx`)
-        let data = []
-  
+        let excelFileData = []
         const sheets = excelFile.SheetNames
-        
-        for(let i = 0; i < sheets.length; i++)
-        {
-        const temp = reader.utils.sheet_to_json(
-            excelFile.Sheets[excelFile.SheetNames[i]])
-        temp.forEach((res) => {
-            data.push(res)
-        })
+        for(let i = 0; i < sheets.length; i++) {
+            const temp = reader.utils.sheet_to_json(
+                excelFile.Sheets[excelFile.SheetNames[i]])
+            temp.forEach((res) => {
+                excelFileData.push(res)
+            })
         }
+        // التاريخ
+        const d = new Date();
+        const invoiceDate = d.toLocaleDateString('en-GB').replaceAll('/' , '-');
         // invoice Number
-        const invoiceNumber = data[0].__EMPTY_5;
-        var oldInvoice = await BuyInvoiceModel.findOne({ invoiceNumber: invoiceNumber })
+        const invoiceNumber = excelFileData[0].__EMPTY_5;
+        // check invoice number in database
+        var oldInvoice = await BuyInvoiceModel.findOne({ invoiceNumber: invoiceNumber });
         if(oldInvoice) {
-            next(new ApiError(`رقم الفاتورة مسجل من قبل` , 400))
+            next(new ApiError(`رقم الفاتورة مسجل من قبل` , 400));
         }
         else {
-            var invoiceUrl = req.file.path;
-            var results = []
-            var products = []
-            var unfoundProducts = []
-            var invoiceTotal = 0
-            const childPython = spawn('python' , [path.resolve('./pdfreader.py') , `./${invoiceUrl}`])
-            childPython.stdout.on('data' , (data) => {
-                for(var y = 0; y < data; y++) {
-                    fs.createReadStream(__dirname + `/table_${y}.csv`).pipe(csv()).on('data' , (response) => {
-                        results.push(response)
-                    }).on('end' , async () => {
-                        for(var i = 0; i < results.length; i++) {
-                            if(Object.values(results[i])[Object.keys(results[i]).length - 1] == '') continue;
-                            var productCode = (Object.values(results[i])[Object.keys(results[i]).length - 1]).replace('.0' , '')
-                            await ProductModel.findOne({ proCode: productCode }).then(product => {
-                                if(product) {
-                                    if((Object.values(results[i])[6]) == '') {
-                                        var invoiceProduct = {
-                                            proCode: productCode,
-                                            proName: product.proName,
-                                            proPrice: Number((Object.values(results[i])[7]).replace(',','')),
-                                            proQuantity: Number((Object.values(results[i])[8]).replace(',','')),
-                                            proSale: Math.abs(Number((Object.values(results[i])[4]).replace(',',''))),
-                                            proTaxRate: Number((Object.values(results[i])[2]).replace(',','')),
-                                            proTaxValue: (Number((Object.values(results[i])[2]).replace(',','')) == 5 ? Math.abs(( ( ( (Number((Object.values(results[i])[7]).replace(',','')) * Number((Object.values(results[i])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 105 )).toFixed(2) : Math.abs((( ( (Number((Object.values(results[i])[7]).replace(',','')) * Number((Object.values(results[i])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 114 )).toFixed(2)),
-                                            proTotalVat: Math.abs((Number((Object.values(results[i])[7]).replace(',','')) * Number((Object.values(results[i])[8]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))))
-                                        }
-                                        invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
-                                        products.push(invoiceProduct);
-                                    }
-                                    else {
-                                        var invoiceProduct = {
-                                            proCode: productCode,
-                                            proName: product.proName,
-                                            proPrice: Number((Object.values(results[i])[6]).replace(',','')),
-                                            proQuantity: Number((Object.values(results[i])[7]).replace(',','')),
-                                            proSale: Math.abs(Number((Object.values(results[i])[4]).replace(',',''))),
-                                            proTaxRate: Number((Object.values(results[i])[2]).replace(',','')),
-                                            proTaxValue: (Number((Object.values(results[i])[2]).replace(',','')) == 5 ? Math.abs(( ( ( (Number((Object.values(results[i])[6]).replace(',','')) * Number((Object.values(results[i])[7]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 105 )).toFixed(2) : Math.abs((( ( (Number((Object.values(results[i])[6]).replace(',','')) * Number((Object.values(results[i])[7]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))) ) * Number((Object.values(results[i])[2]).replace(',','')) ) / 114 )).toFixed(2)),
-                                            proTotalVat: Math.abs((Number((Object.values(results[i])[6]).replace(',','')) * Number((Object.values(results[i])[7]).replace(',',''))) - Math.abs(Number((Object.values(results[i])[4]).replace(',',''))))
-                                        }
-                                        invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
-                                        products.push(invoiceProduct);
-                                    }
+            function startsWithNumber(str) {
+                return /^\d/.test(str);
+            }
+            var products = [];
+            var invoiceProducts = [];
+            var invoiceTotal = 0;
+            for(let y = 0; y < excelFileData.length; y++) {
+                if(excelFileData[y].__EMPTY_40 != undefined) continue;
+                if(Object.values(excelFileData[y])[2] === undefined) continue;
+                if(!startsWithNumber(Object.values(excelFileData[y])[1])) continue;
+                if(startsWithNumber(Object.values(excelFileData[y])[Object.keys(excelFileData[y]).length - 1]))
+                products.push(excelFileData[y]);
+            }
+            const productsExisting = await checkProductCode(products);
+            if(productsExisting.status.includes('false')) { next(new ApiError(`${productsExisting.codesNotFound} قم باضافة الاصناف التابعه لهذه الاكواد` , 404)) }
+            else {
+                for(let x = 0; x < products.length; x++) {
+                    var proCode = Object.values(products[x])[1];
+                    var invoiceProductInfo = await ProductModel.findOne({ proCode });
+                    if(isNaN((Object.values(products[x])[Object.keys(products[x]).length - 7]))) {
+                        if(isNaN(Object.values(products[x])[Object.keys(products[x]).length - 3])) {
+                            if(isNaN(Object.values(products[x])[Object.keys(products[x]).length - 9])) {
+                                var invoiceProduct = {
+                                    proCode: proCode,
+                                    proName: invoiceProductInfo.proName,
+                                    proPackaging: invoiceProductInfo.proPackaging,
+                                    proPrice: Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim()),
+                                    proQuantity: Number((Object.values(products[x])[Object.keys(products[x]).length - 11]).replace(',','').trim()),
+                                    proSale: Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim())),
+                                    proTaxRate: Number((Object.values(products[x])[Object.keys(products[x]).length - 1])),
+                                    proTaxValue: (Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) == 5 ? Number(( ( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 11]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 105 ).toFixed(2)) : Number((( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 11]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 114 ).toFixed(2))),
+                                    proTotalVat: (((Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 11]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))))
                                 }
-                                else {
-                                    unfoundProducts.push(productCode)
+                                
+                                invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                                invoiceProducts.push(invoiceProduct);
+                            }
+                            else {
+                                var invoiceProduct = {
+                                    proCode: proCode,
+                                    proName: invoiceProductInfo.proName,
+                                    proPackaging: invoiceProductInfo.proPackaging,
+                                    proPrice: Number((Object.values(products[x])[Object.keys(products[x]).length - 8]).replace(',','').trim()),
+                                    proQuantity: Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim()),
+                                    proSale: Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim())),
+                                    proTaxRate: Number((Object.values(products[x])[Object.keys(products[x]).length - 1])),
+                                    proTaxValue: (Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) == 5 ? Number(( ( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 8]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 105 ).toFixed(2)) : Number((( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 8]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 114 ).toFixed(2))),
+                                    proTotalVat: (((Number((Object.values(products[x])[Object.keys(products[x]).length - 8]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))))
                                 }
-                            }).catch(err => {
-                                return Promise.reject(err);
-                            })
-                        }
-                        if(unfoundProducts.length == 0) {
-                            var storeProducts = await getStoreProducts(products);
-                            if(storeProducts.length != 0) { await StoreModel.create(storeProducts); }
-                            var invoice = await BuyInvoiceModel.findOne({ invoiceNumber: invoiceNumber })
-                            if(!invoice) {
-                                await BuyInvoiceModel.create(
-                                    { invoiceUrl , invoiceNumber , products , invoiceTotal , invoiceDate }
-                                ).then(buyInvoice => {
-                                    res.status(201).json({ data: buyInvoice })
-                                }).catch(err => {
-                                    res.send(err)
-                                })
+                                
+                                invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                                invoiceProducts.push(invoiceProduct);
                             }
                         }
                         else {
-                            next(new ApiError(`لا يوجد صنف بهذا الكود: ${unfoundProducts} قم بادخاله اولا` , 400))
+                            if(isNaN(Object.values(products[x])[Object.keys(products[x]).length - 9])) {
+                                var invoiceProduct = {
+                                    proCode: proCode,
+                                    proName: invoiceProductInfo.proName,
+                                    proPackaging: invoiceProductInfo.proPackaging,
+                                    proPrice: Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim()),
+                                    proQuantity: Number((Object.values(products[x])[Object.keys(products[x]).length - 11]).replace(',','').trim()),
+                                    proSale: Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim())),
+                                    proTaxRate: Number((Object.values(products[x])[Object.keys(products[x]).length - 1])),
+                                    proTaxValue: (Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) == 5 ? Number(( ( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 11]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 105 ).toFixed(2)) : Number((( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 11]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 114 ).toFixed(2))),
+                                    proTotalVat: (((Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 11]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))))
+                                }
+                                
+                                invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                                invoiceProducts.push(invoiceProduct);
+                            }
+                            else {
+                                var invoiceProduct = {
+                                    proCode: proCode,
+                                    proName: invoiceProductInfo.proName,
+                                    proPackaging: invoiceProductInfo.proPackaging,
+                                    proPrice: Number((Object.values(products[x])[Object.keys(products[x]).length - 8]).replace(',','').trim()),
+                                    proQuantity: Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim()),
+                                    proSale: Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim())),
+                                    proTaxRate: Number((Object.values(products[x])[Object.keys(products[x]).length - 1])),
+                                    proTaxValue: (Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) == 5 ? Number(( ( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 8]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 105 ).toFixed(2)) : Number((( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 8]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 114 ).toFixed(2))),
+                                    proTotalVat: (((Number((Object.values(products[x])[Object.keys(products[x]).length - 8]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))))
+                                }
+                                
+                                invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                                invoiceProducts.push(invoiceProduct);
+                            }
                         }
-                    })
+                    }
+                    else if(isNaN((Object.values(products[x])[Object.keys(products[x]).length - 8]))) {
+                        if(isNaN(Object.values(products[x])[Object.keys(products[x]).length - 3])) {
+                            if(isNaN(Object.values(products[x])[Object.keys(products[x]).length - 9])) {
+                                var invoiceProduct = {
+                                    proCode: proCode,
+                                    proName: invoiceProductInfo.proName,
+                                    proPackaging: invoiceProductInfo.proPackaging,
+                                    proPrice: Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim()),
+                                    proQuantity: Number((Object.values(products[x])[Object.keys(products[x]).length - 11]).replace(',','').trim()),
+                                    proSale: Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim())),
+                                    proTaxRate: Number((Object.values(products[x])[Object.keys(products[x]).length - 1])),
+                                    proTaxValue: (Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) == 5 ? Number(( ( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 11]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 105 ).toFixed(2)) : Number((( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 11]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 114 ).toFixed(2))),
+                                    proTotalVat: (((Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 11]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))))
+                                }
+                                
+                                invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                                invoiceProducts.push(invoiceProduct);
+                            }
+                            else {
+                                var invoiceProduct = {
+                                    proCode: proCode,
+                                    proName: invoiceProductInfo.proName,
+                                    proPackaging: invoiceProductInfo.proPackaging,
+                                    proPrice: Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim()),
+                                    proQuantity: Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim()),
+                                    proSale: Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim())),
+                                    proTaxRate: Number((Object.values(products[x])[Object.keys(products[x]).length - 1])),
+                                    proTaxValue: (Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) == 5 ? Number(( ( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 105 ).toFixed(2)) : Number((( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 114 ).toFixed(2))),
+                                    proTotalVat: (((Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))))
+                                }
+                                
+                                invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                                invoiceProducts.push(invoiceProduct);
+                            }
+                        }
+                        else {
+                            if(isNaN(Object.values(products[x])[Object.keys(products[x]).length - 9])) {
+                                var invoiceProduct = {
+                                    proCode: proCode,
+                                    proName: invoiceProductInfo.proName,
+                                    proPackaging: invoiceProductInfo.proPackaging,
+                                    proPrice: Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim()),
+                                    proQuantity: Number((Object.values(products[x])[Object.keys(products[x]).length - 11]).replace(',','').trim()),
+                                    proSale: Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim())),
+                                    proTaxRate: Number((Object.values(products[x])[Object.keys(products[x]).length - 1])),
+                                    proTaxValue: (Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) == 5 ? Number(( ( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 11]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 105 ).toFixed(2)) : Number((( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 11]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 114 ).toFixed(2))),
+                                    proTotalVat: (((Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 11]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))))
+                                }
+                                
+                                invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                                invoiceProducts.push(invoiceProduct);
+                            }
+                            else {
+                                var invoiceProduct = {
+                                    proCode: proCode,
+                                    proName: invoiceProductInfo.proName,
+                                    proPackaging: invoiceProductInfo.proPackaging,
+                                    proPrice: Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim()),
+                                    proQuantity: Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim()),
+                                    proSale: Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim())),
+                                    proTaxRate: Number((Object.values(products[x])[Object.keys(products[x]).length - 1])),
+                                    proTaxValue: (Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) == 5 ? Number(( ( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 105 ).toFixed(2)) : Number((( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 114 ).toFixed(2))),
+                                    proTotalVat: (((Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 10]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))))
+                                }
+                                
+                                invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                                invoiceProducts.push(invoiceProduct);
+                            }
+                        }
+                    }
+                    else {
+                        if(isNaN(Object.values(products[x])[Object.keys(products[x]).length - 3])) {
+                            var invoiceProduct = {
+                                proCode: proCode,
+                                proName: invoiceProductInfo.proName,
+                                proPackaging: invoiceProductInfo.proPackaging,
+                                proPrice: Number((Object.values(products[x])[Object.keys(products[x]).length - 6]).replace(',','').trim()),
+                                proQuantity: Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim()),
+                                proSale: Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim())),
+                                proTaxRate: Number((Object.values(products[x])[Object.keys(products[x]).length - 1])),
+                                proTaxValue: (Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) == 5 ? Number(( ( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 6]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 105 ).toFixed(2)) : Number((( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 6]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 114 ).toFixed(2))),
+                                proTotalVat: (((Number((Object.values(products[x])[Object.keys(products[x]).length - 6]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))))
+                            }
+                            
+                            invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                            invoiceProducts.push(invoiceProduct);
+                        }
+                        else {
+                            var invoiceProduct = {
+                                proCode: proCode,
+                                proName: invoiceProductInfo.proName,
+                                proPackaging: invoiceProductInfo.proPackaging,
+                                proPrice: Number((Object.values(products[x])[Object.keys(products[x]).length - 6]).replace(',','').trim()),
+                                proQuantity: Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim()),
+                                proSale: Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim())),
+                                proTaxRate: Number((Object.values(products[x])[Object.keys(products[x]).length - 1])),
+                                proTaxValue: (Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) == 5 ? Number(( ( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 6]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 105 ).toFixed(2)) : Number((( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 6]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 114 ).toFixed(2))),
+                                proTotalVat: (((Number((Object.values(products[x])[Object.keys(products[x]).length - 6]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))))
+                            }
+                            
+                            invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
+                            invoiceProducts.push(invoiceProduct);
+                        }
+                    }
                 }
-            })
-            childPython.stderr.on('data' , (data) => {
-                console.error(`stderr: ${data}`)
-            })
-            childPython.on('close' , (code) => {
-                console.log(code)
-            })
+                // console.log(invoiceProducts)
+                // console.log(invoiceTotal)
+                const storeProducts = await getStoreProducts(invoiceProducts);
+                if(storeProducts.length != 0) { await StoreModel.create(storeProducts); }
+                const buyInvoice = await BuyInvoiceModel.create({
+                    invoiceNumber , products: invoiceProducts , invoiceTotal , invoiceDate
+                })
+                res.status(201).json({ data: buyInvoice })
+            }
         }
     }),
 
