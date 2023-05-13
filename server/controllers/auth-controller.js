@@ -30,103 +30,103 @@ module.exports = {
     userLogin : asyncHandler(async (req , res , next) => {
         macaddress.one(async (err, mac) => {
             const user = await UserModel.findOne({ username: req.body.username });
-            if(!user || !(await bcrypt.compare(req.body.password, user.password))) {
+            if(!user || req.body.password != user.password) {
                 next(new ApiError('المستخدم او كلمة السر خطأ' , 401));
             }
             else {
-                if(!user.macAddress || user.macAddress == '') {
-                    var code = generateActivationCode(6);
-                    var transporter = nodemailer.createTransport({
-                        service: 'gmail',
-                        auth: {
-                            user: process.env.NODEMAILER_EMAIL,
-                            pass: process.env.NODEMAILER_PASS
-                        }
-                    })
-                    var MailGenerator = new mailgen({
-                        theme: 'default',
-                        product: {
-                            name: 'Mailgen',
-                            link: 'https://mailgen.js/'
-                        }
-                    })
-                    var response = {
-                        body: {
-                            name: 'Sky-Link',
-                            intro: 'User Activation Code Has Arrived!',
-                            table: {
-                                data: [{
-                                    username: user.username,
-                                    activationCode: code
-                                }]
-                            }
-                        }
-                    }
-                    var mail = MailGenerator.generate(response);
-                    var mailOptions = {
-                        from: process.env.NODEMAILER_EMAIL,
-                        to: "latec80676@galcake.com",
-                        subject : 'Generated Code',
-                        html : mail
-                    }
-                    transporter.sendMail(mailOptions , async (err , info) => {
-                        if(err) res.send(err);
-                        else {
-                            const token = generateToken(user._id);
-                            const userData = await UserModel.findOneAndUpdate({ username: req.body.username } , { activationCode: code } , { new: true })
-                            res.status(200).json({ data: userData , token });
-                        }
-                    })
-                }
-                else if(user.macAddress != mac) {
-                    var userMacAddress = '';
-                    var code = generateActivationCode(6);
-                    var transporter = nodemailer.createTransport({
-                        service: 'gmail',
-                        auth: {
-                            user: process.env.NODEMAILER_EMAIL,
-                            pass: process.env.NODEMAILER_PASS
-                        }
-                    })
-                    var MailGenerator = new mailgen({
-                        theme: 'default',
-                        product: {
-                            name: 'Mailgen',
-                            link: 'https://mailgen.js/'
-                        }
-                    })
-                    var response = {
-                        body: {
-                            name: 'Sky-Link',
-                            intro: 'User Activation Code Has Arrived!',
-                            table: {
-                                data: [{
-                                    username: user.username,
-                                    activationCode: code
-                                }]
-                            }
-                        }
-                    }
-                    var mail = MailGenerator.generate(response);
-                    var mailOptions = {
-                        from: process.env.NODEMAILER_EMAIL,
-                        to: "latec80676@galcake.com",
-                        subject : 'Generated Code',
-                        html : mail
-                    }
-                    transporter.sendMail(mailOptions , async (err , info) => {
-                        if(err) res.send(err);
-                        else {
-                            const token = generateToken(user._id);
-                            const userData = await UserModel.findOneAndUpdate({ username: req.body.username } , { macAddress: userMacAddress , activationCode: code } , { new: true })
-                            res.status(200).json({ data: userData , token });
-                        }
-                    })
-                }
-                else {
-                    const token = generateToken(user._id);
-                    res.status(200).json({ data: user , token });
-                }
+                // if(!user.macAddress || user.macAddress == '') {
+                //     var code = generateActivationCode(6);
+                //     var transporter = nodemailer.createTransport({
+                //         service: 'gmail',
+                //         auth: {
+                //             user: process.env.NODEMAILER_EMAIL,
+                //             pass: process.env.NODEMAILER_PASS
+                //         }
+                //     })
+                //     var MailGenerator = new mailgen({
+                //         theme: 'default',
+                //         product: {
+                //             name: 'Mailgen',
+                //             link: 'https://mailgen.js/'
+                //         }
+                //     })
+                //     var response = {
+                //         body: {
+                //             name: 'Sky-Link',
+                //             intro: 'User Activation Code Has Arrived!',
+                //             table: {
+                //                 data: [{
+                //                     username: user.username,
+                //                     activationCode: code
+                //                 }]
+                //             }
+                //         }
+                //     }
+                //     var mail = MailGenerator.generate(response);
+                //     var mailOptions = {
+                //         from: process.env.NODEMAILER_EMAIL,
+                //         to: "latec80676@galcake.com",
+                //         subject : 'Generated Code',
+                //         html : mail
+                //     }
+                //     transporter.sendMail(mailOptions , async (err , info) => {
+                //         if(err) res.send(err);
+                //         else {
+                //             const token = generateToken(user._id);
+                //             const userData = await UserModel.findOneAndUpdate({ username: req.body.username } , { activationCode: code } , { new: true })
+                //             res.status(200).json({ data: userData , token });
+                //         }
+                //     })
+                // }
+                // else if(user.macAddress != mac) {
+                //     var userMacAddress = '';
+                //     var code = generateActivationCode(6);
+                //     var transporter = nodemailer.createTransport({
+                //         service: 'gmail',
+                //         auth: {
+                //             user: process.env.NODEMAILER_EMAIL,
+                //             pass: process.env.NODEMAILER_PASS
+                //         }
+                //     })
+                //     var MailGenerator = new mailgen({
+                //         theme: 'default',
+                //         product: {
+                //             name: 'Mailgen',
+                //             link: 'https://mailgen.js/'
+                //         }
+                //     })
+                //     var response = {
+                //         body: {
+                //             name: 'Sky-Link',
+                //             intro: 'User Activation Code Has Arrived!',
+                //             table: {
+                //                 data: [{
+                //                     username: user.username,
+                //                     activationCode: code
+                //                 }]
+                //             }
+                //         }
+                //     }
+                //     var mail = MailGenerator.generate(response);
+                //     var mailOptions = {
+                //         from: process.env.NODEMAILER_EMAIL,
+                //         to: "latec80676@galcake.com",
+                //         subject : 'Generated Code',
+                //         html : mail
+                //     }
+                //     transporter.sendMail(mailOptions , async (err , info) => {
+                //         if(err) res.send(err);
+                //         else {
+                //             const token = generateToken(user._id);
+                //             const userData = await UserModel.findOneAndUpdate({ username: req.body.username } , { macAddress: userMacAddress , activationCode: code } , { new: true })
+                //             res.status(200).json({ data: userData , token });
+                //         }
+                //     })
+                // }
+                
+                const token = generateToken(user._id);
+                res.status(200).json({ data: user , token });
+                
             }
         });
     }),

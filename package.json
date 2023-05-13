@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "concurrently \"node server.js\" \"cd client && npm start\"",
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +14,7 @@
   "dependencies": {
     "address": "^1.2.2",
     "bcryptjs": "^2.4.3",
+    "concurrently": "^8.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "exceljs": "^4.3.0",
@@ -24,6 +26,7 @@
     "mailgen": "^2.0.27",
     "mongoose": "^7.0.1",
     "multer": "^1.4.5-lts.1",
+    "node-windows": "^1.0.0-beta.8",
     "nodemailer": "^6.9.1",
     "pdf-creator-node": "^2.3.5",
     "pdf-parse": "^1.1.1",

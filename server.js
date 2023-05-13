@@ -28,6 +28,9 @@ app.use(cors());
 
 app.use('/uploads', express.static(path.join(__dirname , 'uploads')))
 
+app.get('/' , (req,res) => {
+    res.send('hello');
+})
 app.use('/api/auth' , authRoute);
 app.use('/api/users' , userRoute);
 app.use('/api/companies' , companyRoute);

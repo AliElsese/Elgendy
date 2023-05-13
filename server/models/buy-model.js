@@ -21,9 +21,11 @@ const buyInvoiceSchema = new mongoose.Schema({
             type: String,
             default: 'CAR'
         },
+        package: { type: Number },
         proPrice: { type: Number },
         proQuantity: { type: Number },
         proSale: { type: Number },
+        proExtraSale: { type: Number },
         proTaxRate: { type: Number },
         proTaxValue: { type: Number },
         proTotalVat: { type: Number }
