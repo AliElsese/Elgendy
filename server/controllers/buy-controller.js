@@ -111,7 +111,12 @@ module.exports = {
                 products.push(excelFileData[y]);
             }
             const productsExisting = await checkProductCode(products);
-            if(productsExisting.status.includes('false')) { next(new ApiError(`${productsExisting.codesNotFound} قم باضافة الاصناف التابعه لهذه الاكواد` , 404)) }
+            if(productsExisting.status.includes('false')) {
+                res.status(404).json({
+                    message: `${productsExisting.codesNotFound} قم باضافة الاصناف التابعه لهذه الاكواد`,
+                    data: productsExisting.codesNotFound
+                })
+            }
             else {
                 for(let x = 0; x < products.length; x++) {
                     var proCode = Object.values(products[x])[1];
