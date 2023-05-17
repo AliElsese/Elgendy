@@ -35,7 +35,6 @@ const saleInvoiceSchema = new mongoose.Schema({
         proPrice: { type: Number },
         proQuantity: { type: Number },
         proSale: { type: Number },
-        proTaxRate: { type: Number },
         proTaxValue: { type: Number },
         proTotalVat: { type: Number }
     }],

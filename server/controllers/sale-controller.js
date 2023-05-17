@@ -47,8 +47,7 @@ const getProductTotal = async (products) => {
             proPrice: product.proPrice,
             proQuantity: products[i].proQuantity,
             proSale: Number((product.proPrice * products[i].proQuantity * 0.1175).toFixed(2)),
-            proTaxRate: product.proTaxRate,
-            proTaxValue: (product.proTaxRate != 0 ? Number((((products[i].proQuantity * product.proPrice) - (product.proPrice * products[i].proQuantity * 0.1175)) * product.proTaxRate).toFixed(2)) : 0),
+            proTaxValue: (product.isFixed == true ? Number((((products[i].proQuantity * product.proPrice) - (product.proPrice * products[i].proQuantity * 0.1175)) * (100/114) * (14/100)).toFixed(2)) : 0),
             proTotalVat: Number(((products[i].proQuantity * product.proPrice) - (product.proPrice * products[i].proQuantity * 0.1175)).toFixed(2)),
         }
         invoice.invoiceTotal = Number((invoice.invoiceTotal + productInfo.proTotalVat).toFixed(2));

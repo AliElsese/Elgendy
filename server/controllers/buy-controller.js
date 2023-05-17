@@ -64,7 +64,6 @@ const getStoreProducts = async (products) => {
             proPackaging: products[i].proPackaging,
             $inc:{ proQuantity: products[i].proQuantity },
             proPrice: products[i].proPrice,
-            proTaxRate: products[i].proTaxRate,
         } , { new: true });
         if(!product || product == undefined) {
             storeProducts.push(products[i]);
@@ -133,6 +132,7 @@ module.exports = {
                 if(excelFileData[y].__EMPTY_40 != undefined) continue;
                 if(Object.values(excelFileData[y])[2] === undefined) continue;
                 if(!startsWithNumber(Object.values(excelFileData[y])[1])) continue;
+                if((Object.values(excelFileData[y])[Object.keys(excelFileData[y]).length - 1]).startsWith('012')) continue;
                 if(startsWithNumber(Object.values(excelFileData[y])[Object.keys(excelFileData[y]).length - 1]))
                 products.push(excelFileData[y]);
             }

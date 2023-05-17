@@ -22,7 +22,7 @@ module.exports = {
             proPackaging: productData.proPackaging,
             proPrice: productData.proPrice,
             proQuantity: req.body.proQuantity,
-            proTaxRate: req.body.proTaxRate
+            isFixed: productData.isFixed
         }
 
         const product = await StoreModel.create(productInfo);
@@ -49,9 +49,9 @@ module.exports = {
     updateStoreProduct : asyncHandler(async (req , res , next) => {
         const proPrice = req.body.proPrice;
         const proQuantity = req.body.proQuantity;
-        const proTaxRate = req.body.proTaxRate;
+        const isFixed = req.body.isFixed;
 
-        const product = await StoreModel.findByIdAndUpdate({ _id: req.params.id } , { proPrice , proQuantity , proTaxRate } , { new: true });
+        const product = await StoreModel.findByIdAndUpdate({ _id: req.params.id } , { proPrice , proQuantity , isFixed } , { new: true });
         if(!product) {
             next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404));
         }

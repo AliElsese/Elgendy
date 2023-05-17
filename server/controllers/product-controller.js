@@ -40,9 +40,10 @@ module.exports = {
         const proName = req.body.proName;
         const proPackaging = req.body.proPackaging;
         const proPrice = req.body.proPrice;
+        const isFixed = req.body.isFixed;
 
         const product = await ProductModel.findByIdAndUpdate(
-            { _id : id } , { proName , proPackaging , proPrice } , { new : true }
+            { _id : id } , { proName , proPackaging , proPrice , isFixed } , { new : true }
         )
         if(!product) {
             next(new ApiError(`لا يوجد صنف بهذا الرقم ${id}` , 404));
