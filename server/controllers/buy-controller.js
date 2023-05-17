@@ -137,6 +137,7 @@ module.exports = {
                 products.push(excelFileData[y]);
             }
             const productsExisting = await checkProductCode(products);
+            // console.log(products)
             if(productsExisting.status.includes('false')) {
                 res.status(404).json({
                     message: `${productsExisting.codesNotFound} قم باضافة الاصناف التابعه لهذه الاكواد`,
@@ -148,7 +149,9 @@ module.exports = {
                     var proCode = Object.values(products[x])[1];
                     var invoiceProductInfo = await ProductModel.findOne({ proCode });
                     if(isNaN((Object.values(products[x])[Object.keys(products[x]).length - 7]))) {
+                        // console.log('7')
                         if(isNaN(Object.values(products[x])[Object.keys(products[x]).length - 3])) {
+                            // console.log('hi1')
                             if(isNaN(Object.values(products[x])[Object.keys(products[x]).length - 9])) {
                                 var invoiceProduct = {
                                     proCode: proCode,
@@ -187,6 +190,7 @@ module.exports = {
                             }
                         }
                         else {
+                            // console.log('hi2')
                             if(isNaN(Object.values(products[x])[Object.keys(products[x]).length - 9])) {
                                 var invoiceProduct = {
                                     proCode: proCode,
@@ -226,7 +230,9 @@ module.exports = {
                         }
                     }
                     else if(isNaN((Object.values(products[x])[Object.keys(products[x]).length - 8]))) {
+                        // console.log('8')
                         if(isNaN(Object.values(products[x])[Object.keys(products[x]).length - 3])) {
+                            // console.log('hi1')
                             if(isNaN(Object.values(products[x])[Object.keys(products[x]).length - 9])) {
                                 var invoiceProduct = {
                                     proCode: proCode,
@@ -265,6 +271,7 @@ module.exports = {
                             }
                         }
                         else {
+                            // console.log('hi2')
                             if(isNaN(Object.values(products[x])[Object.keys(products[x]).length - 9])) {
                                 var invoiceProduct = {
                                     proCode: proCode,
@@ -304,25 +311,28 @@ module.exports = {
                         }
                     }
                     else {
+                        // console.log('3')
                         if(isNaN(Object.values(products[x])[Object.keys(products[x]).length - 3])) {
+                            // console.log('hi1')
                             var invoiceProduct = {
                                 proCode: proCode,
                                 proName: invoiceProductInfo.proName,
                                 proPackaging: invoiceProductInfo.proPackaging,
-                                package: Number((Object.values(products[x])[Object.keys(products[x]).length - 8]).replace(',','').trim()),
-                                proPrice: Number((Object.values(products[x])[Object.keys(products[x]).length - 6]).replace(',','').trim()),
-                                proQuantity: Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim()),
+                                package: Number((Object.values(products[x])[Object.keys(products[x]).length - 9]).replace(',','').trim()),
+                                proPrice: Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim()),
+                                proQuantity: Number((Object.values(products[x])[Object.keys(products[x]).length - 8]).replace(',','').trim()),
                                 proSale: Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim())),
                                 proExtraSale: Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 2]).replace(',','').trim())),
                                 proTaxRate: Number((Object.values(products[x])[Object.keys(products[x]).length - 1])),
-                                proTaxValue: (Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) == 5 ? Number(( ( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 6]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 105 ).toFixed(2)) : Number((( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 6]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 114 ).toFixed(2))),
-                                proTotalVat: (((Number((Object.values(products[x])[Object.keys(products[x]).length - 6]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))))
+                                proTaxValue: (Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) == 5 ? Number(( ( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 8]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 105 ).toFixed(2)) : Number((( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 8]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 114 ).toFixed(2))),
+                                proTotalVat: (((Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 8]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 4]).replace(',','').trim()))))
                             }
-                            
+                            // console.log(invoiceProduct)
                             invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
                             invoiceProducts.push(invoiceProduct);
                         }
                         else {
+                            // console.log('hi2')
                             var invoiceProduct = {
                                 proCode: proCode,
                                 proName: invoiceProductInfo.proName,
@@ -336,7 +346,7 @@ module.exports = {
                                 proTaxValue: (Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) == 5 ? Number(( ( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 6]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 105 ).toFixed(2)) : Number((( ( ((Number((Object.values(products[x])[Object.keys(products[x]).length - 6]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))) ) * Number((Object.values(products[x])[Object.keys(products[x]).length - 1])) ) / 114 ).toFixed(2))),
                                 proTotalVat: (((Number((Object.values(products[x])[Object.keys(products[x]).length - 6]).replace(',','').trim())) * (Number((Object.values(products[x])[Object.keys(products[x]).length - 7]).replace(',','').trim()))) - (Math.abs(Number((Object.values(products[x])[Object.keys(products[x]).length - 3]).replace(',','').trim()))))
                             }
-                            
+                            // console.log(invoiceProduct)
                             invoiceTotal = invoiceTotal + invoiceProduct.proTotalVat;
                             invoiceProducts.push(invoiceProduct);
                         }
