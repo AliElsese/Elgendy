@@ -16,7 +16,10 @@ const storeSchema = new mongoose.Schema({
     },
     proPrice: { type: Number },
     proQuantity: { type: Number },
-    proTaxRate: { type: Number }
+    isFixed: {
+        type: Boolean,
+        default: false
+    }
 }, { timestamps: true });
 
 const StoreModel = mongoose.model('Store', storeSchema);

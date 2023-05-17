@@ -75,6 +75,32 @@ const getStoreProducts = async (products) => {
 
 module.exports = {
     buyInvoiceGenerate: asyncHandler(async (req , res , next) => {
+        // const file = reader.readFile(req.file.path);
+
+        // let data = [];
+        // const sheets = file.SheetNames;
+
+        // for(let i = 0; i < sheets.length; i++) {
+        //     const temp = reader.utils.sheet_to_json(file.Sheets[file.SheetNames[i]])
+        //     temp.forEach((res) => {
+        //         data.push(res)
+        //     })
+        // }
+
+        // for(let x = 0; x < data.length; x++) {
+        //     const product = await ProductModel.findOne({ proCode: data[x].proCode });
+        //     if(!product) {
+        //         const productInfo = {
+        //             proCode: data[x].proCode,
+        //             proName: data[x].proName,
+        //             proPackaging: data[x].proPackaging,
+        //             proPrice: data[x].proPrice,
+        //             isFixed: false
+        //         }
+        //         const insertedProduct = await ProductModel.create(productInfo);
+        //     }
+        // }
+        // res.send('done')
         await pdfToExcel.genXlsx(req.file.path , __dirname + `/excelfrompdf.xlsx`)
         const excelFile = reader.readFile(__dirname + `/excelfrompdf.xlsx`)
         let excelFileData = []

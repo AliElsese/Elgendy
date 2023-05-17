@@ -17,7 +17,8 @@ const {
     updateProduct,
     deleteProduct,
     getReport,
-    getProductByCode
+    getProductByCode,
+    addNewProducts
 } = require('../controllers/product-controller');
 
 const router = express.Router();
@@ -28,6 +29,7 @@ router.get('/getProduct/:id' , checkToken , getProductValidator , getProduct)
 router.post('/getProductCode' , checkToken , getProductCodeValidator , getProductByCode)
 router.put('/updateProduct/:id' , checkToken , updateProductValidator , updateProduct)
 router.delete('/deleteProduct/:id' , checkToken , deleteProductValidator , deleteProduct)
-router.post('/getProductsReport' , checkToken , getReport)
+router.post('/getProductsReport' , checkToken , getReport),
+router.post('/addNewProducts' , checkToken , addNewProducts)
 
 module.exports = router;

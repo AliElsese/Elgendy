@@ -12,8 +12,9 @@ module.exports = {
         const proName = req.body.proName;
         const proPackaging = req.body.proPackaging;
         const proPrice = req.body.proPrice;
+        const isFixed = req.body.isFixed;
 
-        const product = await ProductModel.create({ proCode , proName , proPackaging , proPrice });
+        const product = await ProductModel.create({ proCode , proName , proPackaging , proPrice , isFixed });
         res.status(201).json({ data: product });
     }),
 
@@ -113,5 +114,23 @@ module.exports = {
         else {
             res.status(200).json({ data : product })
         }
+    }),
+
+    addNewProducts : asyncHandler(async (req , res , next) => {
+        const productsArr = req.body.products;
+        for(let x = 0; x < productsArr.length; x++) {
+            const product = await ProductModel.findOne({ proCode: productsArr[x].proCode });
+            if(!product) {
+                const productInfo = {
+                    proCode: productsArr[x].proCode,
+                    proName: productsArr[x].proName,
+                    proPackaging: productsArr[x].proPackaging,
+                    proPrice: productsArr[x].proPrice,
+                    isFixed: productsArr[x].isFixed
+                }
+                const insertedProduct = await ProductModel.create(productInfo);
+            }
+        }
+        res.status(201).json({ data: productsArr });
     })
 }

@@ -13,7 +13,11 @@ const productSchema = new mongoose.Schema({
         type: String,
         default: 'CAR'
     },
-    proPrice: { type: Number }
+    proPrice: { type: Number },
+    isFixed: {
+        type: Boolean,
+        default: false
+    }
 }, { timestamps: true });
 
 const ProductModel = mongoose.model('Product', productSchema);
